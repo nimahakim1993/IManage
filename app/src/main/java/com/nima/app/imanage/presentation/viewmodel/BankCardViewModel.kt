@@ -18,18 +18,6 @@ class BankCardViewModel(
     private val _selectedCard = MutableStateFlow<BankCardEntity?>(null)
     val selectedCard: StateFlow<BankCardEntity?> = _selectedCard
 
-    private val _showSensitive = MutableStateFlow(false)
-    val showSensitive: StateFlow<Boolean> = _showSensitive
-    fun toggleSensitive() {
-        _showSensitive.update { !it }
-    }
-
-    private val _editMode = MutableStateFlow(false)
-    val editMode: StateFlow<Boolean> = _editMode
-    fun toggleEditMode() {
-        _editMode.update { !it }
-    }
-
     val cards = repository.getAll()
         .stateIn(
             viewModelScope,

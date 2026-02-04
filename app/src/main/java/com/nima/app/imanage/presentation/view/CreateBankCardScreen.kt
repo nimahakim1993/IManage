@@ -2,7 +2,6 @@ package com.nima.app.imanage.presentation.view
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.outlined.SettingsBackupRestore
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -47,14 +47,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.nima.app.imanage.data.db.entity.BankCardEntity
+import com.nima.app.imanage.data.model.ToolbarAction
+import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.BankCardViewModel
 import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
-fun CreateBankAccountScreen(
+fun CreateBankCardScreen(
     navController: NavController,
     cardId: Int,
+    setToolbar: (ToolbarConfig) -> Unit,
     viewModel: BankCardViewModel = koinViewModel()
 ) {
 
@@ -70,23 +73,12 @@ fun CreateBankAccountScreen(
     var year by rememberSaveable { mutableStateOf("") }
     var bankName by rememberSaveable { mutableStateOf("") }
 
-    val selectedCard by viewModel.selectedCard.collectAsState()
-    LaunchedEffect(selectedCard) {
-        selectedCard?.let { card ->
-            cardNumber = card.cardNumber
-            cvv = card.cvv
-            month = card.month
-            year = card.year
-            bankName = card.bankName
-        }
-    }
-
-    val ColorSaver = Saver<Color, Long>(
+    val colorSaver = Saver<Color, Long>(
         save = { it.value.toLong() },
         restore = { Color(it) }
     )
 
-    var cardColor by rememberSaveable(stateSaver = ColorSaver) {
+    var cardColor by rememberSaveable(stateSaver = colorSaver) {
         mutableStateOf(Color(0xFF0F5C5A))
     }
 
@@ -97,6 +89,38 @@ fun CreateBankAccountScreen(
         Color(0xFF4C1D95),
         Color(0xFF374151),
     )
+
+    val selectedCard by viewModel.selectedCard.collectAsState()
+    LaunchedEffect(selectedCard) {
+        selectedCard?.let { card ->
+            cardNumber = card.cardNumber
+            cvv = card.cvv
+            month = card.month
+            year = card.year
+            bankName = card.bankName
+            cardColor = colors.first { it.value.toLong() == card.color }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        setToolbar(
+            ToolbarConfig(title = "", actions = listOf(
+                ToolbarAction(
+                    icon = Icons.Outlined.SettingsBackupRestore,
+                    contentDescription = "Reset",
+                    onClick = {
+                        cardNumber = ""
+                        cvv = ""
+                        month = ""
+                        year = ""
+                        bankName = ""
+                    }
+                )
+            ))
+        )
+    }
+
+
 
     Column(
         modifier = Modifier
@@ -110,7 +134,7 @@ fun CreateBankAccountScreen(
 
         AtmCardPreview(
             editMode = false,
-            showSensitive = false,
+            showSensitive = true,
             cardNumber = cardNumber,
             cvv = cvv,
             month = month,
@@ -278,7 +302,11 @@ fun AtmCardPreview(
                         Icon(Icons.Default.Edit, contentDescription = "Edit", tint = Color.White)
                     }
                     IconButton(onClick = onDelete) {
-                        Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.White)
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = "Delete",
+                            tint = Color.White
+                        )
                     }
                 }
             }

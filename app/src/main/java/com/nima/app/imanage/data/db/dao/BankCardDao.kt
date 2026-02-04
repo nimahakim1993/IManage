@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.nima.app.imanage.data.db.entity.BankCardEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -18,7 +17,7 @@ interface BankCardDao {
     suspend fun delete(card: BankCardEntity)
 
     @Query("SELECT * FROM bank_cards ORDER BY id DESC")
-    fun observeAll(): Flow<List<BankCardEntity>>
+    fun getAll(): Flow<List<BankCardEntity>>
 
     @Query("SELECT * FROM bank_cards WHERE id = :cardId")
     fun get(cardId: Int): Flow<BankCardEntity?>

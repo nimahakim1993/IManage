@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material3.Card
@@ -20,16 +19,25 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.nima.app.imanage.data.model.ToolbarConfig
 
 
 @Composable
 fun FinancialScreen(
-
+    setToolbar: (ToolbarConfig) -> Unit
 ) {
+
+    LaunchedEffect(Unit) {
+        setToolbar(
+            ToolbarConfig(title = "دفتر مالی", showBack = true)
+        )
+    }
+
     Column(
         modifier = Modifier.fillMaxSize().padding(12.dp),
         verticalArrangement = Arrangement.Top,

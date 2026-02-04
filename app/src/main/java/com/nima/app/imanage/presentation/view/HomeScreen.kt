@@ -17,21 +17,37 @@ import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.Report
 import androidx.compose.material.icons.outlined.MonetizationOn
 import androidx.compose.material.icons.outlined.Money
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.Screen
+import com.nima.app.imanage.data.model.ToolbarAction
+import com.nima.app.imanage.data.model.ToolbarConfig
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(setToolbar: (ToolbarConfig) -> Unit, navController: NavHostController) {
+
+    LaunchedEffect(Unit) {
+        setToolbar(
+            ToolbarConfig(title = "", actions = listOf(
+                ToolbarAction(
+                    icon = Icons.Outlined.Settings,
+                    contentDescription = "Settings",
+                    onClick = { /*...*/ }
+                )
+            ))
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -89,7 +105,7 @@ fun HomeScreen(navController: NavHostController) {
                 modifier = Modifier.weight(1f),
                 title = "حساب بانکی",
                 icon = Icons.Default.CreditCard,
-                onClick = { navController.navigate(Screen.BankAccount.route) }
+                onClick = { navController.navigate(Screen.BankCards.route) }
             )
             DashboardItem(
                 modifier = Modifier.weight(1f),

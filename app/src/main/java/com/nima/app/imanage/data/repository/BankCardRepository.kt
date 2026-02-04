@@ -11,7 +11,7 @@ class BankCardRepository(
 
     suspend fun delete(card: BankCardEntity) = dao.delete(card)
 
-    fun getAll(): Flow<List<BankCardEntity>> = dao.observeAll()
+    fun getAll(): Flow<List<BankCardEntity>> = dao.getAll()
 
     fun get(cardId: Int): Flow<BankCardEntity?> = dao.get(cardId)
 }

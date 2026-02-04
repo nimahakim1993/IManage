@@ -5,13 +5,13 @@ sealed class Screen(val route: String) {
     data object Financial : Screen("financial")
     data object Note : Screen("note")
     data object Report : Screen("report")
-    data object BankAccount : Screen("bankAccount")
-    data object CreateBankAccount : Screen("createBankAccount?cardId={cardId}") {
+    data object BankCards : Screen("bankCards")
+    data object CreateBankCard : Screen("createBankCard?cardId={cardId}") {
         fun createRoute(cardId: Int? = null): String {
             return if (cardId == null)
-                "createBankAccount"
+                "createBankCard"
             else
-                "createBankAccount?cardId=$cardId"
+                "createBankCard?cardId=$cardId"
         }
     }
     data object SharedTrip : Screen("sharedTrip")
