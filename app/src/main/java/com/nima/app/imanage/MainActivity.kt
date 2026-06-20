@@ -20,6 +20,8 @@ import androidx.navigation.navArgument
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.view.BankCardsScreen
 import com.nima.app.imanage.presentation.view.CreateBankCardScreen
+import com.nima.app.imanage.presentation.view.CreateLoanScreen
+import com.nima.app.imanage.presentation.view.LoansScreen
 import com.nima.app.imanage.presentation.view.FinancialScreen
 import com.nima.app.imanage.presentation.view.HomeScreen
 import com.nima.app.imanage.presentation.view.MainToolbar
@@ -76,7 +78,6 @@ fun Navigation(
         modifier = Modifier.padding(padding)
     ) {
         composable(Screen.Home.route) { HomeScreen(setToolbar, navController) }
-        composable(Screen.Financial.route) { FinancialScreen(setToolbar) }
         composable(Screen.BankCards.route) { BankCardsScreen(setToolbar, navController) }
         composable(
             route = Screen.CreateBankCard.route,
@@ -90,5 +91,9 @@ fun Navigation(
             val cardId = backStack.arguments?.getInt("cardId") ?: -1
             CreateBankCardScreen(navController, cardId, setToolbar)
         }
+
+        composable(Screen.Financial.route) { FinancialScreen(setToolbar) }
+        composable(Screen.Financial.route) { LoansScreen(setToolbar, navController) }
+        composable(Screen.CreateLoan.route) { CreateLoanScreen(setToolbar, navController) }
     }
 }

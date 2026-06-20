@@ -1,4 +1,4 @@
-package com.nima.app.imanage.ui.component.dialog
+package com.nima.app.imanage.ui.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

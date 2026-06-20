@@ -6,6 +6,8 @@ sealed class Screen(val route: String) {
     data object Note : Screen("note")
     data object Report : Screen("report")
     data object BankCards : Screen("bankCards")
+    data object Loans : Screen("loans")
+    data object CreateLoan : Screen("createLoan")
     data object CreateBankCard : Screen("createBankCard?cardId={cardId}") {
         fun createRoute(cardId: Int? = null): String {
             return if (cardId == null)

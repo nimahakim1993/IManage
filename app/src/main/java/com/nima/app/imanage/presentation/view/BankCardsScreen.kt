@@ -30,7 +30,7 @@ import com.nima.app.imanage.data.db.entity.BankCardEntity
 import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.BankCardViewModel
-import com.nima.app.imanage.ui.component.dialog.ActionDialog
+import com.nima.app.imanage.ui.component.ActionDialog
 import org.koin.androidx.compose.koinViewModel
 
 
