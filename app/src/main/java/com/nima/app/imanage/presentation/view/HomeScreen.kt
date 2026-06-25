@@ -177,9 +177,10 @@ private fun ReportCard(
                         )
                     }
                     Text(
-                        text = stringResource(R.string.home_bank_accounts) + ": $bankAccountCount",
+                        text = stringResource(R.string.home_bank_accounts) + ": ${NumberFormatUtils.format(bankAccountCount.toLong())}",
                         color = onPrimary.copy(alpha = 0.85f),
-                        style = MaterialTheme.typography.labelMedium
+                        style = MaterialTheme.typography.labelMedium,
+                        fontFamily = vazirFontFamily
                     )
                 }
 
@@ -192,8 +193,8 @@ private fun ReportCard(
                     fontFamily = vazirFontFamily
                 )
                 Text(
-                    text = NumberFormatUtils.formatPersian(netBalance),
-                    color = netBalanceColor,
+                    text = NumberFormatUtils.format(netBalance),
+                    color = netBalanceColor.copy(alpha = 0.85f),
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 32.sp,
                     fontFamily = vazirFontFamily
@@ -208,13 +209,13 @@ private fun ReportCard(
                     ReportStatTile(
                         modifier = Modifier.weight(1f),
                         label = stringResource(R.string.total_debt),
-                        value = NumberFormatUtils.formatPersian(totalDebt),
+                        value = NumberFormatUtils.format(totalDebt),
                         accent = Color(0xFFFFCDD2)
                     )
                     ReportStatTile(
                         modifier = Modifier.weight(1f),
                         label = stringResource(R.string.total_receivable),
-                        value = NumberFormatUtils.formatPersian(totalReceivable),
+                        value = NumberFormatUtils.format(totalReceivable),
                         accent = Color(0xFFB3E5FC)
                     )
                 }

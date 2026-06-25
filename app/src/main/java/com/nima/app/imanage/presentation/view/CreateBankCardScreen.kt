@@ -19,8 +19,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.SettingsBackupRestore
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -44,6 +46,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -52,6 +55,7 @@ import com.nima.app.imanage.data.db.entity.BankCardEntity
 import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.BankCardViewModel
+import com.nima.app.imanage.util.NumberFormatUtils
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -74,6 +78,8 @@ fun CreateBankCardScreen(
     var month by rememberSaveable { mutableStateOf("") }
     var year by rememberSaveable { mutableStateOf("") }
     var bankName by rememberSaveable { mutableStateOf("") }
+    var shebaNumber by rememberSaveable { mutableStateOf("") }
+    var accountNumber by rememberSaveable { mutableStateOf("") }
 
     val colorSaver = Saver<Color, Long>(
         save = { it.value.toLong() },
@@ -100,6 +106,8 @@ fun CreateBankCardScreen(
             month = card.month
             year = card.year
             bankName = card.bankName
+            shebaNumber = card.shebaNumber.orEmpty()
+            accountNumber = card.accountNumber.orEmpty()
             cardColor = colors.first { it.value.toLong() == card.color }
         }
     }
@@ -118,6 +126,8 @@ fun CreateBankCardScreen(
                         month = ""
                         year = ""
                         bankName = ""
+                        shebaNumber = ""
+                        accountNumber = ""
                     }
                 )
             ))
@@ -191,16 +201,35 @@ fun CreateBankCardScreen(
                 modifier = Modifier.weight(1f)
             )
 
-            OutlinedTextField(
-                value = year,
-                onValueChange = {
-                    if (it.length <= 2 && it.all(Char::isDigit)) year = it
-                },
-                label = { Text(stringResource(R.string.year)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.weight(1f)
-            )
-        }
+        OutlinedTextField(
+            value = year,
+            onValueChange = {
+                if (it.length <= 2 && it.all(Char::isDigit)) year = it
+            },
+            label = { Text(stringResource(R.string.year)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.weight(1f)
+        )
+    }
+
+    OutlinedTextField(
+        value = shebaNumber,
+        onValueChange = { shebaNumber = it.uppercase() },
+        label = { Text(stringResource(R.string.sheba_number)) },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    OutlinedTextField(
+        value = accountNumber,
+        onValueChange = {
+            if (it.length <= 20 && it.all(Char::isDigit)) accountNumber = it
+        },
+        label = { Text(stringResource(R.string.account_number)) },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth()
+    )
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -224,7 +253,9 @@ fun CreateBankCardScreen(
                 month = month,
                 year = year,
                 bankName = bankName,
-                color = cardColor.value.toLong()
+                color = cardColor.value.toLong(),
+                shebaNumber = shebaNumber.takeIf { it.isNotBlank() },
+                accountNumber = accountNumber.takeIf { it.isNotBlank() }
             )
             viewModel.saveCard(newCard)
             navController.popBackStack()
@@ -245,11 +276,14 @@ fun AtmCardPreview(
     bankName: String,
     color: Color,
     onEdit: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onMenuClick: (() -> Unit)? = null,
+    onCopyCardNumber: (() -> Unit)? = null
 ) {
 
     val yyPlaceholder = stringResource(R.string.yy_placeholder)
     val mmPlaceholder = stringResource(R.string.mm_placeholder)
+    val moreOptionsDesc = stringResource(R.string.more_options)
     val expiry = buildString {
         append(year.ifEmpty { yyPlaceholder })
         append("/")
@@ -271,29 +305,63 @@ fun AtmCardPreview(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
 
-            Text(
-                text = bankName.ifEmpty { stringResource(R.string.bank_name_placeholder) },
-                color = Color.White,
-                style = MaterialTheme.typography.titleMedium
-            )
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = bankName.ifEmpty { stringResource(R.string.bank_name_placeholder) },
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = if (onMenuClick != null) 40.dp else 0.dp)
+                )
+                if (onMenuClick != null) {
+                    IconButton(
+                        onClick = onMenuClick,
+                        modifier = Modifier.align(Alignment.TopEnd)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = moreOptionsDesc,
+                            tint = Color.White
+                        )
+                    }
+                }
+            }
 
-            Text(
-                text = cardNumber.chunked(4).joinToString(" "),
-                color = Color.White,
-                style = MaterialTheme.typography.titleLarge,
-                letterSpacing = 2.sp
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = NumberFormatUtils.toLocalizedDigits(cardNumber).chunked(4).joinToString(" "),
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleLarge,
+                    letterSpacing = 2.sp
+                )
+                if (onCopyCardNumber != null) {
+                    IconButton(onClick = onCopyCardNumber) {
+                        Icon(
+                            imageVector = Icons.Default.ContentCopy,
+                            contentDescription = stringResource(R.string.copy),
+                            tint = Color.White,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
+            }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = if (!showSensitive) stringResource(R.string.cvv_masked) else stringResource(R.string.cvv_format, cvv.ifEmpty { "***" }),
+                    text = if (!showSensitive) stringResource(R.string.cvv_masked) else NumberFormatUtils.toLocalizedDigits(stringResource(R.string.cvv_format, cvv.ifEmpty { "***" })),
                     color = Color.White
                 )
                 Text(
-                    text = expiry.ifEmpty { stringResource(R.string.yy_mm_placeholder) },
+                    text = NumberFormatUtils.toLocalizedDigits(expiry).ifEmpty { stringResource(R.string.yy_mm_placeholder) },
                     color = Color.White
                 )
             }

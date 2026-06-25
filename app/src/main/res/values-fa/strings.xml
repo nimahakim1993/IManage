@@ -40,6 +40,12 @@
     <string name="bank_account">حساب بانکی</string>
     <string name="visibility">قابلیت مشاهده</string>
     <string name="add_account">افزودن حساب</string>
+    <string name="sheba_number">شماره شبا</string>
+    <string name="account_number">شماره حساب</string>
+    <string name="more_options">گزینه‌های بیشتر</string>
+    <string name="copy">کپی</string>
+    <string name="copied_to_clipboard">در کلیپ‌بورد کپی شد</string>
+    <string name="not_set">تنظیم نشده</string>
 
     <!-- LoansScreen -->
     <string name="loans_title">بدهی بستانکاری</string>

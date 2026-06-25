@@ -1,5 +1,9 @@
 package com.nima.app.imanage.presentation.view
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,10 +25,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
@@ -48,11 +54,14 @@ fun BankCardsScreen(
     var toggleEditMode by rememberSaveable { mutableStateOf(false) }
 
     var removingCard by remember { mutableStateOf<BankCardEntity?>(null) }
+    var sheetCard by remember { mutableStateOf<BankCardEntity?>(null) }
 
     val bankAccountTitle = stringResource(R.string.bank_account)
     val visibilityDesc = stringResource(R.string.visibility)
     val editDesc = stringResource(R.string.edit)
     val addAccountDesc = stringResource(R.string.add_account)
+    val context = LocalContext.current
+    val copiedMsg = stringResource(R.string.copied_to_clipboard)
 
     LaunchedEffect(toggleSensitive, toggleEditMode) {
         setToolbar(ToolbarConfig(title = bankAccountTitle,
@@ -123,6 +132,10 @@ fun BankCardsScreen(
                     },
                     onDelete = {
                         removingCard = card
+                    },
+                    onMenuClick = { sheetCard = card },
+                    onCopyCardNumber = {
+                        copyToClipboard(context, "Card Number", card.cardNumber, copiedMsg)
                     }
                 )
             }
@@ -138,4 +151,23 @@ fun BankCardsScreen(
             }
         )
     }
+
+    sheetCard?.let { card ->
+        BankCardDetailsSheet(
+            card = card,
+            onDismiss = { sheetCard = null }
+        )
+    }
+}
+
+private fun copyToClipboard(
+    context: Context,
+    label: String,
+    value: String,
+    toastMessage: String
+) {
+    if (value.isBlank()) return
+    val clipboard = ContextCompat.getSystemService(context, ClipboardManager::class.java)
+    clipboard?.setPrimaryClip(ClipData.newPlainText(label, value))
+    Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
 }
