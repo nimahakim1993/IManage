@@ -24,12 +24,14 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.nima.app.imanage.R
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.ui.theme.getVazirTypography
 
@@ -71,7 +73,7 @@ fun MainToolbar(
                     IconButton(onClick = { onBackClick() }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "back Icon"
+                            contentDescription = stringResource(R.string.back_icon)
                         )
                     }
                 }

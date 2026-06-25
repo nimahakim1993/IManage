@@ -11,7 +11,7 @@ val databaseModule = module {
             get(),
             AppDatabase::class.java,
             "app_db"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
     single { get<AppDatabase>().bankCardDao() }
     single { get<AppDatabase>().loanDao() }

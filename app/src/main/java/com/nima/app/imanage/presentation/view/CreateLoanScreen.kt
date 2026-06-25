@@ -1,6 +1,8 @@
 package com.nima.app.imanage.presentation.view
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,8 +12,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,17 +28,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.LoanEntity
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.LoanViewModel
 import com.nima.app.imanage.ui.component.TextInputDropDown
+import com.nima.app.imanage.util.NumberFormatUtils
 import org.koin.androidx.compose.koinViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateLoanScreen(
     setToolbar: (ToolbarConfig) -> Unit,
@@ -39,17 +53,62 @@ fun CreateLoanScreen(
     viewModel: LoanViewModel = koinViewModel()
 ) {
 
+    val createLoanTitle = stringResource(R.string.create_loan_title)
+    val selectText = stringResource(R.string.select)
+
     LaunchedEffect(Unit) {
         setToolbar(
-            ToolbarConfig(title = "ایجاد بدهی بستانکاری", showBack = true)
+            ToolbarConfig(title = createLoanTitle, showBack = true)
         )
     }
 
-    var type by remember { mutableStateOf("انتخاب کنید") }
-    var typeKey by remember { mutableIntStateOf(0) }
+    var type by remember { mutableStateOf(selectText) }
+    var typeKey by remember { mutableIntStateOf(LoanEntity.TYPE_DEBT) }
     var personName by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
+    var dateLoan by remember { mutableStateOf(System.currentTimeMillis()) }
+    var dateReceiveBack by remember { mutableStateOf(System.currentTimeMillis()) }
+    var showDateLoanPicker by remember { mutableStateOf(false) }
+    var showDateReceiveBackPicker by remember { mutableStateOf(false) }
+
+    val dateFormat = remember { SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()) }
+
+    if (showDateLoanPicker) {
+        val datePickerState = rememberDatePickerState(initialSelectedDateMillis = dateLoan)
+        DatePickerDialog(
+            onDismissRequest = { showDateLoanPicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let { dateLoan = it }
+                    showDateLoanPicker = false
+                }) { Text(stringResource(R.string.confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDateLoanPicker = false }) { Text(stringResource(R.string.cancel)) }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+
+    if (showDateReceiveBackPicker) {
+        val datePickerState = rememberDatePickerState(initialSelectedDateMillis = dateReceiveBack)
+        DatePickerDialog(
+            onDismissRequest = { showDateReceiveBackPicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let { dateReceiveBack = it }
+                    showDateReceiveBackPicker = false
+                }) { Text(stringResource(R.string.confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDateReceiveBackPicker = false }) { Text(stringResource(R.string.cancel)) }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -59,8 +118,8 @@ fun CreateLoanScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TextInputDropDown(
-            label = "بدهی یا بستانکاری",
-            items = listOf("بدهی", "بستانکاری"),
+            label = stringResource(R.string.loan_type_label),
+            items = listOf(stringResource(R.string.debt), stringResource(R.string.receivable)),
             selectedItem = type,
             onItemSelected = { key, name ->
                 type = name
@@ -74,7 +133,7 @@ fun CreateLoanScreen(
             value = personName,
             onValueChange = { personName = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            label = { Text("نام شخص") },
+            label = { Text(stringResource(R.string.person_name)) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -82,11 +141,37 @@ fun CreateLoanScreen(
 
         OutlinedTextField(
             value = price,
-            onValueChange = { price = it },
+            onValueChange = { price = NumberFormatUtils.applySeparator(it) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            label = { Text("مبلغ") },
+            label = { Text(stringResource(R.string.amount)) },
             modifier = Modifier.fillMaxWidth()
         )
+
+        Spacer(modifier = Modifier.size(10.dp))
+
+        Box(modifier = Modifier.fillMaxWidth().clickable { showDateLoanPicker = true }) {
+            OutlinedTextField(
+                value = dateFormat.format(Date(dateLoan)),
+                onValueChange = {},
+                readOnly = true,
+                label = { Text(stringResource(R.string.payment_date)) },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = false
+            )
+        }
+
+        Spacer(modifier = Modifier.size(10.dp))
+
+        Box(modifier = Modifier.fillMaxWidth().clickable { showDateReceiveBackPicker = true }) {
+            OutlinedTextField(
+                value = dateFormat.format(Date(dateReceiveBack)),
+                onValueChange = {},
+                readOnly = true,
+                label = { Text(stringResource(R.string.receive_date)) },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = false
+            )
+        }
 
         Spacer(modifier = Modifier.size(10.dp))
 
@@ -94,7 +179,7 @@ fun CreateLoanScreen(
             value = description,
             onValueChange = { description = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            label = { Text("توضیحات") },
+            label = { Text(stringResource(R.string.description)) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -105,19 +190,19 @@ fun CreateLoanScreen(
             shape = RoundedCornerShape(20.dp),
             onClick = {
                 val loan = LoanEntity(
-                    0,
-                    typeKey,
-                    price.toLong(),
-                    personName,
-                    description,
-                    System.currentTimeMillis()
+                    type = typeKey,
+                    price = NumberFormatUtils.parseToLong(price),
+                    targetPersonName = personName,
+                    description = description,
+                    dateLoan = dateLoan,
+                    dateReceiveBack = dateReceiveBack
                 )
                 viewModel.saveLoan(loan)
                 navController.popBackStack()
             },
 
             ) {
-            Text("تایید", fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.confirm), fontWeight = FontWeight.Bold)
         }
 
 

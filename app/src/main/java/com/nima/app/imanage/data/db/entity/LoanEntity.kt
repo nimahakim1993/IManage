@@ -10,5 +10,11 @@ data class LoanEntity(
     var price: Long,
     var targetPersonName: String,
     var description: String,
-    var date: Long
-)
+    var dateLoan: Long,
+    var dateReceiveBack: Long
+) {
+    companion object {
+        const val TYPE_DEBT = 0
+        const val TYPE_RECEIVABLE = 1
+    }
+}

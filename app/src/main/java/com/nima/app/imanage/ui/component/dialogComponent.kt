@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.nima.app.imanage.R
 
 @Composable
 fun ActionDialog(
@@ -51,14 +53,14 @@ fun ActionDialog(
                         Icon(Icons.Default.Delete, null)
                         Spacer(modifier = Modifier.size(4.dp))
                         Text(
-                            text = "حذف",
+                            text = stringResource(R.string.delete_title),
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                             color = MaterialTheme.colorScheme.onBackground
                         )
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        text = "آیا از حذف این مورد اطمینان دارید؟",
+                        text = stringResource(R.string.delete_confirmation),
                         fontSize = MaterialTheme.typography.bodySmall.fontSize,
                         color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Normal
@@ -76,7 +78,7 @@ fun ActionDialog(
                                 .fillMaxWidth()
                                 .weight(1f)
                         ) {
-                            Text(text = "بله", fontWeight = FontWeight.SemiBold)
+                            Text(text = stringResource(R.string.yes), fontWeight = FontWeight.SemiBold)
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Button(
@@ -90,7 +92,7 @@ fun ActionDialog(
                                 .fillMaxWidth()
                                 .weight(1f)
                         ) {
-                            Text(text = "خیر", fontWeight = FontWeight.SemiBold)
+                            Text(text = stringResource(R.string.no), fontWeight = FontWeight.SemiBold)
                         }
                     }
 

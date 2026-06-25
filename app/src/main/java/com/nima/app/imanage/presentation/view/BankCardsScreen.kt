@@ -21,10 +21,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
 import com.nima.app.imanage.data.db.entity.BankCardEntity
 import com.nima.app.imanage.data.model.ToolbarAction
@@ -47,8 +49,13 @@ fun BankCardsScreen(
 
     var removingCard by remember { mutableStateOf<BankCardEntity?>(null) }
 
+    val bankAccountTitle = stringResource(R.string.bank_account)
+    val visibilityDesc = stringResource(R.string.visibility)
+    val editDesc = stringResource(R.string.edit)
+    val addAccountDesc = stringResource(R.string.add_account)
+
     LaunchedEffect(toggleSensitive, toggleEditMode) {
-        setToolbar(ToolbarConfig(title = "حساب بانکی",
+        setToolbar(ToolbarConfig(title = bankAccountTitle,
             showBack = true,
             actions = listOf(
                 ToolbarAction(
@@ -56,7 +63,7 @@ fun BankCardsScreen(
                         Icons.Default.VisibilityOff
                     else
                         Icons.Default.Visibility,
-                    contentDescription = "Visibility",
+                    contentDescription = visibilityDesc,
                     onClick = { toggleSensitive = !toggleSensitive }
                 ),
                 ToolbarAction(
@@ -64,12 +71,12 @@ fun BankCardsScreen(
                         Icons.Default.EditOff
                     else
                         Icons.Default.Edit,
-                    contentDescription = "Edit",
+                    contentDescription = editDesc,
                     onClick = { toggleEditMode = !toggleEditMode }
                 ),
                 ToolbarAction(
                     icon = Icons.Default.Add,
-                    contentDescription = "Add Account",
+                    contentDescription = addAccountDesc,
                     onClick = {
                         navController.navigate(Screen.CreateBankCard.route)
                     }

@@ -11,6 +11,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.nima.app.imanage.util.ThemeManager
 
 val DarkColorScheme = darkColorScheme(
     primary = Color(0xFF0F5C5A),
@@ -27,28 +28,34 @@ val DarkColorScheme = darkColorScheme(
     scrim = Color(0xFF000000)
 )
 
-private val LightColorScheme = lightColorScheme(
+val LightColorScheme = lightColorScheme(
     primary = Color(0xFF0F5C5A),
-    primaryContainer = Color(0xFF0A4A48),
+    primaryContainer = Color(0xFFC8ECEA),
     secondary = Color(0xFFF4C27A),
-    background = Color(0xFF0F5C5A),
-    onPrimary = Color(0xFFF1F1F1),
-    onSecondary = Color(0xFF202124),
-    surface = Color(0xFF2F3136),
-    surfaceVariant = Color(0xFF4B4F5C),
-    onBackground = Color(0xFFF1F1F1),
-    onSurface = Color(0xFFF1F1F1),
-    errorContainer = Color(0xFF8A8F9C),
-    scrim = Color(0xFF202124)
+    background = Color(0xFFFFFBF5),
+    onPrimary = Color(0xFFFFFFFF),
+    onSecondary = Color(0xFF33250D),
+    surface = Color(0xFFFFFFFF),
+    surfaceVariant = Color(0xFFF2ECE3),
+    onBackground = Color(0xFF1B1D1C),
+    onSurface = Color(0xFF1B1D1C),
+    errorContainer = Color(0xFFE1E6EE),
+    scrim = Color(0x66000000)
 )
 
 @Composable
 fun IManageTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    themeMode: String = ThemeManager.THEME_SYSTEM,
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
+    val darkTheme = when (themeMode) {
+        ThemeManager.THEME_LIGHT -> false
+        ThemeManager.THEME_DARK -> true
+        else -> isSystemInDarkTheme()
+    }
+
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current

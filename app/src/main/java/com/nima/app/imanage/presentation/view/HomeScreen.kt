@@ -27,9 +27,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
 import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
@@ -37,13 +39,15 @@ import com.nima.app.imanage.data.model.ToolbarConfig
 @Composable
 fun HomeScreen(setToolbar: (ToolbarConfig) -> Unit, navController: NavHostController) {
 
+    val settingsDesc = stringResource(R.string.settings)
+
     LaunchedEffect(Unit) {
         setToolbar(
             ToolbarConfig(title = "", actions = listOf(
                 ToolbarAction(
                     icon = Icons.Outlined.Settings,
-                    contentDescription = "Settings",
-                    onClick = { /*...*/ }
+                    contentDescription = settingsDesc,
+                    onClick = { navController.navigate(Screen.Settings.route) }
                 )
             ))
         )
@@ -61,7 +65,7 @@ fun HomeScreen(setToolbar: (ToolbarConfig) -> Unit, navController: NavHostContro
         ) {
             DashboardItem(
                 modifier = Modifier.weight(1f),
-                title = "مالی",
+                title = stringResource(R.string.financial_title),
                 icon = Icons.Outlined.Money,
                 onClick = {
                     navController.navigate(Screen.Financial.route)
@@ -69,7 +73,7 @@ fun HomeScreen(setToolbar: (ToolbarConfig) -> Unit, navController: NavHostContro
             )
             DashboardItem(
                 modifier = Modifier.weight(1f),
-                title = "دونگ سفر",
+                title = stringResource(R.string.shared_trip),
                 icon = Icons.Outlined.MonetizationOn,
                 onClick = {}
             )
@@ -83,13 +87,13 @@ fun HomeScreen(setToolbar: (ToolbarConfig) -> Unit, navController: NavHostContro
         ) {
             DashboardItem(
                 modifier = Modifier.weight(1f),
-                title = "یادداشت",
+                title = stringResource(R.string.note),
                 icon = Icons.AutoMirrored.Filled.Notes,
                 onClick = {}
             )
             DashboardItem(
                 modifier = Modifier.weight(1f),
-                title = "دارایی",
+                title = stringResource(R.string.assets),
                 icon = Icons.Default.Inventory2,
                 onClick = {}
             )
@@ -103,13 +107,13 @@ fun HomeScreen(setToolbar: (ToolbarConfig) -> Unit, navController: NavHostContro
         ) {
             DashboardItem(
                 modifier = Modifier.weight(1f),
-                title = "حساب بانکی",
+                title = stringResource(R.string.bank_account_home),
                 icon = Icons.Default.CreditCard,
                 onClick = { navController.navigate(Screen.BankCards.route) }
             )
             DashboardItem(
                 modifier = Modifier.weight(1f),
-                title = "گزارش",
+                title = stringResource(R.string.report),
                 icon = Icons.Default.Report,
                 onClick = {}
             )

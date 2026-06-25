@@ -43,9 +43,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.BankCardEntity
 import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
@@ -102,12 +104,14 @@ fun CreateBankCardScreen(
         }
     }
 
+    val resetDesc = stringResource(R.string.reset)
+
     LaunchedEffect(Unit) {
         setToolbar(
             ToolbarConfig(title = "", actions = listOf(
                 ToolbarAction(
                     icon = Icons.Outlined.SettingsBackupRestore,
-                    contentDescription = "Reset",
+                    contentDescription = resetDesc,
                     onClick = {
                         cardNumber = ""
                         cvv = ""
@@ -148,7 +152,7 @@ fun CreateBankCardScreen(
         OutlinedTextField(
             value = bankName,
             onValueChange = { bankName = it },
-            label = { Text("Bank Name") },
+            label = { Text(stringResource(R.string.bank_name)) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -157,7 +161,7 @@ fun CreateBankCardScreen(
             onValueChange = {
                 if (it.length <= 16 && it.all(Char::isDigit)) cardNumber = it
             },
-            label = { Text("Card Number") },
+            label = { Text(stringResource(R.string.card_number)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth()
         )
@@ -167,7 +171,7 @@ fun CreateBankCardScreen(
             onValueChange = {
                 if (it.length <= 4 && it.all(Char::isDigit)) cvv = it
             },
-            label = { Text("CVV2") },
+            label = { Text(stringResource(R.string.cvv2)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth()
         )
@@ -182,7 +186,7 @@ fun CreateBankCardScreen(
                 onValueChange = {
                     if (it.length <= 2 && it.all(Char::isDigit)) month = it
                 },
-                label = { Text("Month") },
+                label = { Text(stringResource(R.string.month)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.weight(1f)
             )
@@ -192,7 +196,7 @@ fun CreateBankCardScreen(
                 onValueChange = {
                     if (it.length <= 2 && it.all(Char::isDigit)) year = it
                 },
-                label = { Text("Year") },
+                label = { Text(stringResource(R.string.year)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.weight(1f)
             )
@@ -225,7 +229,7 @@ fun CreateBankCardScreen(
             viewModel.saveCard(newCard)
             navController.popBackStack()
         }) {
-            Text(text = "تایید")
+            Text(text = stringResource(R.string.confirm))
         }
     }
 }
@@ -244,10 +248,12 @@ fun AtmCardPreview(
     onDelete: () -> Unit
 ) {
 
+    val yyPlaceholder = stringResource(R.string.yy_placeholder)
+    val mmPlaceholder = stringResource(R.string.mm_placeholder)
     val expiry = buildString {
-        append(year.ifEmpty { "YY" })
+        append(year.ifEmpty { yyPlaceholder })
         append("/")
-        append(month.ifEmpty { "MM" })
+        append(month.ifEmpty { mmPlaceholder })
     }
 
     Card(
@@ -266,7 +272,7 @@ fun AtmCardPreview(
         ) {
 
             Text(
-                text = bankName.ifEmpty { "Bank Name" },
+                text = bankName.ifEmpty { stringResource(R.string.bank_name_placeholder) },
                 color = Color.White,
                 style = MaterialTheme.typography.titleMedium
             )
@@ -283,11 +289,11 @@ fun AtmCardPreview(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = if (!showSensitive) "CVV: ***" else "CVV: ${cvv.ifEmpty { "***" }}",
+                    text = if (!showSensitive) stringResource(R.string.cvv_masked) else stringResource(R.string.cvv_format, cvv.ifEmpty { "***" }),
                     color = Color.White
                 )
                 Text(
-                    text = expiry.ifEmpty { "YY/MM" },
+                    text = expiry.ifEmpty { stringResource(R.string.yy_mm_placeholder) },
                     color = Color.White
                 )
             }
@@ -299,12 +305,12 @@ fun AtmCardPreview(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                 ) {
                     IconButton(onClick = onEdit) {
-                        Icon(Icons.Default.Edit, contentDescription = "Edit", tint = Color.White)
+                        Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.edit), tint = Color.White)
                     }
                     IconButton(onClick = onDelete) {
                         Icon(
                             Icons.Default.Delete,
-                            contentDescription = "Delete",
+                            contentDescription = stringResource(R.string.delete),
                             tint = Color.White
                         )
                     }

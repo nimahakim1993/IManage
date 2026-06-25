@@ -22,8 +22,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.nima.app.imanage.R
 import com.nima.app.imanage.data.model.ToolbarConfig
 
 
@@ -32,9 +34,11 @@ fun FinancialScreen(
     setToolbar: (ToolbarConfig) -> Unit
 ) {
 
+    val ledgerTitle = stringResource(R.string.financial_ledger)
+
     LaunchedEffect(Unit) {
         setToolbar(
-            ToolbarConfig(title = "دفتر مالی", showBack = true)
+            ToolbarConfig(title = ledgerTitle, showBack = true)
         )
     }
 
@@ -46,27 +50,27 @@ fun FinancialScreen(
         Spacer(modifier = Modifier.size(12.dp))
 
         FinancialItem(
-            title = "بدهی",
+            title = stringResource(R.string.debt),
             icon = Icons.Default.AddCircle,
             onClick = {}
         )
         Spacer(modifier = Modifier.size(8.dp))
 
         FinancialItem(
-            title = "بستانکاری",
+            title = stringResource(R.string.receivable),
             icon = Icons.Default.AddCircle,
             onClick = {}
         )
         Spacer(modifier = Modifier.size(8.dp))
 
         FinancialItem(
-            title = "حقوق",
+            title = stringResource(R.string.salary),
             icon = Icons.Default.AddCircle,
             onClick = {}
         )
         Spacer(modifier = Modifier.size(8.dp))
         FinancialItem(
-            title = "هزینه",
+            title = stringResource(R.string.expense),
             icon = Icons.Default.Build,
             onClick = {}
         )

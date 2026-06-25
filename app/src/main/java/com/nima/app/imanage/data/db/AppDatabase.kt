@@ -10,7 +10,7 @@ import com.nima.app.imanage.data.db.entity.LoanEntity
 
 @Database(
     entities = [BankCardEntity::class, LoanEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

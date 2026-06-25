@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IManage</string>
+
+    <!-- General -->
+    <string name="confirm">تایید</string>
+    <string name="cancel">انصراف</string>
+    <string name="yes">بله</string>
+    <string name="no">خیر</string>
+    <string name="select">انتخاب کنید</string>
+
+    <!-- CreateLoanScreen -->
+    <string name="create_loan_title">ایجاد بدهی بستانکاری</string>
+    <string name="loan_type_label">بدهی یا بستانکاری</string>
+    <string name="debt">بدهی</string>
+    <string name="receivable">بستانکاری</string>
+    <string name="person_name">نام شخص</string>
+    <string name="amount">مبلغ</string>
+    <string name="payment_date">تاریخ پرداخت</string>
+    <string name="receive_date">تاریخ دریافت</string>
+    <string name="description">توضیحات</string>
+
+    <!-- CreateBankCardScreen -->
+    <string name="reset">بازنشانی</string>
+    <string name="bank_name">نام بانک</string>
+    <string name="card_number">شماره کارت</string>
+    <string name="cvv2">CVV2</string>
+    <string name="month">ماه</string>
+    <string name="year">سال</string>
+    <string name="edit">ویرایش</string>
+    <string name="delete">حذف</string>
+    <string name="cvv_masked">CVV: ***</string>
+    <string name="cvv_format">CVV: %s</string>
+    <string name="bank_name_placeholder">نام بانک</string>
+    <string name="yy_placeholder">YY</string>
+    <string name="mm_placeholder">MM</string>
+    <string name="yy_mm_placeholder">YY/MM</string>
+
+    <!-- BankCardsScreen -->
+    <string name="bank_account">حساب بانکی</string>
+    <string name="visibility">قابلیت مشاهده</string>
+    <string name="add_account">افزودن حساب</string>
+
+    <!-- LoansScreen -->
+    <string name="loans_title">بدهی بستانکاری</string>
+    <string name="add">افزودن</string>
+    <string name="filter">فیلتر</string>
+    <string name="search">جستجو</string>
+    <string name="description_prefix">توضیحات : %s</string>
+    <string name="payment_date_prefix">تاریخ پرداخت : %s</string>
+    <string name="receive_date_prefix">تاریخ دریافت : %s</string>
+    <string name="total_debt">مجموع بدهی</string>
+    <string name="total_receivable">مجموع بستانکاری</string>
+
+    <!-- HomeScreen -->
+    <string name="settings">تنظیمات</string>
+    <string name="settings_title">تنظیمات</string>
+    <string name="financial_title">مالی</string>
+    <string name="shared_trip">دونگ سفر</string>
+    <string name="note">یادداشت</string>
+    <string name="assets">دارایی</string>
+    <string name="bank_account_home">حساب بانکی</string>
+    <string name="report">گزارش</string>
+
+    <!-- FinancialScreen -->
+    <string name="financial_ledger">دفتر مالی</string>
+    <string name="salary">حقوق</string>
+    <string name="expense">هزینه</string>
+
+    <!-- MainToolbar -->
+    <string name="back_icon">بازگشت</string>
+
+    <!-- Dialog -->
+    <string name="delete_title">حذف</string>
+    <string name="delete_confirmation">آیا از حذف این مورد اطمینان دارید؟</string>
+
+    <!-- SettingsScreen -->
+    <string name="language">زبان</string>
+    <string name="language_english">انگلیسی</string>
+    <string name="language_persian">فارسی</string>
+    <string name="theme">تم</string>
+    <string name="theme_system">پیش‌فرض سیستم</string>
+    <string name="theme_light">روشن</string>
+    <string name="theme_dark">تیره</string>
+</resources>

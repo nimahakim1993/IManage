@@ -1,5 +1,6 @@
 package com.nima.app.imanage
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,14 +26,21 @@ import com.nima.app.imanage.presentation.view.LoansScreen
 import com.nima.app.imanage.presentation.view.FinancialScreen
 import com.nima.app.imanage.presentation.view.HomeScreen
 import com.nima.app.imanage.presentation.view.MainToolbar
+import com.nima.app.imanage.presentation.view.SettingsScreen
 import com.nima.app.imanage.ui.theme.IManageTheme
+import com.nima.app.imanage.util.LanguageManager
+import com.nima.app.imanage.util.ThemeManager
 
 class MainActivity : ComponentActivity() {
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LanguageManager.wrap(newBase))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            IManageTheme {
+            IManageTheme(themeMode = ThemeManager.getThemeMode(this)) {
                 AppScaffold()
             }
         }
@@ -95,5 +103,6 @@ fun Navigation(
         composable(Screen.Financial.route) { FinancialScreen(setToolbar) }
         composable(Screen.Financial.route) { LoansScreen(setToolbar, navController) }
         composable(Screen.CreateLoan.route) { CreateLoanScreen(setToolbar, navController) }
+        composable(Screen.Settings.route) { SettingsScreen(setToolbar, navController) }
     }
 }

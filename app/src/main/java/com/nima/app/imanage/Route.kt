@@ -18,6 +18,7 @@ sealed class Screen(val route: String) {
     }
     data object SharedTrip : Screen("sharedTrip")
     data object Assets : Screen("assets")
+    data object Settings : Screen("settings")
     data object Test : Screen("test/{id}") {
         fun createRoute(id: Int) = "detail/$id"
     }
