@@ -102,7 +102,18 @@ fun Navigation(
 
         composable(Screen.Financial.route) { FinancialScreen(setToolbar) }
         composable(Screen.Financial.route) { LoansScreen(setToolbar, navController) }
-        composable(Screen.CreateLoan.route) { CreateLoanScreen(setToolbar, navController) }
+        composable(
+            route = Screen.CreateLoan.route,
+            arguments = listOf(
+                navArgument(name = "loanId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
+        ) { backStack ->
+            val loanId = backStack.arguments?.getInt("loanId") ?: -1
+            CreateLoanScreen(setToolbar, navController, loanId)
+        }
         composable(Screen.Settings.route) { SettingsScreen(setToolbar, navController) }
     }
 }

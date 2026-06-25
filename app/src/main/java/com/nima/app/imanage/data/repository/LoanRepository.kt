@@ -7,6 +7,8 @@ class LoanRepository (private val dao: LoanDao) {
 
     suspend fun insert (loanEntity: LoanEntity) = dao.insert(loanEntity)
 
+    suspend fun delete(loanEntity: LoanEntity) = dao.delete(loanEntity)
+
     fun getAll() = dao.getAll()
 
     fun get(id: Int) = dao.get(id)

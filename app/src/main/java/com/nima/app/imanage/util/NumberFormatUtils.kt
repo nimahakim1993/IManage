@@ -1,6 +1,8 @@
 package com.nima.app.imanage.util
 
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
 object NumberFormatUtils {
 
@@ -18,4 +20,11 @@ object NumberFormatUtils {
 
     fun parseToLong(input: String): Long =
         input.filter { it.isDigit() }.toLongOrNull() ?: 0L
+
+    private val persianSymbols = DecimalFormatSymbols(Locale("fa", "IR")).apply {
+        groupingSeparator = '٬'
+    }
+    private val persianFormatter = DecimalFormat("#,###", persianSymbols)
+
+    fun formatPersian(value: Long): String = persianFormatter.format(value)
 }

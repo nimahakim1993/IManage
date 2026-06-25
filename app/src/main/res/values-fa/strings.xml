@@ -61,6 +61,9 @@
     <string name="assets">دارایی</string>
     <string name="bank_account_home">حساب بانکی</string>
     <string name="report">گزارش</string>
+    <string name="home_report_title">گزارش مالی</string>
+    <string name="home_net_balance">تراز خالص</string>
+    <string name="home_bank_accounts">حساب‌های بانکی</string>
 
     <!-- FinancialScreen -->
     <string name="financial_ledger">دفتر مالی</string>

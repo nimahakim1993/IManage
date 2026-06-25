@@ -21,6 +21,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -50,11 +51,20 @@ import java.util.Locale
 fun CreateLoanScreen(
     setToolbar: (ToolbarConfig) -> Unit,
     navController: NavHostController,
+    loanId: Int = -1,
     viewModel: LoanViewModel = koinViewModel()
 ) {
 
     val createLoanTitle = stringResource(R.string.create_loan_title)
     val selectText = stringResource(R.string.select)
+    val debtLabel = stringResource(R.string.debt)
+    val receivableLabel = stringResource(R.string.receivable)
+
+    LaunchedEffect(loanId) {
+        if (loanId != -1) {
+            viewModel.loadLoan(loanId)
+        }
+    }
 
     LaunchedEffect(Unit) {
         setToolbar(
@@ -71,6 +81,19 @@ fun CreateLoanScreen(
     var dateReceiveBack by remember { mutableStateOf(System.currentTimeMillis()) }
     var showDateLoanPicker by remember { mutableStateOf(false) }
     var showDateReceiveBackPicker by remember { mutableStateOf(false) }
+
+    val selectedLoan by viewModel.selectedLoan.collectAsState()
+    LaunchedEffect(selectedLoan) {
+        selectedLoan?.let { loan ->
+            type = if (loan.type == LoanEntity.TYPE_DEBT) debtLabel else receivableLabel
+            typeKey = loan.type
+            personName = loan.targetPersonName
+            price = NumberFormatUtils.format(loan.price)
+            description = loan.description
+            dateLoan = loan.dateLoan
+            dateReceiveBack = loan.dateReceiveBack
+        }
+    }
 
     val dateFormat = remember { SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()) }
 
@@ -190,6 +213,7 @@ fun CreateLoanScreen(
             shape = RoundedCornerShape(20.dp),
             onClick = {
                 val loan = LoanEntity(
+                    id = if (loanId != -1) loanId else 0,
                     type = typeKey,
                     price = NumberFormatUtils.parseToLong(price),
                     targetPersonName = personName,

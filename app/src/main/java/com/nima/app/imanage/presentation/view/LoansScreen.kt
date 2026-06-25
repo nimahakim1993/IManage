@@ -1,6 +1,9 @@
 package com.nima.app.imanage.presentation.view
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,23 +17,36 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.EditOff
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
@@ -38,6 +54,12 @@ import com.nima.app.imanage.data.db.entity.LoanEntity
 import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.LoanViewModel
+import com.nima.app.imanage.ui.component.ActionDialog
+import com.nima.app.imanage.ui.theme.DebtDark
+import com.nima.app.imanage.ui.theme.DebtLight
+import com.nima.app.imanage.ui.theme.IncomeDark
+import com.nima.app.imanage.ui.theme.IncomeLight
+import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
 import org.koin.androidx.compose.koinViewModel
 import java.text.SimpleDateFormat
@@ -57,15 +79,19 @@ fun LoansScreen(
     val addDesc = stringResource(R.string.add)
     val filterDesc = stringResource(R.string.filter)
     val searchDesc = stringResource(R.string.search)
+    val editDesc = stringResource(R.string.edit)
 
-    LaunchedEffect(Unit) {
+    var toggleEditMode by rememberSaveable { mutableStateOf(false) }
+    var removingLoan by remember { mutableStateOf<LoanEntity?>(null) }
+
+    LaunchedEffect(toggleEditMode) {
         setToolbar(
             ToolbarConfig(title = loansTitle, showBack = true, actions = listOf(
                 ToolbarAction(
                     icon = Icons.Default.Add,
                     contentDescription = addDesc,
                     onClick = {
-                        navController.navigate(Screen.CreateLoan.route)
+                        navController.navigate(Screen.CreateLoan.createRoute())
                     }
                 ),
                 ToolbarAction(
@@ -81,6 +107,14 @@ fun LoansScreen(
                     onClick = {
 
                     }
+                ),
+                ToolbarAction(
+                    icon = if (toggleEditMode)
+                        Icons.Default.EditOff
+                    else
+                        Icons.Default.Edit,
+                    contentDescription = editDesc,
+                    onClick = { toggleEditMode = !toggleEditMode }
                 ),
             ))
         )
@@ -102,14 +136,37 @@ fun LoansScreen(
                 TotalsCard(totalDebt = totalDebt, totalReceivable = totalReceivable)
             }
             items(loans, key = { it.id }) { loan ->
-                LoanItem(loan)
+                LoanItem(
+                    loan = loan,
+                    editMode = toggleEditMode,
+                    onEdit = {
+                        navController.navigate(Screen.CreateLoan.createRoute(loan.id))
+                    },
+                    onDelete = {
+                        removingLoan = loan
+                    }
+                )
             }
         }
+    }
+
+    removingLoan?.let { loan ->
+        ActionDialog(
+            onDismiss = { removingLoan = null },
+            onPositiveClicked = {
+                viewModel.removeLoan(loan)
+                removingLoan = null
+            }
+        )
     }
 }
 
 @Composable
 private fun TotalsCard(totalDebt: Long, totalReceivable: Long) {
+    val isDark = isSystemInDarkTheme()
+    val debtColor = if (isDark) DebtDark else DebtLight
+    val incomeColor = if (isDark) IncomeDark else IncomeLight
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
@@ -130,7 +187,7 @@ private fun TotalsCard(totalDebt: Long, totalReceivable: Long) {
                 Spacer(modifier = Modifier.size(4.dp))
                 Text(
                     text = NumberFormatUtils.format(totalDebt),
-                    color = Color.Red,
+                    color = debtColor,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -142,7 +199,7 @@ private fun TotalsCard(totalDebt: Long, totalReceivable: Long) {
                 Spacer(modifier = Modifier.size(4.dp))
                 Text(
                     text = NumberFormatUtils.format(totalReceivable),
-                    color = Color.Blue,
+                    color = incomeColor,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -151,32 +208,142 @@ private fun TotalsCard(totalDebt: Long, totalReceivable: Long) {
 }
 
 @Composable
-fun LoanItem(loan: LoanEntity) {
+fun LoanItem(
+    loan: LoanEntity,
+    editMode: Boolean = false,
+    onEdit: () -> Unit = {},
+    onDelete: () -> Unit = {}
+) {
+    val isDark = isSystemInDarkTheme()
+    val debtColor = if (isDark) DebtDark else DebtLight
+    val incomeColor = if (isDark) IncomeDark else IncomeLight
+    val baseColor = if (loan.type == LoanEntity.TYPE_DEBT) debtColor else incomeColor
+    val accentColor = if (isDark) Color.White.copy(alpha = 0.18f) else Color.Black.copy(alpha = 0.08f)
+
+    val gradient = Brush.linearGradient(
+        colors = listOf(
+            baseColor,
+            baseColor.copy(alpha = 0.78f)
+        ),
+        start = Offset(0f, 0f),
+        end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+    )
+
+    val dateFormat = remember { SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()) }
+
     Card(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = if (loan.type == LoanEntity.TYPE_DEBT) Color.Red else Color.Blue),
         elevation = CardDefaults.cardElevation(10.dp)
     ) {
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(12.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(gradient)
+                .padding(horizontal = 18.dp, vertical = 16.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Text(modifier = Modifier.weight(1f), text = NumberFormatUtils.format(loan.price))
-                Text(loan.targetPersonName)
+            Column(modifier = Modifier.fillMaxWidth()) {
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = loan.targetPersonName,
+                        color = Color.White,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 16.sp,
+                        fontFamily = vazirFontFamily
+                    )
+                    Text(
+                        text = NumberFormatUtils.format(loan.price),
+                        color = Color.White,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 22.sp,
+                        fontFamily = vazirFontFamily
+                    )
+                }
+
+                if (loan.description.isNotBlank()) {
+                    Spacer(modifier = Modifier.size(12.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(accentColor)
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                    ) {
+                        Text(
+                            text = loan.description,
+                            color = Color.White.copy(alpha = 0.92f),
+                            fontSize = 13.sp,
+                            fontFamily = vazirFontFamily,
+                            maxLines = 2
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.size(14.dp))
+
+                DateRow(
+                    iconTint = Color.White.copy(alpha = 0.85f),
+                    text = stringResource(
+                        R.string.payment_date_prefix,
+                        dateFormat.format(Date(loan.dateLoan))
+                    )
+                )
+                Spacer(modifier = Modifier.size(6.dp))
+                DateRow(
+                    iconTint = Color.White.copy(alpha = 0.85f),
+                    text = stringResource(
+                        R.string.receive_date_prefix,
+                        dateFormat.format(Date(loan.dateReceiveBack))
+                    )
+                )
+
+                AnimatedVisibility(visible = editMode) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        IconButton(onClick = onEdit) {
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = stringResource(R.string.edit),
+                                tint = Color.White
+                            )
+                        }
+                        IconButton(onClick = onDelete) {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.delete),
+                                tint = Color.White
+                            )
+                        }
+                    }
+                }
             }
-            Spacer(modifier = Modifier.size(10.dp))
-            Text(stringResource(R.string.description_prefix, loan.description))
-            val dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
-            Text(stringResource(R.string.payment_date_prefix, dateFormat.format(Date(loan.dateLoan))))
-            Text(stringResource(R.string.receive_date_prefix, dateFormat.format(Date(loan.dateReceiveBack))))
         }
     }
+}
 
+@Composable
+private fun DateRow(iconTint: Color, text: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            imageVector = Icons.Default.CalendarMonth,
+            contentDescription = null,
+            tint = iconTint,
+            modifier = Modifier.size(14.dp)
+        )
+        Spacer(modifier = Modifier.size(6.dp))
+        Text(
+            text = text,
+            color = iconTint,
+            fontSize = 11.sp,
+            fontFamily = vazirFontFamily
+        )
+    }
 }

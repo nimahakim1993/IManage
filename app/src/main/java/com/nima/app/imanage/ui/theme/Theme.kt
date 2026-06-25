@@ -43,6 +43,21 @@ val LightColorScheme = lightColorScheme(
     scrim = Color(0x66000000)
 )
 
+data class AppColors(
+    val income: Color,
+    val debt: Color
+)
+
+val LightAppColors = AppColors(
+    income = IncomeLight,
+    debt = DebtLight
+)
+
+val DarkAppColors = AppColors(
+    income = IncomeDark,
+    debt = DebtDark
+)
+
 @Composable
 fun IManageTheme(
     themeMode: String = ThemeManager.THEME_SYSTEM,

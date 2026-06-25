@@ -61,6 +61,9 @@
     <string name="assets">Assets</string>
     <string name="bank_account_home">Bank Account</string>
     <string name="report">Report</string>
+    <string name="home_report_title">Financial Report</string>
+    <string name="home_net_balance">Net Balance</string>
+    <string name="home_bank_accounts">Bank Accounts</string>
 
     <!-- FinancialScreen -->
     <string name="financial_ledger">Financial Ledger</string>

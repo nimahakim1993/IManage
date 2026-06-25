@@ -1,6 +1,7 @@
 package com.nima.app.imanage.data.db.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -11,6 +12,9 @@ import kotlinx.coroutines.flow.Flow
 interface LoanDao {
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(loanEntity: LoanEntity)
+
+    @Delete
+    suspend fun delete(loanEntity: LoanEntity)
 
     @Query("SELECT * FROM loans ORDER BY id DESC")
     fun getAll() : Flow<List<LoanEntity>>
