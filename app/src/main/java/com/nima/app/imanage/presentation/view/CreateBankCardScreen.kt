@@ -296,8 +296,7 @@ fun AtmCardPreview(
 
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(2f),
+            .fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = color),
         elevation = CardDefaults.cardElevation(10.dp)
@@ -378,26 +377,18 @@ fun AtmCardPreview(
                             .padding(top = 10.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        IconButton(
-                            onClick = onEdit,
-                            modifier = Modifier.size(48.dp)
-                        ) {
+                        IconButton(onClick = onEdit) {
                             Icon(
                                 Icons.Default.Edit,
                                 contentDescription = stringResource(R.string.edit),
-                                tint = Color.White,
-                                modifier = Modifier.size(28.dp)
+                                tint = Color.White
                             )
                         }
-                        IconButton(
-                            onClick = onDelete,
-                            modifier = Modifier.size(48.dp)
-                        ) {
+                        IconButton(onClick = onDelete) {
                             Icon(
                                 Icons.Default.Delete,
                                 contentDescription = stringResource(R.string.delete),
-                                tint = Color.White,
-                                modifier = Modifier.size(28.dp)
+                                tint = Color.White
                             )
                         }
                     }

@@ -174,7 +174,8 @@ private fun ReportCard(
                             text = stringResource(R.string.home_report_title),
                             color = onPrimary,
                             style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = vazirFontFamily
                         )
                     }
                     Text(
@@ -341,6 +342,7 @@ private fun DashboardItem(
                 text = title,
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onPrimary,
+                fontFamily = vazirFontFamily,
                 maxLines = 1
             )
         }

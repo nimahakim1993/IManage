@@ -88,6 +88,9 @@
     <string name="financial_ledger">Financial Ledger</string>
     <string name="salary">Salary</string>
     <string name="expense">Expense</string>
+    <string name="loan">Loan</string>
+    <string name="income">Income</string>
+    <string name="installment">Installment</string>
 
     <!-- MainToolbar -->
     <string name="back_icon">Back</string>

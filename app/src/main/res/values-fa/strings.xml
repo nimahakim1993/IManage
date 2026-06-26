@@ -88,6 +88,9 @@
     <string name="financial_ledger">دفتر مالی</string>
     <string name="salary">حقوق</string>
     <string name="expense">هزینه</string>
+    <string name="loan">وام</string>
+    <string name="income">درآمد</string>
+    <string name="installment">قسط</string>
 
     <!-- MainToolbar -->
     <string name="back_icon">بازگشت</string>

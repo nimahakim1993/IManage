@@ -104,8 +104,8 @@ fun Navigation(
             CreateBankCardScreen(navController, cardId, setToolbar)
         }
 
-        composable(Screen.Financial.route) { FinancialScreen(setToolbar) }
-        composable(Screen.Financial.route) { LoansScreen(setToolbar, navController) }
+        composable(Screen.Financial.route) { FinancialScreen(setToolbar, navController) }
+        composable(Screen.Loans.route) { LoansScreen(setToolbar, navController) }
         composable(
             route = Screen.CreateLoan.route,
             arguments = listOf(

@@ -11,10 +11,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,13 +28,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
+import com.nima.app.imanage.Screen
 import com.nima.app.imanage.data.model.ToolbarConfig
 
 
 @Composable
 fun FinancialScreen(
-    setToolbar: (ToolbarConfig) -> Unit
+    setToolbar: (ToolbarConfig) -> Unit,
+    navController: NavHostController
 ) {
 
     val ledgerTitle = stringResource(R.string.financial_ledger)
@@ -42,40 +48,51 @@ fun FinancialScreen(
         )
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(12.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.size(12.dp))
-
-        FinancialItem(
-            title = stringResource(R.string.debt),
-            icon = Icons.Default.AddCircle,
-            onClick = {}
-        )
-        Spacer(modifier = Modifier.size(8.dp))
-
-        FinancialItem(
-            title = stringResource(R.string.receivable),
-            icon = Icons.Default.AddCircle,
-            onClick = {}
-        )
-        Spacer(modifier = Modifier.size(8.dp))
-
-        FinancialItem(
-            title = stringResource(R.string.salary),
-            icon = Icons.Default.AddCircle,
-            onClick = {}
-        )
-        Spacer(modifier = Modifier.size(8.dp))
-        FinancialItem(
+    val items = listOf(
+        FinancialEntry(
+            title = stringResource(R.string.debt) + " " + stringResource(R.string.receivable),
+            icon = Icons.Default.AccountBalance,
+            onClick = { navController.navigate(Screen.Loans.route) }
+        ),
+        FinancialEntry(
             title = stringResource(R.string.expense),
             icon = Icons.Default.Build,
             onClick = {}
+        ),
+        FinancialEntry(
+            title = stringResource(R.string.income),
+            icon = Icons.Default.TrendingUp,
+            onClick = {}
+        ),
+        FinancialEntry(
+            title = stringResource(R.string.installment),
+            icon = Icons.Default.CalendarMonth,
+            onClick = {}
         )
+    )
+
+    Column(
+        modifier = Modifier.fillMaxSize().padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.size(4.dp))
+
+        items.forEach { entry ->
+            FinancialItem(
+                title = entry.title,
+                icon = entry.icon,
+                onClick = entry.onClick
+            )
+        }
     }
 }
+
+private data class FinancialEntry(
+    val title: String,
+    val icon: ImageVector,
+    val onClick: () -> Unit
+)
 
 @Composable
 fun FinancialItem(
@@ -94,13 +111,12 @@ fun FinancialItem(
         elevation = CardDefaults.cardElevation(8.dp),
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = title)
+            Icon(imageVector = icon, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
             Spacer(modifier = Modifier.size(8.dp))
-            Icon(imageVector = icon, contentDescription = null)
+            Text(text = title)
         }
     }
 }
