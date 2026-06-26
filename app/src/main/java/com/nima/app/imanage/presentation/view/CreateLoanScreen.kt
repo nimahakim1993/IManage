@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
@@ -75,7 +76,7 @@ fun CreateLoanScreen(
     var type by remember { mutableStateOf(selectText) }
     var typeKey by remember { mutableIntStateOf(LoanEntity.TYPE_DEBT) }
     var personName by remember { mutableStateOf("") }
-    var price by remember { mutableStateOf("") }
+    var price by remember { mutableStateOf(TextFieldValue("")) }
     var description by remember { mutableStateOf("") }
     var dateLoan by remember { mutableStateOf(System.currentTimeMillis()) }
     var dateReceiveBack by remember { mutableStateOf(System.currentTimeMillis()) }
@@ -88,7 +89,7 @@ fun CreateLoanScreen(
             type = if (loan.type == LoanEntity.TYPE_DEBT) debtLabel else receivableLabel
             typeKey = loan.type
             personName = loan.targetPersonName
-            price = NumberFormatUtils.format(loan.price)
+            price = TextFieldValue(NumberFormatUtils.format(loan.price))
             description = loan.description
             dateLoan = loan.dateLoan
             dateReceiveBack = loan.dateReceiveBack
@@ -164,7 +165,7 @@ fun CreateLoanScreen(
 
         OutlinedTextField(
             value = price,
-            onValueChange = { price = NumberFormatUtils.applySeparator(it) },
+            onValueChange = { price = NumberFormatUtils.formatWithCursor(it) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             label = { Text(stringResource(R.string.amount)) },
             modifier = Modifier.fillMaxWidth()
@@ -215,7 +216,7 @@ fun CreateLoanScreen(
                 val loan = LoanEntity(
                     id = if (loanId != -1) loanId else 0,
                     type = typeKey,
-                    price = NumberFormatUtils.parseToLong(price),
+                    price = NumberFormatUtils.parseToLong(price.text),
                     targetPersonName = personName,
                     description = description,
                     dateLoan = dateLoan,

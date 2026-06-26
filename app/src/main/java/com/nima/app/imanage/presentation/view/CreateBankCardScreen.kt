@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -215,6 +216,7 @@ fun CreateBankCardScreen(
     OutlinedTextField(
         value = shebaNumber,
         onValueChange = { shebaNumber = it.uppercase() },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         label = { Text(stringResource(R.string.sheba_number)) },
         singleLine = true,
         modifier = Modifier.fillMaxWidth()
@@ -301,8 +303,7 @@ fun AtmCardPreview(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(20.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+                .padding(20.dp)
         ) {
 
             Box(modifier = Modifier.fillMaxWidth()) {
@@ -329,6 +330,8 @@ fun AtmCardPreview(
                 }
             }
 
+            Spacer(modifier = Modifier.weight(1f))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
@@ -352,6 +355,8 @@ fun AtmCardPreview(
                 }
             }
 
+            Spacer(modifier = Modifier.weight(1f))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -369,17 +374,31 @@ fun AtmCardPreview(
             AnimatedVisibility(visible = editMode) {
 
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                 ) {
-                    IconButton(onClick = onEdit) {
-                        Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.edit), tint = Color.White)
+                    IconButton(
+                        onClick = onEdit,
+                        modifier = Modifier.size(48.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Edit,
+                            contentDescription = stringResource(R.string.edit),
+                            tint = Color.White,
+                            modifier = Modifier.size(26.dp)
+                        )
                     }
-                    IconButton(onClick = onDelete) {
+                    IconButton(
+                        onClick = onDelete,
+                        modifier = Modifier.size(48.dp)
+                    ) {
                         Icon(
                             Icons.Default.Delete,
                             contentDescription = stringResource(R.string.delete),
-                            tint = Color.White
+                            tint = Color.White,
+                            modifier = Modifier.size(26.dp)
                         )
                     }
                 }

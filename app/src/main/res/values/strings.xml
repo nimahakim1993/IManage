@@ -52,6 +52,11 @@
     <string name="add">Add</string>
     <string name="filter">Filter</string>
     <string name="search">Search</string>
+    <string name="search_hint">Search by name or description</string>
+    <string name="filter_title">Filter Loans</string>
+    <string name="show_debts">Show Debts</string>
+    <string name="show_receivables">Show Receivables</string>
+    <string name="clear">Clear</string>
     <string name="description_prefix">Description: %s</string>
     <string name="payment_date_prefix">Payment Date: %s</string>
     <string name="receive_date_prefix">Receive Date: %s</string>

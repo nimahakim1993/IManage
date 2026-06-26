@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,14 +23,18 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EditOff
 import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -43,8 +48,10 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -78,11 +85,14 @@ fun LoansScreen(
     val loansTitle = stringResource(R.string.loans_title)
     val addDesc = stringResource(R.string.add)
     val filterDesc = stringResource(R.string.filter)
-    val searchDesc = stringResource(R.string.search)
     val editDesc = stringResource(R.string.edit)
 
     var toggleEditMode by rememberSaveable { mutableStateOf(false) }
     var removingLoan by remember { mutableStateOf<LoanEntity?>(null) }
+    var showFilterDialog by rememberSaveable { mutableStateOf(false) }
+    var searchQuery by rememberSaveable { mutableStateOf("") }
+    var showDebts by rememberSaveable { mutableStateOf(true) }
+    var showReceivables by rememberSaveable { mutableStateOf(true) }
 
     LaunchedEffect(toggleEditMode) {
         setToolbar(
@@ -98,14 +108,7 @@ fun LoansScreen(
                     icon = Icons.Default.FilterAlt,
                     contentDescription = filterDesc,
                     onClick = {
-
-                    }
-                ),
-                ToolbarAction(
-                    icon = Icons.Default.Search,
-                    contentDescription = searchDesc,
-                    onClick = {
-
+                        showFilterDialog = true
                     }
                 ),
                 ToolbarAction(
@@ -120,9 +123,26 @@ fun LoansScreen(
         )
     }
 
-    val (totalDebt, totalReceivable) = remember(loans) {
-        val debt = loans.filter { it.type == LoanEntity.TYPE_DEBT }.sumOf { it.price }
-        val receivable = loans.filter { it.type == LoanEntity.TYPE_RECEIVABLE }.sumOf { it.price }
+    val filteredLoans = remember(loans, searchQuery, showDebts, showReceivables) {
+        loans.filter { loan ->
+            val typeMatch = when (loan.type) {
+                LoanEntity.TYPE_DEBT -> showDebts
+                LoanEntity.TYPE_RECEIVABLE -> showReceivables
+                else -> true
+            }
+            val queryMatch = if (searchQuery.isBlank()) {
+                true
+            } else {
+                loan.targetPersonName.contains(searchQuery, ignoreCase = true) ||
+                        loan.description.contains(searchQuery, ignoreCase = true)
+            }
+            typeMatch && queryMatch
+        }
+    }
+
+    val (totalDebt, totalReceivable) = remember(filteredLoans) {
+        val debt = filteredLoans.filter { it.type == LoanEntity.TYPE_DEBT }.sumOf { it.price }
+        val receivable = filteredLoans.filter { it.type == LoanEntity.TYPE_RECEIVABLE }.sumOf { it.price }
         debt to receivable
     }
 
@@ -135,7 +155,7 @@ fun LoansScreen(
             item {
                 TotalsCard(totalDebt = totalDebt, totalReceivable = totalReceivable)
             }
-            items(loans, key = { it.id }) { loan ->
+            items(filteredLoans, key = { it.id }) { loan ->
                 LoanItem(
                     loan = loan,
                     editMode = toggleEditMode,
@@ -156,6 +176,23 @@ fun LoansScreen(
             onPositiveClicked = {
                 viewModel.removeLoan(loan)
                 removingLoan = null
+            }
+        )
+    }
+
+    if (showFilterDialog) {
+        FilterDialog(
+            searchQuery = searchQuery,
+            onSearchQueryChange = { searchQuery = it },
+            showDebts = showDebts,
+            onShowDebtsChange = { showDebts = it },
+            showReceivables = showReceivables,
+            onShowReceivablesChange = { showReceivables = it },
+            onDismiss = { showFilterDialog = false },
+            onClear = {
+                searchQuery = ""
+                showDebts = true
+                showReceivables = true
             }
         )
     }
@@ -344,6 +381,72 @@ private fun DateRow(iconTint: Color, text: String) {
             color = iconTint,
             fontSize = 11.sp,
             fontFamily = vazirFontFamily
+        )
+    }
+}
+
+@Composable
+private fun FilterDialog(
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    showDebts: Boolean,
+    onShowDebtsChange: (Boolean) -> Unit,
+    showReceivables: Boolean,
+    onShowReceivablesChange: (Boolean) -> Unit,
+    onDismiss: () -> Unit,
+    onClear: () -> Unit,
+) {
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = { Text(stringResource(R.string.filter_title)) },
+            text = {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = onSearchQueryChange,
+                        label = { Text(stringResource(R.string.search_hint)) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = showDebts,
+                            onCheckedChange = onShowDebtsChange
+                        )
+                        Text(
+                            text = stringResource(R.string.show_debts),
+                            modifier = Modifier.padding(start = 4.dp)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = showReceivables,
+                            onCheckedChange = onShowReceivablesChange
+                        )
+                        Text(
+                            text = stringResource(R.string.show_receivables),
+                            modifier = Modifier.padding(start = 4.dp)
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = onDismiss) {
+                    Text(stringResource(R.string.confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = onClear) {
+                    Text(stringResource(R.string.clear))
+                }
+            }
         )
     }
 }

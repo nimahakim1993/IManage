@@ -52,6 +52,11 @@
     <string name="add">افزودن</string>
     <string name="filter">فیلتر</string>
     <string name="search">جستجو</string>
+    <string name="search_hint">جستجو بر اساس نام یا توضیحات</string>
+    <string name="filter_title">فیلتر بدهی‌ها</string>
+    <string name="show_debts">نمایش بدهی‌ها</string>
+    <string name="show_receivables">نمایش بستانکاری‌ها</string>
+    <string name="clear">پاک کردن</string>
     <string name="description_prefix">توضیحات : %s</string>
     <string name="payment_date_prefix">تاریخ پرداخت : %s</string>
     <string name="receive_date_prefix">تاریخ دریافت : %s</string>
