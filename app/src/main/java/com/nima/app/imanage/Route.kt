@@ -3,7 +3,6 @@ package com.nima.app.imanage
 sealed class Screen(val route: String) {
     data object Home : Screen("home")
     data object Financial : Screen("financial")
-    data object Note : Screen("note")
     data object Report : Screen("report")
     data object BankCards : Screen("bankCards")
     data object Loans : Screen("loans")
@@ -28,5 +27,18 @@ sealed class Screen(val route: String) {
     data object Settings : Screen("settings")
     data object Test : Screen("test/{id}") {
         fun createRoute(id: Int) = "detail/$id"
+    }
+
+    data object Notes : Screen("notes")
+    data object CreateNoteBox : Screen("createNoteBox?boxId={boxId}") {
+        fun createRoute(boxId: Int? = null): String =
+            if (boxId == null) "createNoteBox" else "createNoteBox?boxId=$boxId"
+    }
+    data object NoteBoxDetail : Screen("noteBox/{boxId}") {
+        fun createRoute(boxId: Int) = "noteBox/$boxId"
+    }
+    data object CreateNote : Screen("createNote/{boxId}?noteId={noteId}") {
+        fun createRoute(boxId: Int, noteId: Int? = null): String =
+            if (noteId == null) "createNote/$boxId" else "createNote/$boxId?noteId=$noteId"
     }
 }

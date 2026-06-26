@@ -22,10 +22,14 @@ import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.view.BankCardsScreen
 import com.nima.app.imanage.presentation.view.CreateBankCardScreen
 import com.nima.app.imanage.presentation.view.CreateLoanScreen
+import com.nima.app.imanage.presentation.view.CreateNoteBoxScreen
+import com.nima.app.imanage.presentation.view.CreateNoteScreen
 import com.nima.app.imanage.presentation.view.LoansScreen
 import com.nima.app.imanage.presentation.view.FinancialScreen
 import com.nima.app.imanage.presentation.view.HomeScreen
 import com.nima.app.imanage.presentation.view.MainToolbar
+import com.nima.app.imanage.presentation.view.NoteBoxDetailScreen
+import com.nima.app.imanage.presentation.view.NotesScreen
 import com.nima.app.imanage.presentation.view.SettingsScreen
 import com.nima.app.imanage.ui.theme.IManageTheme
 import com.nima.app.imanage.util.LanguageManager
@@ -115,5 +119,46 @@ fun Navigation(
             CreateLoanScreen(setToolbar, navController, loanId)
         }
         composable(Screen.Settings.route) { SettingsScreen(setToolbar, navController) }
+
+        composable(Screen.Notes.route) { NotesScreen(setToolbar, navController) }
+        composable(
+            route = Screen.CreateNoteBox.route,
+            arguments = listOf(
+                navArgument(name = "boxId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
+        ) { backStack ->
+            val boxId = backStack.arguments?.getInt("boxId") ?: -1
+            CreateNoteBoxScreen(setToolbar, navController, boxId)
+        }
+        composable(
+            route = Screen.NoteBoxDetail.route,
+            arguments = listOf(
+                navArgument(name = "boxId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStack ->
+            val boxId = backStack.arguments?.getInt("boxId") ?: -1
+            NoteBoxDetailScreen(setToolbar, navController, boxId)
+        }
+        composable(
+            route = Screen.CreateNote.route,
+            arguments = listOf(
+                navArgument(name = "boxId") {
+                    type = NavType.IntType
+                },
+                navArgument(name = "noteId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
+        ) { backStack ->
+            val boxId = backStack.arguments?.getInt("boxId") ?: -1
+            val noteId = backStack.arguments?.getInt("noteId") ?: -1
+            CreateNoteScreen(setToolbar, navController, boxId, noteId)
+        }
     }
 }

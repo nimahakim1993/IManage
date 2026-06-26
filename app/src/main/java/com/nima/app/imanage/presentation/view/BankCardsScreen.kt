@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EditOff
 import androidx.compose.material.icons.filled.Visibility
@@ -39,6 +41,7 @@ import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.BankCardViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
+import com.nima.app.imanage.ui.component.EmptyState
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -106,38 +109,50 @@ fun BankCardsScreen(
         modifier = Modifier.fillMaxSize()
     ) {
 
-        LazyColumn(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(cards, key = { it.id }) { card ->
-
-                val cardColor = colors.firstOrNull { it.value.toLong() == card.color }
-                    ?: colors.first()
-
-                AtmCardPreview(
-                    editMode = toggleEditMode,
-                    showSensitive = toggleSensitive,
-                    cardNumber = card.cardNumber,
-                    cvv = card.cvv,
-                    month = card.month,
-                    year = card.year,
-                    bankName = card.bankName,
-                    color = cardColor,
-                    onEdit = {
-                        navController.navigate(Screen.CreateBankCard.createRoute(card.id))
-                    },
-                    onDelete = {
-                        removingCard = card
-                    },
-                    onMenuClick = { sheetCard = card },
-                    onCopyCardNumber = {
-                        copyToClipboard(context, "Card Number", card.cardNumber, copiedMsg)
-                    }
+        if (cards.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                EmptyState(
+                    icon = Icons.Default.CreditCard,
+                    title = stringResource(R.string.empty_bank_cards),
+                    hint = stringResource(R.string.empty_bank_cards_hint),
+                    actionLabel = stringResource(R.string.add_account),
+                    onAction = { navController.navigate(Screen.CreateBankCard.route) }
                 )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(cards, key = { it.id }) { card ->
+
+                    val cardColor = colors.firstOrNull { it.value.toLong() == card.color }
+                        ?: colors.first()
+
+                    AtmCardPreview(
+                        editMode = toggleEditMode,
+                        showSensitive = toggleSensitive,
+                        cardNumber = card.cardNumber,
+                        cvv = card.cvv,
+                        month = card.month,
+                        year = card.year,
+                        bankName = card.bankName,
+                        color = cardColor,
+                        onEdit = {
+                            navController.navigate(Screen.CreateBankCard.createRoute(card.id))
+                        },
+                        onDelete = {
+                            removingCard = card
+                        },
+                        onMenuClick = { sheetCard = card },
+                        onCopyCardNumber = {
+                            copyToClipboard(context, "Card Number", card.cardNumber, copiedMsg)
+                        }
+                    )
+                }
             }
         }
     }

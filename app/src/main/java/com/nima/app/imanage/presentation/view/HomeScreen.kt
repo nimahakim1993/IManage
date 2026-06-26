@@ -37,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.icons.filled.NoteAlt
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -270,7 +271,9 @@ private fun DashboardGrid(navController: NavHostController) {
             navController.navigate(Screen.BankCards.route)
         },
         DashboardEntry(stringResource(R.string.shared_trip), Icons.Outlined.MonetizationOn) {},
-        DashboardEntry(stringResource(R.string.note), Icons.AutoMirrored.Filled.Notes) {},
+        DashboardEntry(stringResource(R.string.note), Icons.Default.NoteAlt) {
+            navController.navigate(Screen.Notes.route)
+        },
         DashboardEntry(stringResource(R.string.assets), Icons.Default.Inventory2) {},
         DashboardEntry(stringResource(R.string.report), Icons.Default.Report) {},
     )

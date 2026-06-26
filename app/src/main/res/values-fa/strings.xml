@@ -46,6 +46,14 @@
     <string name="copy">کپی</string>
     <string name="copied_to_clipboard">در کلیپ‌بورد کپی شد</string>
     <string name="not_set">تنظیم نشده</string>
+    <string name="empty_bank_cards">هنوز حساب بانکی ندارید</string>
+    <string name="empty_bank_cards_hint">برای افزودن اولین حساب روی + بزنید</string>
+
+    <!-- Empty state -->
+    <string name="empty_loans">هنوز بدهی یا بستانکاری ندارید</string>
+    <string name="empty_loans_hint">برای افزودن اولین مورد روی + بزنید</string>
+    <string name="empty_loans_filtered">موردی یافت نشد</string>
+    <string name="empty_loans_filtered_hint">فیلتر یا جستجو را تغییر دهید</string>
 
     <!-- LoansScreen -->
     <string name="loans_title">بدهی بستانکاری</string>
@@ -96,4 +104,37 @@
     <string name="theme_system">پیش‌فرض سیستم</string>
     <string name="theme_light">روشن</string>
     <string name="theme_dark">تیره</string>
+
+    <!-- NotesScreen -->
+    <string name="notes_title">یادداشت‌ها</string>
+    <string name="create_note_box_title">ایجاد جعبه یادداشت</string>
+    <string name="edit_note_box_title">ویرایش جعبه یادداشت</string>
+    <string name="note_box_title_label">عنوان جعبه</string>
+    <string name="note_box_description_label">توضیحات</string>
+    <string name="note_box_title_hint">مثلا: شخصی، کار، ایده‌ها</string>
+    <string name="note_box_description_hint">توضیح کوتاه اختیاری</string>
+    <string name="empty_note_boxes">هنوز جعبه یادداشتی ندارید</string>
+    <string name="empty_note_boxes_hint">برای ایجاد اولین جعبه روی + بزنید</string>
+    <string name="notes_count">%d یادداشت</string>
+    <string name="note_count_one">%d یادداشت</string>
+    <string name="color_purple">بنفش</string>
+    <string name="color_blue">آبی</string>
+    <string name="color_teal">سبزآبی</string>
+    <string name="color_pink">صورتی</string>
+    <string name="color_orange">نارنجی</string>
+    <string name="color_green">سبز</string>
+
+    <!-- NoteBoxDetailScreen -->
+    <string name="note_box_detail_title">یادداشت‌ها</string>
+    <string name="create_note_title">یادداشت جدید</string>
+    <string name="edit_note_title">ویرایش یادداشت</string>
+    <string name="note_title_label">عنوان</string>
+    <string name="note_content_label">متن</string>
+    <string name="note_title_hint">عنوان یادداشت</string>
+    <string name="note_content_hint">یادداشت خود را اینجا بنویسید…</string>
+    <string name="empty_notes">این جعبه خالی است</string>
+    <string name="empty_notes_hint">برای افزودن اولین یادداشت روی + بزنید</string>
+    <string name="updated_at">بروزرسانی %s</string>
+    <string name="created_at">ایجاد %s</string>
+    <string name="just_now">همین الان</string>
 </resources>

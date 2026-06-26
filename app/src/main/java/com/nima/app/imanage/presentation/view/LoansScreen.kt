@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Delete
@@ -62,6 +63,7 @@ import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.LoanViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
+import com.nima.app.imanage.ui.component.EmptyState
 import com.nima.app.imanage.ui.theme.DebtDark
 import com.nima.app.imanage.ui.theme.DebtLight
 import com.nima.app.imanage.ui.theme.IncomeDark
@@ -147,25 +149,46 @@ fun LoansScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item {
-                TotalsCard(totalDebt = totalDebt, totalReceivable = totalReceivable)
-            }
-            items(filteredLoans, key = { it.id }) { loan ->
-                LoanItem(
-                    loan = loan,
-                    editMode = toggleEditMode,
-                    onEdit = {
-                        navController.navigate(Screen.CreateLoan.createRoute(loan.id))
-                    },
-                    onDelete = {
-                        removingLoan = loan
-                    }
-                )
+        TotalsCard(
+            modifier = Modifier.padding(16.dp),
+            totalDebt = totalDebt,
+            totalReceivable = totalReceivable
+        )
+
+        if (loans.isEmpty()) {
+            EmptyState(
+                icon = Icons.AutoMirrored.Filled.TrendingUp,
+                title = stringResource(R.string.empty_loans),
+                hint = stringResource(R.string.empty_loans_hint),
+                actionLabel = stringResource(R.string.add),
+                onAction = { navController.navigate(Screen.CreateLoan.createRoute()) }
+            )
+        } else if (filteredLoans.isEmpty()) {
+            EmptyState(
+                icon = Icons.Default.FilterAlt,
+                title = stringResource(R.string.empty_loans_filtered),
+                hint = stringResource(R.string.empty_loans_filtered_hint)
+            )
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(filteredLoans, key = { it.id }) { loan ->
+                    LoanItem(
+                        loan = loan,
+                        editMode = toggleEditMode,
+                        onEdit = {
+                            navController.navigate(Screen.CreateLoan.createRoute(loan.id))
+                        },
+                        onDelete = {
+                            removingLoan = loan
+                        }
+                    )
+                }
             }
         }
     }
@@ -199,13 +222,17 @@ fun LoansScreen(
 }
 
 @Composable
-private fun TotalsCard(totalDebt: Long, totalReceivable: Long) {
+private fun TotalsCard(
+    modifier: Modifier = Modifier,
+    totalDebt: Long,
+    totalReceivable: Long
+) {
     val isDark = isSystemInDarkTheme()
     val debtColor = if (isDark) DebtDark else DebtLight
     val incomeColor = if (isDark) IncomeDark else IncomeLight
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(6.dp)
