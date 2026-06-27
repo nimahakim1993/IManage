@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.nima.app.imanage.data.db.entity.NoteBoxEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -12,6 +13,9 @@ import kotlinx.coroutines.flow.Flow
 interface NoteBoxDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(box: NoteBoxEntity)
+
+    @Update
+    suspend fun update(box: NoteBoxEntity)
 
     @Delete
     suspend fun delete(box: NoteBoxEntity)

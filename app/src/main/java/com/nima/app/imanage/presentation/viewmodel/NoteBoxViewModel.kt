@@ -31,12 +31,12 @@ class NoteBoxViewModel(
     }
 
     suspend fun saveBox(box: NoteBoxEntity) {
-        repository.insert(box)
+        if (box.id > 0) repository.update(box) else repository.insert(box)
     }
 
     fun saveBoxAsync(box: NoteBoxEntity) {
         viewModelScope.launch {
-            repository.insert(box)
+            if (box.id > 0) repository.update(box) else repository.insert(box)
         }
     }
 

@@ -7,15 +7,15 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "notes",
-//    foreignKeys = [
-//        ForeignKey(
-//            entity = NoteBoxEntity::class,
-//            parentColumns = ["id"],
-//            childColumns = ["boxId"],
-//            onDelete = ForeignKey.CASCADE
-//        )
-//    ],
-//    indices = [Index("boxId")]
+    foreignKeys = [
+        ForeignKey(
+            entity = NoteBoxEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["boxId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [Index("boxId")]
 )
 data class NoteEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,

@@ -8,6 +8,7 @@ class NoteBoxRepository(
     private val dao: NoteBoxDao
 ) {
     suspend fun insert(box: NoteBoxEntity) = dao.insert(box)
+    suspend fun update(box: NoteBoxEntity) = dao.update(box)
     suspend fun delete(box: NoteBoxEntity) = dao.delete(box)
     fun getAll(): Flow<List<NoteBoxEntity>> = dao.getAll()
     fun get(id: Int): Flow<NoteBoxEntity?> = dao.get(id)
