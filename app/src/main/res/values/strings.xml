@@ -140,4 +140,29 @@
     <string name="updated_at">Updated %s</string>
     <string name="created_at">Created %s</string>
     <string name="just_now">just now</string>
+
+    <!-- ExpensesScreen -->
+    <string name="expenses_title">Expenses</string>
+    <string name="create_expense_title">New Expense</string>
+    <string name="edit_expense_title">Edit Expense</string>
+    <string name="expense_title_label">Title</string>
+    <string name="expense_title_hint">e.g. Groceries, Rent, Gas</string>
+    <string name="description_optional_hint">Optional description</string>
+    <string name="empty_expenses">No expenses yet</string>
+    <string name="empty_expenses_hint">Tap + to record your first expense</string>
+    <string name="empty_expenses_filtered">No matching expenses</string>
+    <string name="empty_expenses_filtered_hint">Try changing the filters or search query</string>
+    <string name="total_expenses">Total Expenses</string>
+    <string name="items_count">Items</string>
+
+    <!-- Categories -->
+    <string name="category">Category</string>
+    <string name="no_category">No category</string>
+    <string name="category_title">Category title</string>
+    <string name="add_new_category">Add new category…</string>
+    <string name="expense_categories_title">Expense Categories</string>
+    <string name="manage_categories">Manage categories</string>
+    <string name="empty_categories">No categories yet</string>
+    <string name="empty_categories_hint">Tap + to create your first category</string>
+    <string name="filter_by_category">Filter by category</string>
 </resources>

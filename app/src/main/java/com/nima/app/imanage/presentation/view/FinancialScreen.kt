@@ -57,7 +57,7 @@ fun FinancialScreen(
         FinancialEntry(
             title = stringResource(R.string.expense),
             icon = Icons.Default.Build,
-            onClick = {}
+            onClick = { navController.navigate(Screen.Expenses.route) }
         ),
         FinancialEntry(
             title = stringResource(R.string.income),

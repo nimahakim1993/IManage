@@ -1,0 +1,583 @@
+package com.nima.app.imanage.presentation.view
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.EditOff
+import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.filled.Receipt
+import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.nima.app.imanage.R
+import com.nima.app.imanage.Screen
+import com.nima.app.imanage.data.db.entity.ExpenseCategoryEntity
+import com.nima.app.imanage.data.db.entity.ExpenseEntity
+import com.nima.app.imanage.data.model.ToolbarAction
+import com.nima.app.imanage.data.model.ToolbarConfig
+import com.nima.app.imanage.presentation.viewmodel.ExpenseViewModel
+import com.nima.app.imanage.ui.component.ActionDialog
+import com.nima.app.imanage.ui.component.EmptyState
+import com.nima.app.imanage.ui.theme.NoteBoxPalettes
+import com.nima.app.imanage.ui.theme.vazirFontFamily
+import com.nima.app.imanage.util.NumberFormatUtils
+import org.koin.androidx.compose.koinViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ExpensesScreen(
+    setToolbar: (ToolbarConfig) -> Unit,
+    navController: NavHostController,
+    viewModel: ExpenseViewModel = koinViewModel()
+) {
+    val expenses by viewModel.expenses.collectAsState()
+    val categories by viewModel.categories.collectAsState()
+
+    val expensesTitle = stringResource(R.string.expenses_title)
+    val addDesc = stringResource(R.string.add)
+    val filterDesc = stringResource(R.string.filter)
+    val editDesc = stringResource(R.string.edit)
+    val manageDesc = stringResource(R.string.manage_categories)
+
+    var toggleEditMode by rememberSaveable { mutableStateOf(false) }
+    var showCreateSheet by rememberSaveable { mutableStateOf(false) }
+    var editingExpense by remember { mutableStateOf<ExpenseEntity?>(null) }
+    var removingExpense by remember { mutableStateOf<ExpenseEntity?>(null) }
+    var showFilterDialog by rememberSaveable { mutableStateOf(false) }
+    var searchQuery by rememberSaveable { mutableStateOf("") }
+    var selectedCategoryFilters by remember {
+        mutableStateOf<Set<Int>>(emptySet())
+    }
+    var showUncategorized by rememberSaveable { mutableStateOf(true) }
+
+    LaunchedEffect(toggleEditMode) {
+        setToolbar(
+            ToolbarConfig(
+                title = expensesTitle,
+                showBack = true,
+                actions = listOf(
+                    ToolbarAction(
+                        icon = Icons.Default.Add,
+                        contentDescription = addDesc,
+                        onClick = {
+                            editingExpense = null
+                            showCreateSheet = true
+                        }
+                    ),
+                    ToolbarAction(
+                        icon = Icons.Default.FilterAlt,
+                        contentDescription = filterDesc,
+                        onClick = { showFilterDialog = true }
+                    ),
+                    ToolbarAction(
+                        icon = Icons.Default.Tune,
+                        contentDescription = manageDesc,
+                        onClick = { navController.navigate(Screen.ExpenseCategories.route) }
+                    ),
+                    ToolbarAction(
+                        icon = if (toggleEditMode) Icons.Default.EditOff else Icons.Default.Edit,
+                        contentDescription = editDesc,
+                        onClick = { toggleEditMode = !toggleEditMode }
+                    ),
+                )
+            )
+        )
+    }
+
+    val filteredExpenses = remember(
+        expenses,
+        categories,
+        searchQuery,
+        selectedCategoryFilters,
+        showUncategorized
+    ) {
+        val activeFilter = selectedCategoryFilters.isNotEmpty() || !showUncategorized
+        expenses.filter { expense ->
+            val categoryMatch = if (!activeFilter) {
+                true
+            } else {
+                when {
+                    expense.categoryId == null -> showUncategorized
+                    else -> expense.categoryId in selectedCategoryFilters
+                }
+            }
+            val queryMatch = if (searchQuery.isBlank()) {
+                true
+            } else {
+                expense.title.contains(searchQuery, ignoreCase = true) ||
+                        expense.description.contains(searchQuery, ignoreCase = true) ||
+                        (categories.firstOrNull { it.id == expense.categoryId }?.title
+                            ?.contains(searchQuery, ignoreCase = true) ?: false)
+            }
+            categoryMatch && queryMatch
+        }
+    }
+
+    val totalAmount = remember(filteredExpenses) {
+        filteredExpenses.sumOf { it.amount }
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        TotalsCard(
+            modifier = Modifier.padding(16.dp),
+            total = totalAmount,
+            count = filteredExpenses.size
+        )
+
+        if (expenses.isEmpty()) {
+            EmptyState(
+                icon = Icons.Default.Receipt,
+                title = stringResource(R.string.empty_expenses),
+                hint = stringResource(R.string.empty_expenses_hint),
+                actionLabel = stringResource(R.string.add),
+                onAction = {
+                    editingExpense = null
+                    showCreateSheet = true
+                }
+            )
+        } else if (filteredExpenses.isEmpty()) {
+            EmptyState(
+                icon = Icons.Default.FilterAlt,
+                title = stringResource(R.string.empty_expenses_filtered),
+                hint = stringResource(R.string.empty_expenses_filtered_hint)
+            )
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(filteredExpenses, key = { it.id }) { expense ->
+                    val category = categories.firstOrNull { it.id == expense.categoryId }
+                    ExpenseItem(
+                        expense = expense,
+                        category = category,
+                        editMode = toggleEditMode,
+                        onClick = {
+                            editingExpense = expense
+                            showCreateSheet = true
+                        },
+                        onEdit = {
+                            editingExpense = expense
+                            showCreateSheet = true
+                        },
+                        onDelete = { removingExpense = expense }
+                    )
+                }
+            }
+        }
+    }
+
+    if (showCreateSheet) {
+        CreateExpenseSheet(
+            categories = categories,
+            editing = editingExpense,
+            onDismiss = {
+                showCreateSheet = false
+                editingExpense = null
+            },
+            onSave = { expense ->
+                viewModel.saveExpense(expense)
+                showCreateSheet = false
+                editingExpense = null
+            },
+            onAddCategory = { title, colorIndex ->
+                viewModel.addCategory(title, colorIndex)
+            }
+        )
+    }
+
+    removingExpense?.let { expense ->
+        ActionDialog(
+            onDismiss = { removingExpense = null },
+            onPositiveClicked = {
+                viewModel.removeExpense(expense)
+                removingExpense = null
+            }
+        )
+    }
+
+    if (showFilterDialog) {
+        FilterDialog(
+            searchQuery = searchQuery,
+            onSearchQueryChange = { searchQuery = it },
+            categories = categories,
+            selectedCategoryFilters = selectedCategoryFilters,
+            onCategoryToggle = { id ->
+                selectedCategoryFilters =
+                    if (id in selectedCategoryFilters)
+                        selectedCategoryFilters - id
+                    else
+                        selectedCategoryFilters + id
+            },
+            showUncategorized = showUncategorized,
+            onShowUncategorizedChange = { showUncategorized = it },
+            onDismiss = { showFilterDialog = false },
+            onClear = {
+                searchQuery = ""
+                selectedCategoryFilters = emptySet()
+                showUncategorized = true
+            }
+        )
+    }
+}
+
+@Composable
+private fun TotalsCard(
+    modifier: Modifier = Modifier,
+    total: Long,
+    count: Int
+) {
+    val primary = MaterialTheme.colorScheme.primary
+    val secondary = MaterialTheme.colorScheme.secondary
+
+    val gradient = Brush.linearGradient(
+        colors = listOf(primary, secondary.copy(alpha = 0.85f)),
+        start = Offset(0f, 0f),
+        end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+    )
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(6.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(gradient)
+                .padding(20.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    Text(
+                        text = stringResource(R.string.total_expenses),
+                        color = Color.White.copy(alpha = 0.85f),
+                        style = MaterialTheme.typography.labelMedium,
+                        fontFamily = vazirFontFamily
+                    )
+                    Spacer(modifier = Modifier.size(4.dp))
+                    Text(
+                        text = NumberFormatUtils.format(total),
+                        color = Color.White,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 24.sp,
+                        fontFamily = vazirFontFamily
+                    )
+                }
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        text = stringResource(R.string.items_count),
+                        color = Color.White.copy(alpha = 0.85f),
+                        style = MaterialTheme.typography.labelMedium,
+                        fontFamily = vazirFontFamily
+                    )
+                    Spacer(modifier = Modifier.size(4.dp))
+                    Text(
+                        text = NumberFormatUtils.format(count.toLong()),
+                        color = Color.White,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 24.sp,
+                        fontFamily = vazirFontFamily
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ExpenseItem(
+    expense: ExpenseEntity,
+    category: ExpenseCategoryEntity?,
+    editMode: Boolean = false,
+    onClick: () -> Unit = {},
+    onEdit: () -> Unit = {},
+    onDelete: () -> Unit = {}
+) {
+    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val palette = if (category != null) {
+        NoteBoxPalettes.getOrElse(category.colorIndex) { NoteBoxPalettes.first() }
+    } else {
+        NoteBoxPalettes.last()
+    }
+    val accentColor = if (isDark) Color.White.copy(alpha = 0.18f) else Color.Black.copy(alpha = 0.08f)
+
+    val gradient = Brush.linearGradient(
+        colors = listOf(palette.primary, palette.secondary.copy(alpha = 0.78f)),
+        start = Offset(0f, 0f),
+        end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+    )
+
+    val dateFormat = remember { SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(24.dp))
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(10.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(gradient)
+                .padding(horizontal = 18.dp, vertical = 16.dp)
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = expense.title,
+                            color = Color.White,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 16.sp,
+                            fontFamily = vazirFontFamily,
+                            maxLines = 1
+                        )
+                        if (category != null) {
+                            Spacer(modifier = Modifier.size(4.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(8.dp)
+                                        .clip(CircleShape)
+                                        .background(Color.White.copy(alpha = 0.9f))
+                                )
+                                Spacer(modifier = Modifier.size(6.dp))
+                                Text(
+                                    text = category.title,
+                                    color = Color.White.copy(alpha = 0.9f),
+                                    fontSize = 11.sp,
+                                    fontFamily = vazirFontFamily
+                                )
+                            }
+                        }
+                    }
+                    Text(
+                        text = NumberFormatUtils.format(expense.amount),
+                        color = Color.White,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 22.sp,
+                        fontFamily = vazirFontFamily
+                    )
+                }
+
+                if (expense.description.isNotBlank()) {
+                    Spacer(modifier = Modifier.size(12.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(accentColor)
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                    ) {
+                        Text(
+                            text = expense.description,
+                            color = Color.White.copy(alpha = 0.92f),
+                            fontSize = 13.sp,
+                            fontFamily = vazirFontFamily,
+                            maxLines = 2
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.size(12.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.CalendarMonth,
+                        contentDescription = null,
+                        tint = Color.White.copy(alpha = 0.85f),
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.size(6.dp))
+                    Text(
+                        text = dateFormat.format(Date(expense.createdAt)),
+                        color = Color.White.copy(alpha = 0.85f),
+                        fontSize = 11.sp,
+                        fontFamily = vazirFontFamily
+                    )
+                }
+
+                AnimatedVisibility(visible = editMode) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        IconButton(onClick = onEdit) {
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = stringResource(R.string.edit),
+                                tint = Color.White
+                            )
+                        }
+                        IconButton(onClick = onDelete) {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.delete),
+                                tint = Color.White
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun FilterDialog(
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    categories: List<ExpenseCategoryEntity>,
+    selectedCategoryFilters: Set<Int>,
+    onCategoryToggle: (Int) -> Unit,
+    showUncategorized: Boolean,
+    onShowUncategorizedChange: (Boolean) -> Unit,
+    onDismiss: () -> Unit,
+    onClear: () -> Unit,
+) {
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = { Text(stringResource(R.string.filter_title)) },
+            text = {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = onSearchQueryChange,
+                        label = { Text(stringResource(R.string.search_hint)) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.size(12.dp))
+                    Text(
+                        text = stringResource(R.string.filter_by_category),
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.size(6.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = showUncategorized,
+                            onCheckedChange = onShowUncategorizedChange
+                        )
+                        Icon(
+                            imageVector = Icons.Default.Category,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                            tint = MaterialTheme.colorScheme.outline
+                        )
+                        Spacer(modifier = Modifier.size(4.dp))
+                        Text(
+                            text = stringResource(R.string.no_category),
+                            modifier = Modifier.padding(start = 4.dp)
+                        )
+                    }
+                    categories.forEach { category ->
+                        val palette = NoteBoxPalettes.getOrElse(category.colorIndex) { NoteBoxPalettes.first() }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(
+                                checked = category.id in selectedCategoryFilters,
+                                onCheckedChange = { onCategoryToggle(category.id) }
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(14.dp)
+                                    .clip(CircleShape)
+                                    .background(palette.primary)
+                            )
+                            Spacer(modifier = Modifier.size(6.dp))
+                            Text(
+                                text = category.title,
+                                modifier = Modifier.padding(start = 4.dp)
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = onDismiss) {
+                    Text(stringResource(R.string.confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = onClear) {
+                    Text(stringResource(R.string.clear))
+                }
+            }
+        )
+    }
+}

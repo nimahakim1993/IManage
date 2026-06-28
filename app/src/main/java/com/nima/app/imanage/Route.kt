@@ -41,4 +41,7 @@ sealed class Screen(val route: String) {
         fun createRoute(boxId: Int, noteId: Int? = null): String =
             if (noteId == null) "createNote/$boxId" else "createNote/$boxId?noteId=$noteId"
     }
+
+    data object Expenses : Screen("expenses")
+    data object ExpenseCategories : Screen("expenseCategories")
 }
