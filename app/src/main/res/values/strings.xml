@@ -168,6 +168,30 @@
     <string name="empty_categories_hint">Tap + to create your first category</string>
     <string name="filter_by_category">Filter by category</string>
 
+    <!-- IncomesScreen -->
+    <string name="incomes_title">Incomes</string>
+    <string name="create_income_title">New Income</string>
+    <string name="edit_income_title">Edit Income</string>
+    <string name="income_title_label">Title</string>
+    <string name="income_title_hint">e.g. Salary, Freelance, Sales</string>
+    <string name="income_source_label">Source</string>
+    <string name="income_source_hint">e.g. Company name, Client</string>
+    <string name="empty_incomes">No incomes yet</string>
+    <string name="empty_incomes_hint">Tap + to record your first income</string>
+    <string name="empty_incomes_filtered">No matching incomes</string>
+    <string name="empty_incomes_filtered_hint">Try changing the filters or search query</string>
+    <string name="total_incomes">Total Incomes</string>
+    <string name="income_date">Income Date</string>
+    <string name="select_income_date">Select Income Date</string>
+    <string name="income_sources_title">Income Sources</string>
+    <string name="manage_sources">Manage sources</string>
+    <string name="add_new_source">Add new source…</string>
+    <string name="no_source">No source</string>
+    <string name="source_title">Source title</string>
+    <string name="empty_sources">No sources yet</string>
+    <string name="empty_sources_hint">Tap + to create your first source</string>
+    <string name="filter_by_source">Filter by source</string>
+
     <!-- Shamsi Date Picker -->
     <string name="select_date">Select Date</string>
     <string name="select_payment_date">Select Payment Date</string>

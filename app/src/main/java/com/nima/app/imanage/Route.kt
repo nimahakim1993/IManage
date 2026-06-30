@@ -44,4 +44,6 @@ sealed class Screen(val route: String) {
 
     data object Expenses : Screen("expenses")
     data object ExpenseCategories : Screen("expenseCategories")
+    data object Incomes : Screen("incomes")
+    data object IncomeSources : Screen("incomeSources")
 }

@@ -19,4 +19,6 @@ val databaseModule = module {
     single { get<AppDatabase>().noteDao() }
     single { get<AppDatabase>().expenseCategoryDao() }
     single { get<AppDatabase>().expenseDao() }
+    single { get<AppDatabase>().incomeSourceDao() }
+    single { get<AppDatabase>().incomeDao() }
 }

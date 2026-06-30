@@ -26,6 +26,8 @@ import com.nima.app.imanage.presentation.view.CreateNoteBoxScreen
 import com.nima.app.imanage.presentation.view.CreateNoteScreen
 import com.nima.app.imanage.presentation.view.ExpenseCategoriesScreen
 import com.nima.app.imanage.presentation.view.ExpensesScreen
+import com.nima.app.imanage.presentation.view.IncomesScreen
+import com.nima.app.imanage.presentation.view.IncomeSourcesScreen
 import com.nima.app.imanage.presentation.view.LoansScreen
 import com.nima.app.imanage.presentation.view.FinancialScreen
 import com.nima.app.imanage.presentation.view.HomeScreen
@@ -165,5 +167,7 @@ fun Navigation(
 
         composable(Screen.Expenses.route) { ExpensesScreen(setToolbar, navController) }
         composable(Screen.ExpenseCategories.route) { ExpenseCategoriesScreen(setToolbar, navController) }
+        composable(Screen.Incomes.route) { IncomesScreen(setToolbar, navController) }
+        composable(Screen.IncomeSources.route) { IncomeSourcesScreen(setToolbar, navController) }
     }
 }

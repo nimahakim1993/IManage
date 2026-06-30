@@ -141,6 +141,30 @@
     <string name="created_at">ایجاد %s</string>
     <string name="just_now">همین الان</string>
 
+    <!-- IncomesScreen -->
+    <string name="incomes_title">درآمدها</string>
+    <string name="create_income_title">درآمد جدید</string>
+    <string name="edit_income_title">ویرایش درآمد</string>
+    <string name="income_title_label">عنوان</string>
+    <string name="income_title_hint">مثلا: حقوق، فریلنسری، فروش</string>
+    <string name="income_source_label">منبع</string>
+    <string name="income_source_hint">مثلا: نام شرکت، مشتری</string>
+    <string name="empty_incomes">هنوز درآمدی ندارید</string>
+    <string name="empty_incomes_hint">برای ثبت اولین درآمد روی + بزنید</string>
+    <string name="empty_incomes_filtered">درآمدی یافت نشد</string>
+    <string name="empty_incomes_filtered_hint">فیلتر یا جستجو را تغییر دهید</string>
+    <string name="total_incomes">مجموع درآمدها</string>
+    <string name="income_date">تاریخ درآمد</string>
+    <string name="select_income_date">انتخاب تاریخ درآمد</string>
+    <string name="income_sources_title">منابع درآمد</string>
+    <string name="manage_sources">مدیریت منابع</string>
+    <string name="add_new_source">افزودن منبع جدید…</string>
+    <string name="no_source">بدون منبع</string>
+    <string name="source_title">عنوان منبع</string>
+    <string name="empty_sources">هنوز منبعی ندارید</string>
+    <string name="empty_sources_hint">برای ایجاد اولین منبع روی + بزنید</string>
+    <string name="filter_by_source">فیلتر بر اساس منبع</string>
+
     <!-- Shamsi Date Picker -->
     <string name="today">امروز</string>
 </resources>

@@ -62,7 +62,7 @@ fun FinancialScreen(
         FinancialEntry(
             title = stringResource(R.string.income),
             icon = Icons.Default.TrendingUp,
-            onClick = {}
+            onClick = { navController.navigate(Screen.Incomes.route) }
         ),
         FinancialEntry(
             title = stringResource(R.string.installment),
