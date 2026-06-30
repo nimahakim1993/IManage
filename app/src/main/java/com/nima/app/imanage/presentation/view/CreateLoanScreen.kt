@@ -12,13 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -39,15 +34,13 @@ import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.LoanEntity
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.LoanViewModel
+import com.nima.app.imanage.ui.component.ShamsiDatePicker
 import com.nima.app.imanage.ui.component.TextInputDropDown
 import com.nima.app.imanage.util.NumberFormatUtils
+import com.nima.app.imanage.util.ShamsiDate
 import org.koin.androidx.compose.koinViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateLoanScreen(
     setToolbar: (ToolbarConfig) -> Unit,
@@ -78,8 +71,8 @@ fun CreateLoanScreen(
     var personName by remember { mutableStateOf("") }
     var price by remember { mutableStateOf(TextFieldValue("")) }
     var description by remember { mutableStateOf("") }
-    var dateLoan by remember { mutableStateOf(System.currentTimeMillis()) }
-    var dateReceiveBack by remember { mutableStateOf(System.currentTimeMillis()) }
+    var dateLoan by remember { mutableStateOf(ShamsiDate.todayMillis()) }
+    var dateReceiveBack by remember { mutableStateOf(ShamsiDate.todayMillis()) }
     var showDateLoanPicker by remember { mutableStateOf(false) }
     var showDateReceiveBackPicker by remember { mutableStateOf(false) }
 
@@ -96,42 +89,28 @@ fun CreateLoanScreen(
         }
     }
 
-    val dateFormat = remember { SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()) }
-
     if (showDateLoanPicker) {
-        val datePickerState = rememberDatePickerState(initialSelectedDateMillis = dateLoan)
-        DatePickerDialog(
-            onDismissRequest = { showDateLoanPicker = false },
-            confirmButton = {
-                TextButton(onClick = {
-                    datePickerState.selectedDateMillis?.let { dateLoan = it }
-                    showDateLoanPicker = false
-                }) { Text(stringResource(R.string.confirm)) }
+        ShamsiDatePicker(
+            initialDate = dateLoan,
+            title = stringResource(R.string.select_payment_date),
+            onConfirm = { newDate ->
+                dateLoan = newDate
+                showDateLoanPicker = false
             },
-            dismissButton = {
-                TextButton(onClick = { showDateLoanPicker = false }) { Text(stringResource(R.string.cancel)) }
-            }
-        ) {
-            DatePicker(state = datePickerState)
-        }
+            onDismiss = { showDateLoanPicker = false }
+        )
     }
 
     if (showDateReceiveBackPicker) {
-        val datePickerState = rememberDatePickerState(initialSelectedDateMillis = dateReceiveBack)
-        DatePickerDialog(
-            onDismissRequest = { showDateReceiveBackPicker = false },
-            confirmButton = {
-                TextButton(onClick = {
-                    datePickerState.selectedDateMillis?.let { dateReceiveBack = it }
-                    showDateReceiveBackPicker = false
-                }) { Text(stringResource(R.string.confirm)) }
+        ShamsiDatePicker(
+            initialDate = dateReceiveBack,
+            title = stringResource(R.string.select_receive_date),
+            onConfirm = { newDate ->
+                dateReceiveBack = newDate
+                showDateReceiveBackPicker = false
             },
-            dismissButton = {
-                TextButton(onClick = { showDateReceiveBackPicker = false }) { Text(stringResource(R.string.cancel)) }
-            }
-        ) {
-            DatePicker(state = datePickerState)
-        }
+            onDismiss = { showDateReceiveBackPicker = false }
+        )
     }
 
     Column(
@@ -175,7 +154,7 @@ fun CreateLoanScreen(
 
         Box(modifier = Modifier.fillMaxWidth().clickable { showDateLoanPicker = true }) {
             OutlinedTextField(
-                value = dateFormat.format(Date(dateLoan)),
+                value = ShamsiDate.format(dateLoan),
                 onValueChange = {},
                 readOnly = true,
                 label = { Text(stringResource(R.string.payment_date)) },
@@ -188,7 +167,7 @@ fun CreateLoanScreen(
 
         Box(modifier = Modifier.fillMaxWidth().clickable { showDateReceiveBackPicker = true }) {
             OutlinedTextField(
-                value = dateFormat.format(Date(dateReceiveBack)),
+                value = ShamsiDate.format(dateReceiveBack),
                 onValueChange = {},
                 readOnly = true,
                 label = { Text(stringResource(R.string.receive_date)) },

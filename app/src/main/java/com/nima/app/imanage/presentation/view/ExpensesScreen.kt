@@ -72,9 +72,9 @@ import com.nima.app.imanage.ui.component.EmptyState
 import com.nima.app.imanage.ui.theme.NoteBoxPalettes
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
+import com.nima.app.imanage.util.ShamsiDate
 import org.koin.androidx.compose.koinViewModel
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -457,7 +457,7 @@ fun ExpenseItem(
                     )
                     Spacer(modifier = Modifier.size(6.dp))
                     Text(
-                        text = dateFormat.format(Date(expense.createdAt)),
+                        text = ShamsiDate.format(expense.createdAt),
                         color = Color.White.copy(alpha = 0.85f),
                         fontSize = 11.sp,
                         fontFamily = vazirFontFamily

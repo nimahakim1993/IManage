@@ -154,6 +154,8 @@
     <string name="empty_expenses_filtered_hint">Try changing the filters or search query</string>
     <string name="total_expenses">Total Expenses</string>
     <string name="items_count">Items</string>
+    <string name="expense_date">Expense Date</string>
+    <string name="select_expense_date">Select Expense Date</string>
 
     <!-- Categories -->
     <string name="category">Category</string>
@@ -165,4 +167,13 @@
     <string name="empty_categories">No categories yet</string>
     <string name="empty_categories_hint">Tap + to create your first category</string>
     <string name="filter_by_category">Filter by category</string>
+
+    <!-- Shamsi Date Picker -->
+    <string name="select_date">Select Date</string>
+    <string name="select_payment_date">Select Payment Date</string>
+    <string name="select_receive_date">Select Receive Date</string>
+    <string name="shamsi_day">Day</string>
+    <string name="shamsi_month">Month</string>
+    <string name="shamsi_year">Year</string>
+    <string name="today">Today</string>
 </resources>

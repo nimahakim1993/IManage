@@ -71,10 +71,8 @@ import com.nima.app.imanage.ui.theme.IncomeDark
 import com.nima.app.imanage.ui.theme.IncomeLight
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
+import com.nima.app.imanage.util.ShamsiDate
 import org.koin.androidx.compose.koinViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @Composable
 fun LoansScreen(
@@ -294,8 +292,6 @@ fun LoanItem(
         end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
     )
 
-    val dateFormat = remember { SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()) }
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
@@ -355,7 +351,7 @@ fun LoanItem(
                     iconTint = Color.White.copy(alpha = 0.85f),
                     text = stringResource(
                         R.string.payment_date_prefix,
-                        dateFormat.format(Date(loan.dateLoan))
+                        ShamsiDate.format(loan.dateLoan)
                     )
                 )
                 Spacer(modifier = Modifier.size(6.dp))
@@ -363,7 +359,7 @@ fun LoanItem(
                     iconTint = Color.White.copy(alpha = 0.85f),
                     text = stringResource(
                         R.string.receive_date_prefix,
-                        dateFormat.format(Date(loan.dateReceiveBack))
+                        ShamsiDate.format(loan.dateReceiveBack)
                     )
                 )
 

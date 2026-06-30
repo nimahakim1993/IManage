@@ -140,4 +140,7 @@
     <string name="updated_at">بروزرسانی %s</string>
     <string name="created_at">ایجاد %s</string>
     <string name="just_now">همین الان</string>
+
+    <!-- Shamsi Date Picker -->
+    <string name="today">امروز</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.nima.app.imanage.presentation.view
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,9 +12,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
@@ -35,7 +39,10 @@ import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.ExpenseCategoryEntity
 import com.nima.app.imanage.data.db.entity.ExpenseEntity
 import com.nima.app.imanage.ui.component.CategoryPicker
+import com.nima.app.imanage.ui.component.ShamsiDatePicker
+import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
+import com.nima.app.imanage.util.ShamsiDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,6 +62,8 @@ fun CreateExpenseSheet(
     var description by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf(TextFieldValue("")) }
     var categoryId by remember { mutableStateOf<Int?>(null) }
+    var createdAt by remember { mutableStateOf(ShamsiDate.todayMillis()) }
+    var showDatePicker by remember { mutableStateOf(false) }
 
     LaunchedEffect(editing) {
         editing?.let { expense ->
@@ -62,7 +71,20 @@ fun CreateExpenseSheet(
             description = expense.description
             amount = TextFieldValue(NumberFormatUtils.format(expense.amount))
             categoryId = expense.categoryId
+            createdAt = expense.createdAt
         }
+    }
+
+    if (showDatePicker) {
+        ShamsiDatePicker(
+            initialDate = createdAt,
+            title = stringResource(R.string.select_expense_date),
+            onConfirm = { newDate ->
+                createdAt = newDate
+                showDatePicker = false
+            },
+            onDismiss = { showDatePicker = false }
+        )
     }
 
     ModalBottomSheet(
@@ -80,7 +102,7 @@ fun CreateExpenseSheet(
                 text = sheetTitle,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                fontFamily = com.nima.app.imanage.ui.theme.vazirFontFamily
+                fontFamily = vazirFontFamily
             )
             Spacer(modifier = Modifier.size(16.dp))
 
@@ -118,6 +140,26 @@ fun CreateExpenseSheet(
 
             Spacer(modifier = Modifier.size(12.dp))
 
+            Box(modifier = Modifier.fillMaxWidth().clickable { showDatePicker = true }) {
+                OutlinedTextField(
+                    value = ShamsiDate.format(createdAt),
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text(stringResource(R.string.expense_date)) },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.CalendarMonth,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = false
+                )
+            }
+
+            Spacer(modifier = Modifier.size(12.dp))
+
             OutlinedTextField(
                 value = description,
                 onValueChange = { description = it },
@@ -140,7 +182,7 @@ fun CreateExpenseSheet(
                         description = description.trim(),
                         amount = NumberFormatUtils.parseToLong(amount.text),
                         categoryId = categoryId,
-                        createdAt = editing?.createdAt ?: System.currentTimeMillis()
+                        createdAt = createdAt
                     )
                     onSave(expense)
                 },
@@ -157,7 +199,7 @@ fun CreateExpenseSheet(
                 Text(
                     text = stringResource(R.string.confirm),
                     fontWeight = FontWeight.Bold,
-                    fontFamily = com.nima.app.imanage.ui.theme.vazirFontFamily
+                    fontFamily = vazirFontFamily
                 )
             }
 
