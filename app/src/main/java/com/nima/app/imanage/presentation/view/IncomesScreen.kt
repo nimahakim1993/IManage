@@ -68,6 +68,7 @@ import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.IncomeViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
+import com.nima.app.imanage.ui.component.ShamsiMonthYearPicker
 import com.nima.app.imanage.ui.theme.NoteBoxPalettes
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
@@ -100,6 +101,8 @@ fun IncomesScreen(
         mutableStateOf<Set<Int>>(emptySet())
     }
     var showNoSource by rememberSaveable { mutableStateOf(true) }
+    var selectedMonthYear by rememberSaveable { mutableStateOf<Pair<Int, Int>?>(null) }
+    var showMonthYearPicker by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(toggleEditMode) {
         setToolbar(
@@ -140,7 +143,8 @@ fun IncomesScreen(
         sources,
         searchQuery,
         selectedSourceFilters,
-        showNoSource
+        showNoSource,
+        selectedMonthYear
     ) {
         val activeFilter = selectedSourceFilters.isNotEmpty() || !showNoSource
         incomes.filter { income ->
@@ -160,7 +164,11 @@ fun IncomesScreen(
                         (sources.firstOrNull { it.id == income.sourceId }?.title
                             ?.contains(searchQuery, ignoreCase = true) ?: false)
             }
-            sourceMatch && queryMatch
+            val dateMatch = selectedMonthYear?.let { (month, year) ->
+                val (jy, jm, _) = ShamsiDate.fromMillis(income.incomeDate)
+                jy == year && jm == month
+            } ?: true
+            sourceMatch && queryMatch && dateMatch
         }
     }
 
@@ -172,7 +180,10 @@ fun IncomesScreen(
         TotalsCard(
             modifier = Modifier.padding(16.dp),
             total = totalAmount,
-            count = filteredIncomes.size
+            count = filteredIncomes.size,
+            selectedMonthYear = selectedMonthYear,
+            onDateFilterClick = { showMonthYearPicker = true },
+            onClearDateFilter = { selectedMonthYear = null }
         )
 
         if (incomes.isEmpty()) {
@@ -273,13 +284,28 @@ fun IncomesScreen(
             }
         )
     }
+
+    if (showMonthYearPicker) {
+        ShamsiMonthYearPicker(
+            initialMonth = selectedMonthYear?.first,
+            initialYear = selectedMonthYear?.second,
+            onConfirm = { month, year ->
+                selectedMonthYear = Pair(month, year)
+                showMonthYearPicker = false
+            },
+            onDismiss = { showMonthYearPicker = false }
+        )
+    }
 }
 
 @Composable
 private fun TotalsCard(
     modifier: Modifier = Modifier,
     total: Long,
-    count: Int
+    count: Int,
+    selectedMonthYear: Pair<Int, Int>?,
+    onDateFilterClick: () -> Unit,
+    onClearDateFilter: () -> Unit
 ) {
     val primary = MaterialTheme.colorScheme.primary
     val secondary = MaterialTheme.colorScheme.secondary
@@ -289,6 +315,10 @@ private fun TotalsCard(
         start = Offset(0f, 0f),
         end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
     )
+
+    val dateFilterLabel = selectedMonthYear?.let { (month, year) ->
+        "${ShamsiDate.getMonthName(month)} ${ShamsiDate.toPersianDigits(year.toString())}"
+    } ?: stringResource(R.string.no_filter)
 
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -301,42 +331,82 @@ private fun TotalsCard(
                 .background(gradient)
                 .padding(20.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(
-                        text = stringResource(R.string.total_incomes),
-                        color = Color.White.copy(alpha = 0.85f),
-                        style = MaterialTheme.typography.labelMedium,
-                        fontFamily = vazirFontFamily
-                    )
-                    Spacer(modifier = Modifier.size(4.dp))
-                    Text(
-                        text = NumberFormatUtils.format(total),
-                        color = Color.White,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 24.sp,
-                        fontFamily = vazirFontFamily
-                    )
+            Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(
+                            text = stringResource(R.string.total_incomes),
+                            color = Color.White.copy(alpha = 0.85f),
+                            style = MaterialTheme.typography.labelMedium,
+                            fontFamily = vazirFontFamily
+                        )
+                        Spacer(modifier = Modifier.size(4.dp))
+                        Text(
+                            text = NumberFormatUtils.format(total),
+                            color = Color.White,
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 24.sp,
+                            fontFamily = vazirFontFamily
+                        )
+                    }
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text(
+                            text = stringResource(R.string.items_count),
+                            color = Color.White.copy(alpha = 0.85f),
+                            style = MaterialTheme.typography.labelMedium,
+                            fontFamily = vazirFontFamily
+                        )
+                        Spacer(modifier = Modifier.size(4.dp))
+                        Text(
+                            text = NumberFormatUtils.format(count.toLong()),
+                            color = Color.White,
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 24.sp,
+                            fontFamily = vazirFontFamily
+                        )
+                    }
                 }
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(
-                        text = stringResource(R.string.items_count),
-                        color = Color.White.copy(alpha = 0.85f),
-                        style = MaterialTheme.typography.labelMedium,
-                        fontFamily = vazirFontFamily
+
+                Spacer(modifier = Modifier.size(12.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.White.copy(alpha = 0.18f))
+                        .clickable(onClick = onDateFilterClick)
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CalendarMonth,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(16.dp)
                     )
-                    Spacer(modifier = Modifier.size(4.dp))
+                    Spacer(modifier = Modifier.size(8.dp))
                     Text(
-                        text = NumberFormatUtils.format(count.toLong()),
+                        text = dateFilterLabel,
                         color = Color.White,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 24.sp,
-                        fontFamily = vazirFontFamily
+                        fontSize = 13.sp,
+                        fontFamily = vazirFontFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.weight(1f)
                     )
+                    if (selectedMonthYear != null) {
+                        Icon(
+                            imageVector = Icons.Default.EditOff,
+                            contentDescription = stringResource(R.string.clear),
+                            tint = Color.White.copy(alpha = 0.85f),
+                            modifier = Modifier
+                                .size(16.dp)
+                                .clickable(onClick = onClearDateFilter)
+                        )
+                    }
                 }
             }
         }

@@ -167,4 +167,6 @@
 
     <!-- Shamsi Date Picker -->
     <string name="today">امروز</string>
+    <string name="select_month_year">انتخاب ماه / سال</string>
+    <string name="no_filter">بدون فیلتر</string>
 </resources>
