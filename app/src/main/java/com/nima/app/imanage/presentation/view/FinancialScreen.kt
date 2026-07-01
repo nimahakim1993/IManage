@@ -67,7 +67,7 @@ fun FinancialScreen(
         FinancialEntry(
             title = stringResource(R.string.installment),
             icon = Icons.Default.CalendarMonth,
-            onClick = {}
+            onClick = { navController.navigate(Screen.Installments.route) }
         )
     )
 

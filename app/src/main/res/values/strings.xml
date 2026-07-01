@@ -209,4 +209,35 @@
     <string name="shamsi_year">Year</string>
     <string name="today">Today</string>
     <string name="no_filter">No filter</string>
+
+    <!-- Installments -->
+    <string name="installments_title">Installments</string>
+    <string name="create_installment_title">New Installment</string>
+    <string name="edit_installment_title">Edit Installment</string>
+    <string name="installment_detail">Installment Detail</string>
+    <string name="installment_title_label">Title</string>
+    <string name="installment_title_hint">e.g. Car Loan, Mortgage</string>
+    <string name="number_of_installments">Number of Installments</string>
+    <string name="period_type">Period Type</string>
+    <string name="period_monthly">Monthly</string>
+    <string name="period_weekly">Weekly</string>
+    <string name="period_custom">Custom</string>
+    <string name="period_days">Period (Days)</string>
+    <string name="period_days_hint">e.g. 30 for monthly</string>
+    <string name="start_date">Start Date</string>
+    <string name="select_start_date">Select Start Date</string>
+    <string name="empty_installments">No installments yet</string>
+    <string name="empty_installments_hint">Tap + to add your first installment plan</string>
+    <string name="days_passed">%d days passed</string>
+    <string name="days_remaining">%d days remaining</string>
+    <string name="all_settled">All settled</string>
+    <string name="completed">Completed</string>
+    <string name="deadline_passed">Deadline passed</string>
+    <string name="overdue">Overdue!</string>
+    <string name="overdue_by_days">+%d days overdue</string>
+    <string name="overdue_settle">Overdue - Settle</string>
+    <string name="period_label">Period</string>
+    <string name="days">days</string>
+    <string name="of_total_days">of %d days</string>
+    <string name="every_days">Every %d days</string>
 </resources>

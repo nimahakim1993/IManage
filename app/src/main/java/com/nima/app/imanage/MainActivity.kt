@@ -28,6 +28,9 @@ import com.nima.app.imanage.presentation.view.ExpenseCategoriesScreen
 import com.nima.app.imanage.presentation.view.ExpensesScreen
 import com.nima.app.imanage.presentation.view.IncomesScreen
 import com.nima.app.imanage.presentation.view.IncomeSourcesScreen
+import com.nima.app.imanage.presentation.view.CreateInstallmentScreen
+import com.nima.app.imanage.presentation.view.InstallmentDetailScreen
+import com.nima.app.imanage.presentation.view.InstallmentsScreen
 import com.nima.app.imanage.presentation.view.LoansScreen
 import com.nima.app.imanage.presentation.view.FinancialScreen
 import com.nima.app.imanage.presentation.view.HomeScreen
@@ -169,5 +172,29 @@ fun Navigation(
         composable(Screen.ExpenseCategories.route) { ExpenseCategoriesScreen(setToolbar, navController) }
         composable(Screen.Incomes.route) { IncomesScreen(setToolbar, navController) }
         composable(Screen.IncomeSources.route) { IncomeSourcesScreen(setToolbar, navController) }
+        composable(Screen.Installments.route) { InstallmentsScreen(setToolbar, navController) }
+        composable(
+            route = Screen.CreateInstallment.route,
+            arguments = listOf(
+                navArgument(name = "installmentId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
+        ) { backStack ->
+            val installmentId = backStack.arguments?.getInt("installmentId") ?: -1
+            CreateInstallmentScreen(setToolbar, navController, installmentId)
+        }
+        composable(
+            route = Screen.InstallmentDetail.route,
+            arguments = listOf(
+                navArgument(name = "installmentId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStack ->
+            val installmentId = backStack.arguments?.getInt("installmentId") ?: -1
+            InstallmentDetailScreen(setToolbar, navController, installmentId)
+        }
     }
 }

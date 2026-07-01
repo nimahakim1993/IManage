@@ -46,4 +46,12 @@ sealed class Screen(val route: String) {
     data object ExpenseCategories : Screen("expenseCategories")
     data object Incomes : Screen("incomes")
     data object IncomeSources : Screen("incomeSources")
+    data object Installments : Screen("installments")
+    data object CreateInstallment : Screen("createInstallment?installmentId={installmentId}") {
+        fun createRoute(installmentId: Int? = null): String =
+            if (installmentId == null) "createInstallment" else "createInstallment?installmentId=$installmentId"
+    }
+    data object InstallmentDetail : Screen("installmentDetail/{installmentId}") {
+        fun createRoute(installmentId: Int) = "installmentDetail/$installmentId"
+    }
 }

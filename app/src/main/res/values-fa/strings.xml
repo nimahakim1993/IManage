@@ -176,4 +176,35 @@
     <string name="today">امروز</string>
     <string name="select_month_year">انتخاب ماه / سال</string>
     <string name="no_filter">بدون فیلتر</string>
+
+    <!-- Installments -->
+    <string name="installments_title">اقساط</string>
+    <string name="create_installment_title">قسط جدید</string>
+    <string name="edit_installment_title">ویرایش قسط</string>
+    <string name="installment_detail">جزییات قسط</string>
+    <string name="installment_title_label">عنوان</string>
+    <string name="installment_title_hint">مثلا: وام خودرو، وام مسکن</string>
+    <string name="number_of_installments">تعداد اقساط</string>
+    <string name="period_type">نوع بازه</string>
+    <string name="period_monthly">ماهانه</string>
+    <string name="period_weekly">هفتگی</string>
+    <string name="period_custom">دلخواه</string>
+    <string name="period_days">بازه (روز)</string>
+    <string name="period_days_hint">مثلا: ۳۰ برای ماهانه</string>
+    <string name="start_date">تاریخ شروع</string>
+    <string name="select_start_date">انتخاب تاریخ شروع</string>
+    <string name="empty_installments">هنوز قسطی ندارید</string>
+    <string name="empty_installments_hint">برای افزودن اولین قسط روی + بزنید</string>
+    <string name="days_passed">%d روز گذشته</string>
+    <string name="days_remaining">%d روز مانده</string>
+    <string name="all_settled">همه تسویه شد</string>
+    <string name="completed">تکمیل شد</string>
+    <string name="deadline_passed">مهلت گذشته</string>
+    <string name="overdue">عقب افتاده!</string>
+    <string name="overdue_by_days">+%d روز تاخیر</string>
+    <string name="overdue_settle">عقب افتاده - تسویه</string>
+    <string name="period_label">بازه</string>
+    <string name="days">روز</string>
+    <string name="of_total_days">از %d روز</string>
+    <string name="every_days">هر %d روز</string>
 </resources>
