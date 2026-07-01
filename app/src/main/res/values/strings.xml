@@ -70,6 +70,13 @@
     <string name="receive_date_prefix">Receive Date: %s</string>
     <string name="total_debt">Total Debt</string>
     <string name="total_receivable">Total Receivable</string>
+    <string name="settled">Settled</string>
+    <string name="settled_on">Settled</string>
+    <string name="mark_settled">Mark as Settled</string>
+    <string name="show_settled">Show Settled</string>
+    <string name="show_unsettled">Show Unsettled</string>
+    <string name="loan_type">Loan Type</string>
+    <string name="status">Status</string>
 
     <!-- HomeScreen -->
     <string name="settings">Settings</string>

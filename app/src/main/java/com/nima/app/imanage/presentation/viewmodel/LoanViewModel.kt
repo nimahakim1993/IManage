@@ -43,4 +43,15 @@ class LoanViewModel(
             repository.delete(loanEntity)
         }
     }
+
+    fun toggleSettled(loanEntity: LoanEntity) {
+        viewModelScope.launch {
+            repository.update(
+                loanEntity.copy(
+                    settled = !loanEntity.settled,
+                    settledAt = if (!loanEntity.settled) System.currentTimeMillis() else 0
+                )
+            )
+        }
+    }
 }

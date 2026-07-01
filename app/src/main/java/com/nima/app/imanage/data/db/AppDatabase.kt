@@ -31,7 +31,7 @@ import com.nima.app.imanage.data.db.entity.NoteEntity
         IncomeSourceEntity::class,
         IncomeEntity::class
     ],
-    version = 10,
+    version = 11,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

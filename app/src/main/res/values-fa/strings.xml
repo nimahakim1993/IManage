@@ -70,6 +70,13 @@
     <string name="receive_date_prefix">تاریخ دریافت : %s</string>
     <string name="total_debt">مجموع بدهی</string>
     <string name="total_receivable">مجموع بستانکاری</string>
+    <string name="settled">تسویه شده</string>
+    <string name="settled_on">تسویه شده</string>
+    <string name="mark_settled">علامت تسویه</string>
+    <string name="show_settled">نمایش تسویه شده</string>
+    <string name="show_unsettled">نمایش تسویه نشده</string>
+    <string name="loan_type">نوع وام</string>
+    <string name="status">وضعیت</string>
 
     <!-- HomeScreen -->
     <string name="settings">تنظیمات</string>

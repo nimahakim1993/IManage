@@ -1,7 +1,16 @@
 package com.nima.app.imanage.presentation.view
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +29,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EditOff
@@ -47,6 +57,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -94,6 +105,8 @@ fun LoansScreen(
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var showDebts by rememberSaveable { mutableStateOf(true) }
     var showReceivables by rememberSaveable { mutableStateOf(true) }
+    var showSettled by rememberSaveable { mutableStateOf(true) }
+    var showUnsettled by rememberSaveable { mutableStateOf(true) }
 
     LaunchedEffect(toggleEditMode) {
         setToolbar(
@@ -124,12 +137,16 @@ fun LoansScreen(
         )
     }
 
-    val filteredLoans = remember(loans, searchQuery, showDebts, showReceivables) {
+    val filteredLoans = remember(loans, searchQuery, showDebts, showReceivables, showSettled, showUnsettled) {
         loans.filter { loan ->
             val typeMatch = when (loan.type) {
                 LoanEntity.TYPE_DEBT -> showDebts
                 LoanEntity.TYPE_RECEIVABLE -> showReceivables
                 else -> true
+            }
+            val settledMatch = when {
+                loan.settled -> showSettled
+                else -> showUnsettled
             }
             val queryMatch = if (searchQuery.isBlank()) {
                 true
@@ -137,7 +154,7 @@ fun LoansScreen(
                 loan.targetPersonName.contains(searchQuery, ignoreCase = true) ||
                         loan.description.contains(searchQuery, ignoreCase = true)
             }
-            typeMatch && queryMatch
+            typeMatch && settledMatch && queryMatch
         }
     }
 
@@ -185,6 +202,9 @@ fun LoansScreen(
                         },
                         onDelete = {
                             removingLoan = loan
+                        },
+                        onToggleSettled = {
+                            viewModel.toggleSettled(loan)
                         }
                     )
                 }
@@ -210,11 +230,17 @@ fun LoansScreen(
             onShowDebtsChange = { showDebts = it },
             showReceivables = showReceivables,
             onShowReceivablesChange = { showReceivables = it },
+            showSettled = showSettled,
+            onShowSettledChange = { showSettled = it },
+            showUnsettled = showUnsettled,
+            onShowUnsettledChange = { showUnsettled = it },
             onDismiss = { showFilterDialog = false },
             onClear = {
                 searchQuery = ""
                 showDebts = true
                 showReceivables = true
+                showSettled = true
+                showUnsettled = true
             }
         )
     }
@@ -275,12 +301,40 @@ fun LoanItem(
     loan: LoanEntity,
     editMode: Boolean = false,
     onEdit: () -> Unit = {},
-    onDelete: () -> Unit = {}
+    onDelete: () -> Unit = {},
+    onToggleSettled: () -> Unit = {}
 ) {
     val isDark = isSystemInDarkTheme()
     val debtColor = if (isDark) DebtDark else DebtLight
     val incomeColor = if (isDark) IncomeDark else IncomeLight
-    val baseColor = if (loan.type == LoanEntity.TYPE_DEBT) debtColor else incomeColor
+    val settledColor = if (isDark) Color(0xFF1565C0) else Color(0xFF1976D2)
+
+    val targetBaseColor = when {
+        loan.settled -> settledColor
+        loan.type == LoanEntity.TYPE_DEBT -> debtColor
+        else -> incomeColor
+    }
+    val baseColor by animateColorAsState(
+        targetValue = targetBaseColor,
+        animationSpec = tween(durationMillis = 700),
+        label = "baseColor"
+    )
+
+    val checkScale by animateFloatAsState(
+        targetValue = if (loan.settled) 1f else 0.4f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "checkScale"
+    )
+
+    val checkAlpha by animateFloatAsState(
+        targetValue = if (loan.settled) 1f else 0f,
+        animationSpec = tween(durationMillis = 300),
+        label = "checkAlpha"
+    )
+
     val accentColor = if (isDark) Color.White.copy(alpha = 0.18f) else Color.Black.copy(alpha = 0.08f)
 
     val gradient = Brush.linearGradient(
@@ -290,6 +344,12 @@ fun LoanItem(
         ),
         start = Offset(0f, 0f),
         end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+    )
+
+    val settledIconColor by animateColorAsState(
+        targetValue = if (loan.settled) Color.White else Color.White.copy(alpha = 0.4f),
+        animationSpec = tween(durationMillis = 500),
+        label = "settledIconColor"
     )
 
     Card(
@@ -310,13 +370,41 @@ fun LoanItem(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = loan.targetPersonName,
-                        color = Color.White,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 16.sp,
-                        fontFamily = vazirFontFamily
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = loan.targetPersonName,
+                            color = Color.White,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 16.sp,
+                            fontFamily = vazirFontFamily,
+                            modifier = Modifier.weight(1f, fill = false)
+                        )
+                        AnimatedVisibility(
+                            visible = loan.settled,
+                            enter = scaleIn(
+                                animationSpec = spring(
+                                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                                    stiffness = Spring.StiffnessMedium
+                                )
+                            ) + fadeIn(tween(200)),
+                            exit = fadeOut(tween(150))
+                        ) {
+                            Row {
+                                Spacer(modifier = Modifier.size(6.dp))
+                                Icon(
+                                    imageVector = Icons.Default.CheckCircle,
+                                    contentDescription = stringResource(R.string.settled),
+                                    tint = Color.White,
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .scale(checkScale)
+                                )
+                            }
+                        }
+                    }
                     Text(
                         text = NumberFormatUtils.format(loan.price),
                         color = Color.White,
@@ -362,6 +450,38 @@ fun LoanItem(
                         ShamsiDate.format(loan.dateReceiveBack)
                     )
                 )
+
+                Spacer(modifier = Modifier.size(10.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.White.copy(alpha = 0.15f))
+                        .clickable(onClick = onToggleSettled)
+                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = null,
+                        tint = settledIconColor,
+                        modifier = Modifier
+                            .size(18.dp)
+                            .scale(if (loan.settled) checkScale else 1f)
+                    )
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Text(
+                        text = stringResource(
+                            if (loan.settled) R.string.settled_on else R.string.mark_settled
+                        ),
+                        color = Color.White,
+                        fontSize = 12.sp,
+                        fontFamily = vazirFontFamily,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
 
                 AnimatedVisibility(visible = editMode) {
                     Row(
@@ -418,6 +538,10 @@ private fun FilterDialog(
     onShowDebtsChange: (Boolean) -> Unit,
     showReceivables: Boolean,
     onShowReceivablesChange: (Boolean) -> Unit,
+    showSettled: Boolean,
+    onShowSettledChange: (Boolean) -> Unit,
+    showUnsettled: Boolean,
+    onShowUnsettledChange: (Boolean) -> Unit,
     onDismiss: () -> Unit,
     onClear: () -> Unit,
 ) {
@@ -434,6 +558,11 @@ private fun FilterDialog(
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(R.string.loan_type),
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
@@ -457,6 +586,38 @@ private fun FilterDialog(
                         )
                         Text(
                             text = stringResource(R.string.show_receivables),
+                            modifier = Modifier.padding(start = 4.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(R.string.status),
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = showSettled,
+                            onCheckedChange = onShowSettledChange
+                        )
+                        Text(
+                            text = stringResource(R.string.show_settled),
+                            modifier = Modifier.padding(start = 4.dp)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = showUnsettled,
+                            onCheckedChange = onShowUnsettledChange
+                        )
+                        Text(
+                            text = stringResource(R.string.show_unsettled),
                             modifier = Modifier.padding(start = 4.dp)
                         )
                     }
