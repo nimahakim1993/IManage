@@ -52,6 +52,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.widget.Toast
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
@@ -133,6 +139,9 @@ fun NoteBoxDetailScreen(
                     onCreate = { navController.navigate(Screen.CreateNote.createRoute(boxId)) }
                 )
             } else {
+                val boxPalette = remember(box?.colorIndex) {
+                    NoteBoxPalettes.getOrElse(box?.colorIndex ?: 0) { NoteBoxPalettes.first() }
+                }
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -144,6 +153,7 @@ fun NoteBoxDetailScreen(
                         NoteListItem(
                             note = note,
                             editMode = toggleEditMode,
+                            palette = boxPalette,
                             onClick = {
                                 navController.navigate(
                                     Screen.CreateNote.createRoute(
@@ -166,23 +176,6 @@ fun NoteBoxDetailScreen(
                 }
             }
         }
-
-        ExtendedFloatingActionButton(
-            onClick = { navController.navigate(Screen.CreateNote.createRoute(boxId)) },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(20.dp),
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            icon = { Icon(Icons.Default.Add, contentDescription = addDesc) },
-            text = {
-                Text(
-                    text = addDesc,
-                    fontFamily = vazirFontFamily,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-        )
     }
 
     removingNote?.let { note ->
@@ -312,20 +305,23 @@ private fun BoxHeader(box: NoteBoxEntity, noteCount: Int) {
 private fun NoteListItem(
     note: NoteEntity,
     editMode: Boolean,
+    palette: com.nima.app.imanage.ui.theme.NoteBoxPalette,
     onClick: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
     val isDark = androidx.compose.foundation.isSystemInDarkTheme()
-    val glassSurface = Color.White.copy(alpha = if (isDark) 0.08f else 0.85f)
-    val glassBorder = Color.White.copy(alpha = if (isDark) 0.14f else 0.5f)
-    val onGlass = MaterialTheme.colorScheme.onBackground
+    val glassSurface = if (isDark) Color.Black.copy(alpha = 0.55f) else Color.White.copy(alpha = 0.85f)
+    val glassBorder = if (isDark) Color.White.copy(alpha = 0.12f) else Color.White.copy(alpha = 0.55f)
+    val textColor = if (isDark) Color.White else Color.Black
+    val subtitleColor = if (isDark) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.65f)
+    val contentSurface = if (isDark) Color.White.copy(alpha = 0.06f) else Color.Black.copy(alpha = 0.05f)
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.cardElevation(if (isDark) 4.dp else 8.dp),
         colors = CardDefaults.cardColors(containerColor = glassSurface)
     ) {
@@ -335,14 +331,19 @@ private fun NoteListItem(
                 .border(
                     width = 1.dp,
                     color = glassBorder,
-                    shape = RoundedCornerShape(20.dp)
+                    shape = RoundedCornerShape(24.dp)
                 )
                 .padding(16.dp)
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                NoteIconBadge(palette = palette)
+                Spacer(modifier = Modifier.size(10.dp))
                 Text(
-                    text = note.title.ifBlank { "Untitled" },
-                    color = onGlass,
+                    text = note.title.ifBlank { "\u2026" },
+                    color = textColor,
                     fontFamily = vazirFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
@@ -352,38 +353,90 @@ private fun NoteListItem(
                 )
                 AnimatedVisibility(visible = editMode) {
                     Row {
-                        IconButton(onClick = onEdit, modifier = Modifier.size(40.dp)) {
+                        IconButton(onClick = onEdit, modifier = Modifier.size(36.dp)) {
                             Icon(
                                 Icons.Default.Edit,
                                 contentDescription = stringResource(R.string.edit),
-                                tint = onGlass,
-                                modifier = Modifier.size(20.dp)
+                                tint = textColor,
+                                modifier = Modifier.size(18.dp)
                             )
                         }
-                        IconButton(onClick = onDelete, modifier = Modifier.size(40.dp)) {
+                        IconButton(onClick = onDelete, modifier = Modifier.size(36.dp)) {
                             Icon(
                                 Icons.Default.Delete,
                                 contentDescription = stringResource(R.string.delete),
-                                tint = onGlass,
-                                modifier = Modifier.size(20.dp)
+                                tint = textColor,
+                                modifier = Modifier.size(18.dp)
                             )
                         }
                     }
                 }
             }
+
             if (note.content.isNotBlank()) {
-                Spacer(modifier = Modifier.size(6.dp))
-                Text(
-                    text = note.content,
-                    color = onGlass.copy(alpha = 0.75f),
-                    fontFamily = vazirFontFamily,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 13.sp,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis
-                )
+                Spacer(modifier = Modifier.height(10.dp))
+                val context = LocalContext.current
+                val copiedMsg = stringResource(R.string.copied_to_clipboard)
+                val copyDesc = stringResource(R.string.copy)
+                Row(verticalAlignment = Alignment.Top) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(contentSurface)
+                            .padding(horizontal = 10.dp, vertical = 8.dp)
+                    ) {
+                        Text(
+                            text = note.content,
+                            color = subtitleColor,
+                            fontFamily = vazirFontFamily,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 13.sp,
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            val clipboard = ContextCompat.getSystemService(context, ClipboardManager::class.java)
+                            clipboard?.setPrimaryClip(ClipData.newPlainText("note", note.content))
+                            Toast.makeText(context, copiedMsg, Toast.LENGTH_SHORT).show()
+                        },
+                        modifier = Modifier.size(32.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.ContentCopy,
+                            contentDescription = copyDesc,
+                            tint = textColor.copy(alpha = 0.45f),
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun NoteIconBadge(palette: com.nima.app.imanage.ui.theme.NoteBoxPalette) {
+    Box(
+        modifier = Modifier
+            .size(42.dp)
+            .clip(CircleShape)
+            .background(palette.accent.copy(alpha = 0.35f))
+            .border(
+                width = 1.dp,
+                color = Color.White.copy(alpha = 0.6f),
+                shape = CircleShape
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.StickyNote2,
+            contentDescription = null,
+            tint = Color.White,
+            modifier = Modifier.size(20.dp)
+        )
     }
 }
 
