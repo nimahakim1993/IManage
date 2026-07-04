@@ -7,6 +7,7 @@ import com.nima.app.imanage.data.db.dao.ExpenseCategoryDao
 import com.nima.app.imanage.data.db.dao.ExpenseDao
 import com.nima.app.imanage.data.db.dao.InstallmentDao
 import com.nima.app.imanage.data.db.dao.InstallmentItemDao
+import com.nima.app.imanage.data.db.dao.AssetDao
 import com.nima.app.imanage.data.db.dao.LoanDao
 import com.nima.app.imanage.data.db.dao.IncomeDao
 import com.nima.app.imanage.data.db.dao.IncomeSourceDao
@@ -18,6 +19,7 @@ import com.nima.app.imanage.data.db.entity.ExpenseEntity
 import com.nima.app.imanage.data.db.entity.IncomeEntity
 import com.nima.app.imanage.data.db.entity.IncomeSourceEntity
 import com.nima.app.imanage.data.db.entity.InstallmentEntity
+import com.nima.app.imanage.data.db.entity.AssetEntity
 import com.nima.app.imanage.data.db.entity.InstallmentItemEntity
 import com.nima.app.imanage.data.db.entity.LoanEntity
 import com.nima.app.imanage.data.db.entity.NoteBoxEntity
@@ -35,9 +37,10 @@ import com.nima.app.imanage.data.db.entity.NoteEntity
         IncomeSourceEntity::class,
         IncomeEntity::class,
         InstallmentEntity::class,
-        InstallmentItemEntity::class
+        InstallmentItemEntity::class,
+        AssetEntity::class
     ],
-    version = 14,
+    version = 15,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -51,4 +54,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun incomeDao(): IncomeDao
     abstract fun installmentDao(): InstallmentDao
     abstract fun installmentItemDao(): InstallmentItemDao
+    abstract fun assetDao(): AssetDao
 }

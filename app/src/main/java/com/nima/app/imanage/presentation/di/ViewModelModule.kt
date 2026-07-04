@@ -1,5 +1,6 @@
 package com.nima.app.imanage.presentation.di
 
+import com.nima.app.imanage.presentation.viewmodel.AssetViewModel
 import com.nima.app.imanage.presentation.viewmodel.BankCardViewModel
 import com.nima.app.imanage.presentation.viewmodel.ExpenseCategoryViewModel
 import com.nima.app.imanage.presentation.viewmodel.ExpenseViewModel
@@ -20,4 +21,5 @@ val viewModelModule = module {
     viewModel { ExpenseViewModel(get(), get()) }
     viewModel { IncomeViewModel(get(), get()) }
     viewModel { InstallmentViewModel(get(), get()) }
+    viewModel { AssetViewModel(get()) }
 }

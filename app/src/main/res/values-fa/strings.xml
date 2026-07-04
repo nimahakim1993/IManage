@@ -207,4 +207,23 @@
     <string name="days">روز</string>
     <string name="of_total_days">از %d روز</string>
     <string name="every_days">هر %d روز</string>
+    <!-- Assets -->
+    <string name="assets_title">دارایی‌ها</string>
+    <string name="create_asset_title">دارایی جدید</string>
+    <string name="edit_asset_title">ویرایش دارایی</string>
+    <string name="asset_name_label">نام دارایی</string>
+    <string name="asset_name_hint">مثلا: دلار، طلا، زمین</string>
+    <string name="asset_icon_label">آیکون</string>
+    <string name="unit_count">مقدار</string>
+    <string name="unit_count_hint">مثلا: ۱۰۰</string>
+    <string name="unit">واحد</string>
+    <string name="price_per_unit">قیمت هر واحد</string>
+    <string name="price_per_unit_hint">مثلا: ۱۷۰۰۰۰</string>
+    <string name="toman">تومان</string>
+    <string name="total_asset_value">ارزش کل</string>
+    <string name="assets_count">دارایی</string>
+    <string name="empty_assets">هنوز دارایی ندارید</string>
+    <string name="empty_assets_hint">برای افزودن اولین دارایی روی + بزنید</string>
+    <string name="asset_distribution">توزیع دارایی</string>
+
 </resources>

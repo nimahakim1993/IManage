@@ -1,5 +1,6 @@
 package com.nima.app.imanage.presentation.di
 
+import com.nima.app.imanage.data.repository.AssetRepository
 import com.nima.app.imanage.data.repository.BankCardRepository
 import com.nima.app.imanage.data.repository.ExpenseCategoryRepository
 import com.nima.app.imanage.data.repository.ExpenseRepository
@@ -23,4 +24,5 @@ val repositoryModule = module {
     single { IncomeRepository(get()) }
     single { InstallmentRepository(get()) }
     single { InstallmentItemRepository(get()) }
+    single { AssetRepository(get()) }
 }

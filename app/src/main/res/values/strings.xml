@@ -240,4 +240,23 @@
     <string name="days">days</string>
     <string name="of_total_days">of %d days</string>
     <string name="every_days">Every %d days</string>
+    <!-- Assets -->
+    <string name="assets_title">Assets</string>
+    <string name="create_asset_title">New Asset</string>
+    <string name="edit_asset_title">Edit Asset</string>
+    <string name="asset_name_label">Asset Name</string>
+    <string name="asset_name_hint">e.g. Dollar, Gold, Land</string>
+    <string name="asset_icon_label">Icon</string>
+    <string name="unit_count">Amount</string>
+    <string name="unit_count_hint">e.g. 100</string>
+    <string name="unit">unit</string>
+    <string name="price_per_unit">Price per unit</string>
+    <string name="price_per_unit_hint">e.g. 170000</string>
+    <string name="toman">Toman</string>
+    <string name="total_asset_value">Total Value</string>
+    <string name="assets_count">Assets</string>
+    <string name="empty_assets">No assets yet</string>
+    <string name="empty_assets_hint">Tap + to add your first asset</string>
+    <string name="asset_distribution">Asset Distribution</string>
+
 </resources>

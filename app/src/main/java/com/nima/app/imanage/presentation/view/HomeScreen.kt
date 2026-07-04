@@ -275,7 +275,9 @@ private fun DashboardGrid(navController: NavHostController) {
         DashboardEntry(stringResource(R.string.note), Icons.Default.NoteAlt) {
             navController.navigate(Screen.Notes.route)
         },
-        DashboardEntry(stringResource(R.string.assets), Icons.Default.Inventory2) {},
+        DashboardEntry(stringResource(R.string.assets), Icons.Default.Inventory2) {
+            navController.navigate(Screen.Assets.route)
+        },
         DashboardEntry(stringResource(R.string.report), Icons.Default.Report) {},
     )
 

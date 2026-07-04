@@ -23,4 +23,5 @@ val databaseModule = module {
     single { get<AppDatabase>().incomeDao() }
     single { get<AppDatabase>().installmentDao() }
     single { get<AppDatabase>().installmentItemDao() }
+    single { get<AppDatabase>().assetDao() }
 }

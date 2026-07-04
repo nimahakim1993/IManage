@@ -19,6 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.nima.app.imanage.data.model.ToolbarConfig
+import com.nima.app.imanage.presentation.view.AssetsScreen
 import com.nima.app.imanage.presentation.view.BankCardsScreen
 import com.nima.app.imanage.presentation.view.CreateBankCardScreen
 import com.nima.app.imanage.presentation.view.CreateLoanScreen
@@ -97,6 +98,7 @@ fun Navigation(
         modifier = Modifier.padding(padding)
     ) {
         composable(Screen.Home.route) { HomeScreen(setToolbar, navController) }
+        composable(Screen.Assets.route) { AssetsScreen(setToolbar, navController) }
         composable(Screen.BankCards.route) { BankCardsScreen(setToolbar, navController) }
         composable(
             route = Screen.CreateBankCard.route,
