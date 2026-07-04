@@ -18,11 +18,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.AccountBalance
-import androidx.compose.material.icons.filled.CreditCard
-import androidx.compose.material.icons.filled.Inventory2
-import androidx.compose.material.icons.filled.Report
-import androidx.compose.material.icons.outlined.MonetizationOn
-import androidx.compose.material.icons.outlined.Money
+import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.Assessment
+import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -265,20 +264,20 @@ private fun ReportStatTile(
 @Composable
 private fun DashboardGrid(navController: NavHostController) {
     val items = listOf(
-        DashboardEntry(stringResource(R.string.financial_title), Icons.Outlined.Money) {
+        DashboardEntry(stringResource(R.string.financial_title), Icons.Default.Payments) {
             navController.navigate(Screen.Financial.route)
         },
-        DashboardEntry(stringResource(R.string.bank_account_home), Icons.Default.CreditCard) {
+        DashboardEntry(stringResource(R.string.bank_account_home), Icons.Default.AccountBalance) {
             navController.navigate(Screen.BankCards.route)
         },
-        DashboardEntry(stringResource(R.string.shared_trip), Icons.Outlined.MonetizationOn) {},
+        DashboardEntry(stringResource(R.string.shared_trip), Icons.Default.Groups) {},
         DashboardEntry(stringResource(R.string.note), Icons.Default.NoteAlt) {
             navController.navigate(Screen.Notes.route)
         },
-        DashboardEntry(stringResource(R.string.assets), Icons.Default.Inventory2) {
+        DashboardEntry(stringResource(R.string.assets), Icons.Default.AccountBalanceWallet) {
             navController.navigate(Screen.Assets.route)
         },
-        DashboardEntry(stringResource(R.string.report), Icons.Default.Report) {},
+        DashboardEntry(stringResource(R.string.report), Icons.Default.Assessment) {},
     )
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {

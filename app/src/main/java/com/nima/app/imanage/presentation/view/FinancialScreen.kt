@@ -11,9 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBalance
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Handshake
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -51,12 +51,12 @@ fun FinancialScreen(
     val items = listOf(
         FinancialEntry(
             title = stringResource(R.string.debt) + " " + stringResource(R.string.receivable),
-            icon = Icons.Default.AccountBalance,
+            icon = Icons.Default.Handshake,
             onClick = { navController.navigate(Screen.Loans.route) }
         ),
         FinancialEntry(
             title = stringResource(R.string.expense),
-            icon = Icons.Default.Build,
+            icon = Icons.Default.ShoppingCart,
             onClick = { navController.navigate(Screen.Expenses.route) }
         ),
         FinancialEntry(
