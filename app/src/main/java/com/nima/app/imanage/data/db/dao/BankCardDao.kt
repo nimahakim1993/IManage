@@ -16,9 +16,12 @@ interface BankCardDao {
     @Delete
     suspend fun delete(card: BankCardEntity)
 
-    @Query("SELECT * FROM bank_cards ORDER BY id DESC")
+    @Query("SELECT * FROM bank_cards ORDER BY sortKey ASC")
     fun getAll(): Flow<List<BankCardEntity>>
 
     @Query("SELECT * FROM bank_cards WHERE id = :cardId")
     fun get(cardId: Int): Flow<BankCardEntity?>
+
+    @Query("UPDATE bank_cards SET sortKey = :sortKey WHERE id = :id")
+    suspend fun updateSortKey(id: Int, sortKey: Int)
 }

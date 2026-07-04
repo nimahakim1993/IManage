@@ -44,4 +44,12 @@ class BankCardViewModel(
             repository.delete(card)
         }
     }
+
+    fun reorderCards(orderedIds: List<Int>) {
+        viewModelScope.launch {
+            orderedIds.forEachIndexed { index, id ->
+                repository.updateSortKey(id, index)
+            }
+        }
+    }
 }

@@ -51,11 +51,11 @@ object NumberFormatUtils {
     }
 
     fun toLocalizedDigits(input: String): String {
-        if (input.isEmpty()) return input
+        if (input.isEmpty() || !isPersianLocale()) return input
         val out = StringBuilder(input.length)
         for (c in input) {
             out.append(
-                if (c in '0'..'9') (0x0660 + (c.code - '0'.code)).toChar() else c
+                if (c in '0'..'9') (0x06F0 + (c.code - '0'.code)).toChar() else c
             )
         }
         return out.toString()

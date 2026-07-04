@@ -45,6 +45,7 @@
     <string name="more_options">گزینه‌های بیشتر</string>
     <string name="copy">کپی</string>
     <string name="copied_to_clipboard">در کلیپ‌بورد کپی شد</string>
+    <string name="drag">برای جابجایی بکشید</string>
     <string name="not_set">تنظیم نشده</string>
     <string name="empty_bank_cards">هنوز حساب بانکی ندارید</string>
     <string name="empty_bank_cards_hint">برای افزودن اولین حساب روی + بزنید</string>

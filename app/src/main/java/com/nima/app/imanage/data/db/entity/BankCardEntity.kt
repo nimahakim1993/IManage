@@ -13,5 +13,6 @@ data class BankCardEntity(
     val bankName: String,
     val color: Long,
     val shebaNumber: String? = null,
-    val accountNumber: String? = null
+    val accountNumber: String? = null,
+    val sortKey: Int = 0
 )

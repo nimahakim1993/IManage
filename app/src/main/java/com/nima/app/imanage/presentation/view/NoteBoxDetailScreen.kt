@@ -96,30 +96,41 @@ fun NoteBoxDetailScreen(
 
     val box = selectedBox ?: boxes.firstOrNull { it.id == boxId }
 
-    LaunchedEffect(box?.title, toggleEditMode) {
+    val notes by noteViewModel.notes.collectAsState()
+    val notesEmpty = notes.isEmpty()
+
+    LaunchedEffect(notesEmpty) {
+        if (notesEmpty) toggleEditMode = false
+    }
+
+    LaunchedEffect(box?.title, toggleEditMode, notesEmpty) {
+        val actions = mutableListOf(
+            ToolbarAction(
+                icon = Icons.Default.Add,
+                contentDescription = addDesc,
+                onClick = {
+                    navController.navigate(Screen.CreateNote.createRoute(boxId))
+                }
+            )
+        )
+        if (!notesEmpty) {
+            actions.add(
+                ToolbarAction(
+                    icon = if (toggleEditMode) Icons.Default.EditOff else Icons.Default.Edit,
+                    contentDescription = editDesc,
+                    onClick = { toggleEditMode = !toggleEditMode }
+                )
+            )
+        }
         setToolbar(
             ToolbarConfig(
                 title = box?.title ?: detailTitle,
                 showBack = true,
-                actions = listOf(
-                    ToolbarAction(
-                        icon = Icons.Default.Add,
-                        contentDescription = addDesc,
-                        onClick = {
-                            navController.navigate(Screen.CreateNote.createRoute(boxId))
-                        }
-                    ),
-                    ToolbarAction(
-                        icon = if (toggleEditMode) Icons.Default.EditOff else Icons.Default.Edit,
-                        contentDescription = editDesc,
-                        onClick = { toggleEditMode = !toggleEditMode }
-                    )
-                )
+                actions = actions
             )
         )
     }
 
-    val notes by noteViewModel.notes.collectAsState()
     var removingNote by remember { mutableStateOf<NoteEntity?>(null) }
 
     Box(modifier = Modifier.fillMaxSize()) {

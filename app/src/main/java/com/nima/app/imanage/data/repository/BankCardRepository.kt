@@ -14,4 +14,6 @@ class BankCardRepository(
     fun getAll(): Flow<List<BankCardEntity>> = dao.getAll()
 
     fun get(cardId: Int): Flow<BankCardEntity?> = dao.get(cardId)
+
+    suspend fun updateSortKey(id: Int, sortKey: Int) = dao.updateSortKey(id, sortKey)
 }

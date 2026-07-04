@@ -1,9 +1,18 @@
 package com.nima.app.imanage.presentation.di
 
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.nima.app.imanage.data.db.AppDatabase
 import org.koin.dsl.module
 
+
+val MIGRATION_15_16 = object : Migration(15, 16) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE bank_cards ADD COLUMN sortKey INTEGER NOT NULL DEFAULT 0")
+        database.execSQL("UPDATE bank_cards SET sortKey = id")
+    }
+}
 
 val databaseModule = module {
     single {
@@ -11,7 +20,10 @@ val databaseModule = module {
             get(),
             AppDatabase::class.java,
             "app_db"
-        ).fallbackToDestructiveMigration().build()
+        )
+            .addMigrations(MIGRATION_15_16)
+            .fallbackToDestructiveMigration()
+            .build()
     }
     single { get<AppDatabase>().bankCardDao() }
     single { get<AppDatabase>().loanDao() }
