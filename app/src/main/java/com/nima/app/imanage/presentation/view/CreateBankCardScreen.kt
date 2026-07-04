@@ -20,6 +20,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
@@ -41,12 +43,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -92,6 +98,8 @@ fun CreateBankCardScreen(
     var cardColor by rememberSaveable(stateSaver = colorSaver) {
         mutableStateOf(Color(0xFF0F5C5A))
     }
+
+    val yearFocusRequester = remember { FocusRequester() }
 
     val colors = listOf(
         Color(0xFF0F5C5A),
@@ -197,7 +205,10 @@ fun CreateBankCardScreen(
             OutlinedTextField(
                 value = month,
                 onValueChange = {
-                    if (it.length <= 2 && it.all(Char::isDigit)) month = it
+                    if (it.length <= 2 && it.all(Char::isDigit)) {
+                        month = it
+                        if (it.length == 2) yearFocusRequester.requestFocus()
+                    }
                 },
                 label = { Text(stringResource(R.string.month)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -211,7 +222,9 @@ fun CreateBankCardScreen(
             },
             label = { Text(stringResource(R.string.year)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(yearFocusRequester)
         )
     }
 
@@ -360,14 +373,20 @@ fun AtmCardPreview(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = if (!showSensitive) stringResource(R.string.cvv_masked) else NumberFormatUtils.toLocalizedDigits(stringResource(R.string.cvv_format, cvv.ifEmpty { "***" })),
-                        color = Color.White
-                    )
-                    Text(
-                        text = NumberFormatUtils.toLocalizedDigits(expiry).ifEmpty { stringResource(R.string.yy_mm_placeholder) },
-                        color = Color.White
-                    )
+                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                        Text(
+                            text = if (!showSensitive) {
+                                stringResource(R.string.cvv_masked)
+                            } else {
+                                if (cvv.isBlank()) stringResource(R.string.cvv_format, stringResource(R.string.not_set)) else NumberFormatUtils.toLocalizedDigits(stringResource(R.string.cvv_format, cvv))
+                            },
+                            color = Color.White
+                        )
+                        Text(
+                            text = NumberFormatUtils.toLocalizedDigits(expiry).ifEmpty { stringResource(R.string.yy_mm_placeholder) },
+                            color = Color.White
+                        )
+                    }
                 }
 
                 AnimatedVisibility(visible = editMode) {

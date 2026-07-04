@@ -29,17 +29,25 @@ val DarkColorScheme = darkColorScheme(
 )
 
 val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF0F5C5A),
-    primaryContainer = Color(0xFFC8ECEA),
-    secondary = Color(0xFFF4C27A),
-    background = Color(0xFFFFFBF5),
+    primary = Color(0xFF156E6B),
     onPrimary = Color(0xFFFFFFFF),
-    onSecondary = Color(0xFF33250D),
-    surface = Color(0xFFFFFFFF),
-    surfaceVariant = Color(0xFFF2ECE3),
+    primaryContainer = Color(0xFFA8DEDB),
+    onPrimaryContainer = Color(0xFF003735),
+    secondary = Color(0xFF7D5A1F),
+    onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = Color(0xFFFBE3B8),
+    onSecondaryContainer = Color(0xFF2D1F08),
+    background = Color(0xFFF6F8F7),
     onBackground = Color(0xFF1B1D1C),
+    surface = Color(0xFFFCFEFD),
     onSurface = Color(0xFF1B1D1C),
-    errorContainer = Color(0xFFE1E6EE),
+    surfaceVariant = Color(0xFFE7ECEA),
+    onSurfaceVariant = Color(0xFF3A4240),
+    error = Color(0xFFB3261E),
+    onError = Color(0xFFFFFFFF),
+    errorContainer = Color(0xFFF9DEDC),
+    onErrorContainer = Color(0xFF410E0B),
+    outline = Color(0xFF6F7976),
     scrim = Color(0x66000000)
 )
 
