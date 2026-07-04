@@ -245,8 +245,6 @@ private fun NoteBoxCard(
     val isDark = androidx.compose.foundation.isSystemInDarkTheme()
 
     val glassBorder = Color.White.copy(alpha = if (isDark) 0.18f else 0.55f)
-    val glassSurface = Color.White.copy(alpha = if (isDark) 0.10f else 0.65f)
-    val highlight = Color.White.copy(alpha = if (isDark) 0.22f else 0.85f)
 
     val cardBrush = Brush.linearGradient(
         colors = listOf(
@@ -275,18 +273,6 @@ private fun NoteBoxCard(
                     shape = RoundedCornerShape(28.dp)
                 )
         ) {
-            // Top inner highlight (glass effect)
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(highlight, Color.Transparent)
-                        )
-                    )
-            )
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -320,23 +306,15 @@ private fun NoteBoxCard(
 
                 if (box.description.isNotBlank()) {
                     Spacer(modifier = Modifier.height(14.dp))
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(glassSurface)
-                            .padding(horizontal = 12.dp, vertical = 10.dp)
-                    ) {
-                        Text(
-                            text = box.description,
-                            color = Color.White,
-                            fontFamily = vazirFontFamily,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 13.sp,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
+                    Text(
+                        text = box.description,
+                        color = Color.White.copy(alpha = 0.9f),
+                        fontFamily = vazirFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 13.sp,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
 
                 AnimatedVisibility(visible = editMode) {

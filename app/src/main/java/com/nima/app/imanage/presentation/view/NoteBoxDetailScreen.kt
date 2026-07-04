@@ -322,8 +322,6 @@ private fun NoteListItem(
     onDelete: () -> Unit
 ) {
     val isDark = androidx.compose.foundation.isSystemInDarkTheme()
-    val glassSurface = if (isDark) Color.Black.copy(alpha = 0.55f) else Color.White.copy(alpha = 0.85f)
-    val glassBorder = if (isDark) Color.White.copy(alpha = 0.12f) else Color.White.copy(alpha = 0.55f)
     val textColor = if (isDark) Color.White else Color.Black
     val subtitleColor = if (isDark) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.65f)
     val contentSurface = if (isDark) Color.White.copy(alpha = 0.06f) else Color.Black.copy(alpha = 0.05f)
@@ -334,16 +332,11 @@ private fun NoteListItem(
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.cardElevation(if (isDark) 4.dp else 8.dp),
-        colors = CardDefaults.cardColors(containerColor = glassSurface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(
-                    width = 1.dp,
-                    color = glassBorder,
-                    shape = RoundedCornerShape(24.dp)
-                )
                 .padding(16.dp)
         ) {
             Row(

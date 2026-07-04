@@ -14,14 +14,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -51,14 +56,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -234,21 +242,15 @@ private fun DonutChart(
         modifier = modifier,
         shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(24.dp))
-                .background(
-                    if (isDark)
-                        Color.White.copy(alpha = 0.07f)
-                    else
-                        Color.White.copy(alpha = 0.6f)
-                )
                 .border(
                     1.dp,
-                    if (isDark) Color.White.copy(alpha = 0.12f) else Color.White.copy(alpha = 0.9f),
+                    if (isDark) Color.White.copy(alpha = 0.12f) else Color.Black.copy(alpha = 0.08f),
                     RoundedCornerShape(24.dp)
                 )
                 .padding(16.dp)
@@ -384,22 +386,6 @@ private fun AssetRectangle(
 
     val primary = MaterialTheme.colorScheme.primary
 
-    val glassGradient = if (isDark) {
-        Brush.verticalGradient(
-            colors = listOf(
-                Color.White.copy(alpha = 0.18f),
-                Color.White.copy(alpha = 0.08f)
-            )
-        )
-    } else {
-        Brush.verticalGradient(
-            colors = listOf(
-                Color.White.copy(alpha = 0.85f),
-                Color.White.copy(alpha = 0.55f)
-            )
-        )
-    }
-
     val glassBorder = if (isDark)
         Color.White.copy(alpha = 0.18f)
     else
@@ -417,14 +403,13 @@ private fun AssetRectangle(
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(6.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(20.dp))
-                    .background(glassGradient)
                     .border(
                         if (editMode) 0.dp else 1.5.dp,
                         glassBorder,
@@ -617,6 +602,10 @@ private fun CreateAssetSheet(
     var unitCount by remember { mutableStateOf(TextFieldValue("")) }
     var pricePerUnit by remember { mutableStateOf(TextFieldValue("")) }
 
+    val unitCountFocusRequester = remember { FocusRequester() }
+    val pricePerUnitFocusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     LaunchedEffect(editing?.id) {
         editing?.let { asset ->
             name = asset.name
@@ -634,6 +623,9 @@ private fun CreateAssetSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .imePadding()
+                .navigationBarsPadding()
                 .padding(horizontal = 20.dp, vertical = 8.dp)
         ) {
             Text(
@@ -650,6 +642,8 @@ private fun CreateAssetSheet(
                 label = { Text(stringResource(R.string.asset_name_label)) },
                 placeholder = { Text(stringResource(R.string.asset_name_hint)) },
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(onNext = { unitCountFocusRequester.requestFocus() }),
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -725,11 +719,14 @@ private fun CreateAssetSheet(
                         )
                     }
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(onNext = { pricePerUnitFocusRequester.requestFocus() }),
                 label = { Text(stringResource(R.string.unit_count)) },
                 placeholder = { Text(stringResource(R.string.unit_count_hint)) },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(unitCountFocusRequester)
             )
 
             Spacer(modifier = Modifier.size(12.dp))
@@ -737,11 +734,14 @@ private fun CreateAssetSheet(
             OutlinedTextField(
                 value = pricePerUnit,
                 onValueChange = { pricePerUnit = NumberFormatUtils.formatWithCursor(it) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
                 label = { Text(stringResource(R.string.price_per_unit) + " (" + stringResource(R.string.toman) + ")") },
                 placeholder = { Text(stringResource(R.string.price_per_unit_hint)) },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(pricePerUnitFocusRequester)
             )
 
             Spacer(modifier = Modifier.size(20.dp))
