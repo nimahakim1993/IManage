@@ -321,17 +321,17 @@ private fun NoteListItem(
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
-    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
-    val textColor = if (isDark) Color.White else Color.Black
-    val subtitleColor = if (isDark) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.65f)
-    val contentSurface = if (isDark) Color.White.copy(alpha = 0.06f) else Color.Black.copy(alpha = 0.05f)
+    val onSurface = MaterialTheme.colorScheme.onSurface
+    val textColor = onSurface
+    val subtitleColor = onSurface.copy(alpha = 0.7f)
+    val contentSurface = onSurface.copy(alpha = 0.06f)
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(if (isDark) 4.dp else 8.dp),
+        elevation = CardDefaults.cardElevation(6.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(

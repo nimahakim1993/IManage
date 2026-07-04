@@ -235,8 +235,8 @@ private fun DonutChart(
         Triple(asset.name, value, angle)
     }
 
-    val textColor = if (isDark) Color.White.copy(alpha = 0.8f) else Color(0xFF1A1A2E)
-    val subTextColor = if (isDark) Color.White.copy(alpha = 0.55f) else Color(0xFF555577)
+    val textColor = MaterialTheme.colorScheme.onSurface.copy(alpha = if (isDark) 0.85f else 1f)
+    val subTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
 
     Card(
         modifier = modifier,
@@ -391,10 +391,10 @@ private fun AssetRectangle(
     else
         Color.White.copy(alpha = 0.95f)
 
-    val textPrimary = if (isDark) Color.White else Color(0xFF1A1A2E)
-    val textSecondary = if (isDark) Color.White.copy(alpha = 0.75f) else Color(0xFF333355).copy(alpha = 0.8f)
-    val textMuted = if (isDark) Color.White.copy(alpha = 0.55f) else Color(0xFF555577).copy(alpha = 0.7f)
-    val accentValue = if (isDark) Color(0xFF90CAF9) else Color(0xFF1565C0)
+    val textPrimary = MaterialTheme.colorScheme.onSurface
+    val textSecondary = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f)
+    val textMuted = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+    val accentValue = MaterialTheme.colorScheme.primary
 
     Card(
         modifier = Modifier
