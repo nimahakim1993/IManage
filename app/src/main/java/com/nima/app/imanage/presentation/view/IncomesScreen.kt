@@ -104,36 +104,45 @@ fun IncomesScreen(
     var selectedMonthYear by rememberSaveable { mutableStateOf<Pair<Int, Int>?>(null) }
     var showMonthYearPicker by rememberSaveable { mutableStateOf(false) }
 
-    LaunchedEffect(toggleEditMode) {
+    LaunchedEffect(incomes.isEmpty()) {
+        if (incomes.isEmpty()) toggleEditMode = false
+    }
+
+    LaunchedEffect(toggleEditMode, incomes.isEmpty()) {
+        val actions = mutableListOf(
+            ToolbarAction(
+                icon = Icons.Default.Add,
+                contentDescription = addDesc,
+                onClick = {
+                    editingIncome = null
+                    showCreateSheet = true
+                }
+            ),
+            ToolbarAction(
+                icon = Icons.Default.FilterAlt,
+                contentDescription = filterDesc,
+                onClick = { showFilterDialog = true }
+            ),
+            ToolbarAction(
+                icon = Icons.Default.Tune,
+                contentDescription = manageDesc,
+                onClick = { navController.navigate(Screen.IncomeSources.route) }
+            )
+        )
+        if (incomes.isNotEmpty()) {
+            actions.add(
+                ToolbarAction(
+                    icon = if (toggleEditMode) Icons.Default.EditOff else Icons.Default.Edit,
+                    contentDescription = editDesc,
+                    onClick = { toggleEditMode = !toggleEditMode }
+                )
+            )
+        }
         setToolbar(
             ToolbarConfig(
                 title = incomesTitle,
                 showBack = true,
-                actions = listOf(
-                    ToolbarAction(
-                        icon = Icons.Default.Add,
-                        contentDescription = addDesc,
-                        onClick = {
-                            editingIncome = null
-                            showCreateSheet = true
-                        }
-                    ),
-                    ToolbarAction(
-                        icon = Icons.Default.FilterAlt,
-                        contentDescription = filterDesc,
-                        onClick = { showFilterDialog = true }
-                    ),
-                    ToolbarAction(
-                        icon = Icons.Default.Tune,
-                        contentDescription = manageDesc,
-                        onClick = { navController.navigate(Screen.IncomeSources.route) }
-                    ),
-                    ToolbarAction(
-                        icon = if (toggleEditMode) Icons.Default.EditOff else Icons.Default.Edit,
-                        contentDescription = editDesc,
-                        onClick = { toggleEditMode = !toggleEditMode }
-                    )
-                )
+                actions = actions
             )
         )
     }

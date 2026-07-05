@@ -88,23 +88,32 @@ fun InstallmentsScreen(
     var toggleEditMode by rememberSaveable { mutableStateOf(false) }
     var removingInstallment by remember { mutableStateOf<InstallmentEntity?>(null) }
 
-    LaunchedEffect(toggleEditMode) {
+    LaunchedEffect(installments.isEmpty()) {
+        if (installments.isEmpty()) toggleEditMode = false
+    }
+
+    LaunchedEffect(toggleEditMode, installments.isEmpty()) {
+        val actions = mutableListOf(
+            ToolbarAction(
+                icon = Icons.Default.Add,
+                contentDescription = addDesc,
+                onClick = { navController.navigate(Screen.CreateInstallment.createRoute()) }
+            )
+        )
+        if (installments.isNotEmpty()) {
+            actions.add(
+                ToolbarAction(
+                    icon = if (toggleEditMode) Icons.Default.EditOff else Icons.Default.Edit,
+                    contentDescription = editDesc,
+                    onClick = { toggleEditMode = !toggleEditMode }
+                )
+            )
+        }
         setToolbar(
             ToolbarConfig(
                 title = title,
                 showBack = true,
-                actions = listOf(
-                    ToolbarAction(
-                        icon = Icons.Default.Add,
-                        contentDescription = addDesc,
-                        onClick = { navController.navigate(Screen.CreateInstallment.createRoute()) }
-                    ),
-                    ToolbarAction(
-                        icon = if (toggleEditMode) Icons.Default.EditOff else Icons.Default.Edit,
-                        contentDescription = editDesc,
-                        onClick = { toggleEditMode = !toggleEditMode }
-                    )
-                )
+                actions = actions
             )
         )
     }

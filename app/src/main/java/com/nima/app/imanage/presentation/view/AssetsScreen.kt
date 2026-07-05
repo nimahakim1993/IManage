@@ -102,26 +102,35 @@ fun AssetsScreen(
     var editingAsset by remember { mutableStateOf<AssetEntity?>(null) }
     var removingAsset by remember { mutableStateOf<AssetEntity?>(null) }
 
-    LaunchedEffect(toggleEditMode) {
+    LaunchedEffect(assets.isEmpty()) {
+        if (assets.isEmpty()) toggleEditMode = false
+    }
+
+    LaunchedEffect(toggleEditMode, assets.isEmpty()) {
+        val actions = mutableListOf(
+            ToolbarAction(
+                icon = Icons.Default.Add,
+                contentDescription = addDesc,
+                onClick = {
+                    editingAsset = null
+                    showCreateSheet = true
+                }
+            )
+        )
+        if (assets.isNotEmpty()) {
+            actions.add(
+                ToolbarAction(
+                    icon = if (toggleEditMode) Icons.Default.EditOff else Icons.Default.Edit,
+                    contentDescription = editDesc,
+                    onClick = { toggleEditMode = !toggleEditMode }
+                )
+            )
+        }
         setToolbar(
             ToolbarConfig(
                 title = assetsTitle,
                 showBack = true,
-                actions = listOf(
-                    ToolbarAction(
-                        icon = Icons.Default.Add,
-                        contentDescription = addDesc,
-                        onClick = {
-                            editingAsset = null
-                            showCreateSheet = true
-                        }
-                    ),
-                    ToolbarAction(
-                        icon = if (toggleEditMode) Icons.Default.EditOff else Icons.Default.Edit,
-                        contentDescription = editDesc,
-                        onClick = { toggleEditMode = !toggleEditMode }
-                    )
-                )
+                actions = actions
             )
         )
     }

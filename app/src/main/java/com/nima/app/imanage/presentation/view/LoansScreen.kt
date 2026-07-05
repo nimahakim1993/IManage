@@ -108,23 +108,29 @@ fun LoansScreen(
     var showSettled by rememberSaveable { mutableStateOf(true) }
     var showUnsettled by rememberSaveable { mutableStateOf(true) }
 
-    LaunchedEffect(toggleEditMode) {
-        setToolbar(
-            ToolbarConfig(title = loansTitle, showBack = true, actions = listOf(
-                ToolbarAction(
-                    icon = Icons.Default.Add,
-                    contentDescription = addDesc,
-                    onClick = {
-                        navController.navigate(Screen.CreateLoan.createRoute())
-                    }
-                ),
-                ToolbarAction(
-                    icon = Icons.Default.FilterAlt,
-                    contentDescription = filterDesc,
-                    onClick = {
-                        showFilterDialog = true
-                    }
-                ),
+    LaunchedEffect(loans.isEmpty()) {
+        if (loans.isEmpty()) toggleEditMode = false
+    }
+
+    LaunchedEffect(toggleEditMode, loans.isEmpty()) {
+        val actions = mutableListOf(
+            ToolbarAction(
+                icon = Icons.Default.Add,
+                contentDescription = addDesc,
+                onClick = {
+                    navController.navigate(Screen.CreateLoan.createRoute())
+                }
+            ),
+            ToolbarAction(
+                icon = Icons.Default.FilterAlt,
+                contentDescription = filterDesc,
+                onClick = {
+                    showFilterDialog = true
+                }
+            )
+        )
+        if (loans.isNotEmpty()) {
+            actions.add(
                 ToolbarAction(
                     icon = if (toggleEditMode)
                         Icons.Default.EditOff
@@ -132,9 +138,10 @@ fun LoansScreen(
                         Icons.Default.Edit,
                     contentDescription = editDesc,
                     onClick = { toggleEditMode = !toggleEditMode }
-                ),
-            ))
-        )
+                )
+            )
+        }
+        setToolbar(ToolbarConfig(title = loansTitle, showBack = true, actions = actions))
     }
 
     val filteredLoans = remember(loans, searchQuery, showDebts, showReceivables, showSettled, showUnsettled) {

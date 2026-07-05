@@ -77,25 +77,34 @@ fun NotesScreen(
     var removingBox by remember { mutableStateOf<NoteBoxEntity?>(null) }
     var toggleEditMode by rememberSaveable { mutableStateOf(false) }
 
-    LaunchedEffect(toggleEditMode) {
+    LaunchedEffect(boxes.isEmpty()) {
+        if (boxes.isEmpty()) toggleEditMode = false
+    }
+
+    LaunchedEffect(toggleEditMode, boxes.isEmpty()) {
+        val actions = mutableListOf(
+            ToolbarAction(
+                icon = Icons.Default.Add,
+                contentDescription = addDesc,
+                onClick = {
+                    navController.navigate(Screen.CreateNoteBox.createRoute())
+                }
+            )
+        )
+        if (boxes.isNotEmpty()) {
+            actions.add(
+                ToolbarAction(
+                    icon = if (toggleEditMode) Icons.Default.EditOff else Icons.Default.Edit,
+                    contentDescription = editDesc,
+                    onClick = { toggleEditMode = !toggleEditMode }
+                )
+            )
+        }
         setToolbar(
             ToolbarConfig(
                 title = notesTitle,
                 showBack = true,
-                actions = listOf(
-                    ToolbarAction(
-                        icon = Icons.Default.Add,
-                        contentDescription = addDesc,
-                        onClick = {
-                            navController.navigate(Screen.CreateNoteBox.createRoute())
-                        }
-                    ),
-                    ToolbarAction(
-                        icon = if (toggleEditMode) Icons.Default.EditOff else Icons.Default.Edit,
-                        contentDescription = editDesc,
-                        onClick = { toggleEditMode = !toggleEditMode }
-                    )
-                )
+                actions = actions
             )
         )
     }

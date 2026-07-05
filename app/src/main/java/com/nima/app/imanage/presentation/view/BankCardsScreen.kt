@@ -82,18 +82,23 @@ fun BankCardsScreen(
     val context = LocalContext.current
     val copiedMsg = stringResource(R.string.copied_to_clipboard)
 
-    LaunchedEffect(toggleSensitive, toggleEditMode) {
-        setToolbar(ToolbarConfig(title = bankAccountTitle,
-            showBack = true,
-            actions = listOf(
-                ToolbarAction(
-                    icon = if (toggleSensitive)
-                        Icons.Default.VisibilityOff
-                    else
-                        Icons.Default.Visibility,
-                    contentDescription = visibilityDesc,
-                    onClick = { toggleSensitive = !toggleSensitive }
-                ),
+    LaunchedEffect(cards.isEmpty()) {
+        if (cards.isEmpty()) toggleEditMode = false
+    }
+
+    LaunchedEffect(toggleSensitive, toggleEditMode, cards.isEmpty()) {
+        val actions = mutableListOf(
+            ToolbarAction(
+                icon = if (toggleSensitive)
+                    Icons.Default.VisibilityOff
+                else
+                    Icons.Default.Visibility,
+                contentDescription = visibilityDesc,
+                onClick = { toggleSensitive = !toggleSensitive }
+            )
+        )
+        if (cards.isNotEmpty()) {
+            actions.add(
                 ToolbarAction(
                     icon = if (toggleEditMode)
                         Icons.Default.EditOff
@@ -101,16 +106,23 @@ fun BankCardsScreen(
                         Icons.Default.Edit,
                     contentDescription = editDesc,
                     onClick = { toggleEditMode = !toggleEditMode }
-                ),
-                ToolbarAction(
-                    icon = Icons.Default.Add,
-                    contentDescription = addAccountDesc,
-                    onClick = {
-                        navController.navigate(Screen.CreateBankCard.route)
-                    }
-                ),
-            ))
+                )
+            )
+        }
+        actions.add(
+            ToolbarAction(
+                icon = Icons.Default.Add,
+                contentDescription = addAccountDesc,
+                onClick = {
+                    navController.navigate(Screen.CreateBankCard.route)
+                }
+            )
         )
+        setToolbar(ToolbarConfig(
+            title = bankAccountTitle,
+            showBack = true,
+            actions = actions
+        ))
     }
 
     val colors = listOf(
