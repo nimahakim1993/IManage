@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -84,6 +83,19 @@ import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
 import org.koin.androidx.compose.koinViewModel
 import java.util.Locale
+
+private val assetChartColors = listOf(
+    Color(0xFF4FC3F7),
+    Color(0xFFFFB74D),
+    Color(0xFFAED581),
+    Color(0xFFE57373),
+    Color(0xFFBA68C8),
+    Color(0xFF4DD0E1),
+    Color(0xFFFFF176),
+    Color(0xFFA1887F),
+    Color(0xFF90A4AE),
+    Color(0xFF7986CB),
+)
 
 @Composable
 fun AssetsScreen(
@@ -170,11 +182,16 @@ fun AssetsScreen(
                         )
                     }
                 }
-                items(assets, key = { it.id }) { asset ->
+                items(
+                    count = assets.size,
+                    key = { index -> assets[index].id }
+                ) { index ->
+                    val asset = assets[index]
                     val assetValue = (asset.unitCount * asset.pricePerUnit).toLong()
                     AssetRectangle(
                         asset = asset,
                         assetValue = assetValue,
+                        accentColor = assetChartColors[index % assetChartColors.size],
                         editMode = toggleEditMode,
                         onClick = {
                             editingAsset = asset
@@ -224,19 +241,6 @@ private fun DonutChart(
     modifier: Modifier = Modifier
 ) {
     val isDark = isSystemInDarkTheme()
-
-    val sliceColors = listOf(
-        Color(0xFF4FC3F7),
-        Color(0xFFFFB74D),
-        Color(0xFFAED581),
-        Color(0xFFE57373),
-        Color(0xFFBA68C8),
-        Color(0xFF4DD0E1),
-        Color(0xFFFFF176),
-        Color(0xFFA1887F),
-        Color(0xFF90A4AE),
-        Color(0xFF7986CB),
-    )
 
     val slices = assets.map { asset ->
         val value = (asset.unitCount * asset.pricePerUnit).toLong()
@@ -294,7 +298,7 @@ private fun DonutChart(
                         slices.forEachIndexed { index, slice ->
                             val sweepAngle = slice.third.toFloat()
                             drawArc(
-                                color = sliceColors[index % sliceColors.size],
+                                color = assetChartColors[index % assetChartColors.size],
                                 startAngle = startAngle,
                                 sweepAngle = sweepAngle,
                                 useCenter = false,
@@ -332,7 +336,7 @@ private fun DonutChart(
                     val percent = if (totalValue > 0)
                         ((slice.second.toDouble() / totalValue.toDouble()) * 100).toInt()
                     else 0
-                    Triple(slice.first, percent, sliceColors[index % sliceColors.size])
+                    Triple(slice.first, percent, assetChartColors[index % assetChartColors.size])
                 }.chunked(2)
 
                 gridItems.forEach { row ->
@@ -386,14 +390,13 @@ private fun AssetRectangle(
     asset: AssetEntity,
     assetValue: Long,
     editMode: Boolean = false,
+    accentColor: Color = MaterialTheme.colorScheme.primary,
     onClick: () -> Unit = {},
     onEdit: () -> Unit = {},
     onDelete: () -> Unit = {}
 ) {
     val isDark = isSystemInDarkTheme()
     val iconType = AssetIconType.fromValue(asset.iconType)
-
-    val primary = MaterialTheme.colorScheme.primary
 
     val glassBorder = if (isDark)
         Color.White.copy(alpha = 0.18f)
@@ -403,7 +406,6 @@ private fun AssetRectangle(
     val textPrimary = MaterialTheme.colorScheme.onSurface
     val textSecondary = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f)
     val textMuted = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-    val accentValue = MaterialTheme.colorScheme.primary
 
     Card(
         modifier = Modifier
@@ -431,7 +433,12 @@ private fun AssetRectangle(
                             Modifier.border(
                                 1.5.dp,
                                 glassBorder,
-                                RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
+                                RoundedCornerShape(
+                                    topStart = 20.dp,
+                                    topEnd = 20.dp,
+                                    bottomStart = 0.dp,
+                                    bottomEnd = 0.dp
+                                )
                             )
                         else Modifier
                     )
@@ -445,15 +452,10 @@ private fun AssetRectangle(
                         modifier = Modifier
                             .size(56.dp)
                             .clip(CircleShape)
-                            .background(
-                                if (isDark)
-                                    Color.White.copy(alpha = 0.18f)
-                                else
-                                    Color.White.copy(alpha = 0.25f)
-                            )
+                            .background(accentColor.copy(alpha = if (isDark) 0.22f else 0.18f))
                             .border(
-                                1.dp,
-                                glassBorder.copy(alpha = 0.5f),
+                                1.5.dp,
+                                accentColor.copy(alpha = 0.4f),
                                 CircleShape
                             ),
                         contentAlignment = Alignment.Center
@@ -461,7 +463,7 @@ private fun AssetRectangle(
                         Icon(
                             imageVector = iconType.icon,
                             contentDescription = null,
-                            tint = primary,
+                            tint = accentColor,
                             modifier = Modifier.size(30.dp)
                         )
                     }
@@ -514,7 +516,7 @@ private fun AssetRectangle(
 
                     Text(
                         text = NumberFormatUtils.format(assetValue),
-                        color = accentValue,
+                        color = accentColor,
                         fontWeight = FontWeight.ExtraBold,
                         fontSize = 18.sp,
                         fontFamily = vazirFontFamily,
