@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+    width="256" height="256"
+    viewBox="0 0 108 108">
+    <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#3F51B5"/>
+            <stop offset="1" stop-color="#303F9F"/>
+        </linearGradient>
+    </defs>
+    <!-- background -->
+    <rect x="0" y="0" width="108" height="108" fill="url(#bg)"/>
+
+    <!-- i stem -->
+    <line x1="37" y1="72" x2="37" y2="48" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+    <!-- i dot : check mark accent -->
+    <polyline points="31,39 36,44 44,33" fill="none" stroke="#03DAC5" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- M -->
+    <polyline points="46,72 46,44 57,61 68,44 68,72" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
