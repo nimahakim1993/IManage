@@ -48,6 +48,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
@@ -57,6 +58,8 @@ import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.BankCardViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
+import com.nima.app.imanage.util.BiometricHelper
+import com.nima.app.imanage.util.BiometricHelper.AuthType
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -81,6 +84,7 @@ fun BankCardsScreen(
     val dragDesc = stringResource(R.string.drag)
     val context = LocalContext.current
     val copiedMsg = stringResource(R.string.copied_to_clipboard)
+    val authType = remember { BiometricHelper.availableAuthType(context) }
 
     LaunchedEffect(cards.isEmpty()) {
         if (cards.isEmpty()) toggleEditMode = false
@@ -94,7 +98,31 @@ fun BankCardsScreen(
                 else
                     Icons.Default.Visibility,
                 contentDescription = visibilityDesc,
-                onClick = { toggleSensitive = !toggleSensitive }
+                onClick = {
+                    if (toggleSensitive) {
+                        // Hiding — instant, no auth needed
+                        toggleSensitive = false
+                    } else {
+                        // Revealing sensitive data — require authentication
+                        val activity = context.findFragmentActivity()
+                        if (activity == null || authType == AuthType.NONE) {
+                            toggleSensitive = true
+                        } else {
+                            BiometricHelper.authenticate(
+                                activity = activity,
+                                title = context.getString(R.string.biometric_reveal_title),
+                                subtitle = context.getString(R.string.biometric_reveal_subtitle),
+                                authType = authType,
+                                onSuccess = { toggleSensitive = true },
+                                onError = { msg ->
+                                    val text =
+                                        if (msg.isBlank()) context.getString(R.string.biometric_auth_failed) else msg
+                                    Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                                }
+                            )
+                        }
+                    }
+                }
             )
         )
         if (cards.isNotEmpty()) {
@@ -235,23 +263,27 @@ fun BankCardsScreen(
                                                 change.consume()
                                                 dragOffsetY += dragAmount.y
 
-                                                val draggedKey = draggingId ?: return@detectDragGestures
+                                                val draggedKey =
+                                                    draggingId ?: return@detectDragGestures
                                                 val layoutInfo = listState.layoutInfo
                                                 val draggedInfo = layoutInfo.visibleItemsInfo
-                                                    .firstOrNull { it.key == draggedKey } ?: return@detectDragGestures
+                                                    .firstOrNull { it.key == draggedKey }
+                                                    ?: return@detectDragGestures
                                                 val draggedCenter =
                                                     draggedInfo.offset + draggedInfo.size / 2 + dragOffsetY
 
-                                                val idx = draggedItems.indexOfFirst { it.id == draggedKey }
+                                                val idx =
+                                                    draggedItems.indexOfFirst { it.id == draggedKey }
                                                 if (idx == -1) return@detectDragGestures
 
                                                 if (idx < draggedItems.size - 1) {
                                                     val nextInfo = layoutInfo.visibleItemsInfo
                                                         .firstOrNull { it.key == draggedItems[idx + 1].id }
                                                     if (nextInfo != null && draggedCenter > nextInfo.offset + nextInfo.size / 2) {
-                                                        draggedItems = draggedItems.toMutableList().apply {
-                                                            add(idx, removeAt(idx + 1))
-                                                        }
+                                                        draggedItems =
+                                                            draggedItems.toMutableList().apply {
+                                                                add(idx, removeAt(idx + 1))
+                                                            }
                                                         dragOffsetY -= nextInfo.size
                                                         return@detectDragGestures
                                                     }
@@ -260,9 +292,10 @@ fun BankCardsScreen(
                                                     val prevInfo = layoutInfo.visibleItemsInfo
                                                         .firstOrNull { it.key == draggedItems[idx - 1].id }
                                                     if (prevInfo != null && draggedCenter < prevInfo.offset + prevInfo.size / 2) {
-                                                        draggedItems = draggedItems.toMutableList().apply {
-                                                            add(idx - 1, removeAt(idx))
-                                                        }
+                                                        draggedItems =
+                                                            draggedItems.toMutableList().apply {
+                                                                add(idx - 1, removeAt(idx))
+                                                            }
                                                         dragOffsetY += prevInfo.size
                                                     }
                                                 }
@@ -314,3 +347,10 @@ private fun copyToClipboard(
     clipboard?.setPrimaryClip(ClipData.newPlainText(label, value))
     Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
 }
+
+private fun Context.findFragmentActivity(): FragmentActivity? =
+    when (this) {
+        is FragmentActivity -> this
+        is android.content.ContextWrapper -> baseContext.findFragmentActivity()
+        else -> null
+    }
