@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
@@ -276,6 +277,9 @@ private fun DashboardGrid(navController: NavHostController) {
         },
         DashboardEntry(stringResource(R.string.assets), Icons.Default.AccountBalanceWallet) {
             navController.navigate(Screen.Assets.route)
+        },
+        DashboardEntry(stringResource(R.string.passwords_home), Icons.Default.Password) {
+            navController.navigate(Screen.Passwords.route)
         },
         DashboardEntry(stringResource(R.string.report), Icons.Default.Assessment) {},
     )

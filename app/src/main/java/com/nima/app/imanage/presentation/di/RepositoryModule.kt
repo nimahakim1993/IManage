@@ -11,6 +11,7 @@ import com.nima.app.imanage.data.repository.InstallmentRepository
 import com.nima.app.imanage.data.repository.LoanRepository
 import com.nima.app.imanage.data.repository.NoteBoxRepository
 import com.nima.app.imanage.data.repository.NoteRepository
+import com.nima.app.imanage.data.repository.PasswordItemRepository
 import org.koin.dsl.module
 
 val repositoryModule = module {
@@ -25,4 +26,5 @@ val repositoryModule = module {
     single { InstallmentRepository(get()) }
     single { InstallmentItemRepository(get()) }
     single { AssetRepository(get()) }
+    single { PasswordItemRepository(get()) }
 }

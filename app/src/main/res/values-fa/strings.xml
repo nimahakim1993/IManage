@@ -227,4 +227,30 @@
     <string name="empty_assets_hint">برای افزودن اولین دارایی روی + بزنید</string>
     <string name="asset_distribution">توزیع دارایی</string>
 
+    <!-- Passwords -->
+    <string name="passwords_home">رمزها</string>
+    <string name="passwords_title">رمزها</string>
+    <string name="create_password_title">رمز جدید</string>
+    <string name="edit_password_title">ویرایش رمز</string>
+    <string name="password_title_label">عنوان</string>
+    <string name="password_title_hint">مثلا: جیمیل، بانک، گیت‌هاب</string>
+    <string name="password_username_label">نام کاربری</string>
+    <string name="password_username_hint">مثلا: ایمیل یا نام کاربری</string>
+    <string name="password_field_label">رمز عبور</string>
+    <string name="password_field_hint">رمز عبور را وارد کنید</string>
+    <string name="password_icon_label">آیکون</string>
+    <string name="empty_passwords">هنوز رمزی ذخیره نشده</string>
+    <string name="empty_passwords_hint">برای افزودن اولین رمز روی + بزنید</string>
+    <string name="password_locked_hint">برای احراز هویت و نمایش، لمس کنید</string>
+    <string name="password_toggle_visibility">تغییر نمایش</string>
+    <string name="username_copied">نام کاربری کپی شد</string>
+    <string name="password_copied">رمز کپی شد</string>
+    <string name="biometric_reveal_title">احراز هویت لازم است</string>
+    <string name="biometric_reveal_subtitle">برای مشاهده این رمز اثر انگشت خود را تأیید کنید</string>
+    <string name="device_credential_reveal_subtitle">برای مشاهده این رمز، پین/الگوی/رمز دستگاه را وارد کنید</string>
+    <string name="biometric_cancel">لغو</string>
+    <string name="biometric_not_available">احراز هویت بیومتریک روی این دستگاه موجود نیست</string>
+    <string name="biometric_auth_failed">احراز هویت ناموفق بود</string>
+    <string name="authenticate">احراز هویت</string>
+
 </resources>

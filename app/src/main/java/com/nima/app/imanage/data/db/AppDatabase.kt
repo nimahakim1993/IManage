@@ -13,6 +13,7 @@ import com.nima.app.imanage.data.db.dao.IncomeDao
 import com.nima.app.imanage.data.db.dao.IncomeSourceDao
 import com.nima.app.imanage.data.db.dao.NoteBoxDao
 import com.nima.app.imanage.data.db.dao.NoteDao
+import com.nima.app.imanage.data.db.dao.PasswordItemDao
 import com.nima.app.imanage.data.db.entity.BankCardEntity
 import com.nima.app.imanage.data.db.entity.ExpenseCategoryEntity
 import com.nima.app.imanage.data.db.entity.ExpenseEntity
@@ -24,6 +25,7 @@ import com.nima.app.imanage.data.db.entity.InstallmentItemEntity
 import com.nima.app.imanage.data.db.entity.LoanEntity
 import com.nima.app.imanage.data.db.entity.NoteBoxEntity
 import com.nima.app.imanage.data.db.entity.NoteEntity
+import com.nima.app.imanage.data.db.entity.PasswordItemEntity
 
 
 @Database(
@@ -38,9 +40,10 @@ import com.nima.app.imanage.data.db.entity.NoteEntity
         IncomeEntity::class,
         InstallmentEntity::class,
         InstallmentItemEntity::class,
-        AssetEntity::class
+        AssetEntity::class,
+        PasswordItemEntity::class
     ],
-    version = 16,
+    version = 17,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -55,4 +58,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun installmentDao(): InstallmentDao
     abstract fun installmentItemDao(): InstallmentItemDao
     abstract fun assetDao(): AssetDao
+    abstract fun passwordItemDao(): PasswordItemDao
 }

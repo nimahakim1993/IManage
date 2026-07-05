@@ -71,5 +71,7 @@ dependencies {
     implementation(libs.com.google.gson)
     implementation(libs.com.squareup.okhttp)
     implementation(libs.com.squareup.okhttp3.logging.interceptor)
+    implementation(libs.androidx.biometric)
+    implementation(libs.androidx.fragment.ktx)
 
 }

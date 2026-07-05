@@ -260,4 +260,30 @@
     <string name="empty_assets_hint">Tap + to add your first asset</string>
     <string name="asset_distribution">Asset Distribution</string>
 
+    <!-- Passwords -->
+    <string name="passwords_home">Passwords</string>
+    <string name="passwords_title">Passwords</string>
+    <string name="create_password_title">New Password</string>
+    <string name="edit_password_title">Edit Password</string>
+    <string name="password_title_label">Title</string>
+    <string name="password_title_hint">e.g. Gmail, Bank, GitHub</string>
+    <string name="password_username_label">Username</string>
+    <string name="password_username_hint">e.g. email or username</string>
+    <string name="password_field_label">Password</string>
+    <string name="password_field_hint">Enter password</string>
+    <string name="password_icon_label">Icon</string>
+    <string name="empty_passwords">No passwords yet</string>
+    <string name="empty_passwords_hint">Tap + to add your first password</string>
+    <string name="password_locked_hint">Tap to authenticate and reveal</string>
+    <string name="password_toggle_visibility">Toggle visibility</string>
+    <string name="username_copied">Username copied</string>
+    <string name="password_copied">Password copied</string>
+    <string name="biometric_reveal_title">Authentication required</string>
+    <string name="biometric_reveal_subtitle">Verify your fingerprint to view this password</string>
+    <string name="device_credential_reveal_subtitle">Enter your device PIN/pattern/password to view this password</string>
+    <string name="biometric_cancel">Cancel</string>
+    <string name="biometric_not_available">Biometric authentication is not available on this device</string>
+    <string name="biometric_auth_failed">Authentication failed</string>
+    <string name="authenticate">Authenticate</string>
+
 </resources>

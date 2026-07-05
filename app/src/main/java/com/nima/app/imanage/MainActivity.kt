@@ -2,7 +2,6 @@ package com.nima.app.imanage
 
 import android.content.Context
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -38,12 +38,13 @@ import com.nima.app.imanage.presentation.view.HomeScreen
 import com.nima.app.imanage.presentation.view.MainToolbar
 import com.nima.app.imanage.presentation.view.NoteBoxDetailScreen
 import com.nima.app.imanage.presentation.view.NotesScreen
+import com.nima.app.imanage.presentation.view.PasswordItemsScreen
 import com.nima.app.imanage.presentation.view.SettingsScreen
 import com.nima.app.imanage.ui.theme.IManageTheme
 import com.nima.app.imanage.util.LanguageManager
 import com.nima.app.imanage.util.ThemeManager
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(LanguageManager.wrap(newBase))
     }
@@ -99,6 +100,7 @@ fun Navigation(
     ) {
         composable(Screen.Home.route) { HomeScreen(setToolbar, navController) }
         composable(Screen.Assets.route) { AssetsScreen(setToolbar, navController) }
+        composable(Screen.Passwords.route) { PasswordItemsScreen(setToolbar, navController) }
         composable(Screen.BankCards.route) { BankCardsScreen(setToolbar, navController) }
         composable(
             route = Screen.CreateBankCard.route,

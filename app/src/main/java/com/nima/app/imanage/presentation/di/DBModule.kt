@@ -14,6 +14,24 @@ val MIGRATION_15_16 = object : Migration(15, 16) {
     }
 }
 
+val MIGRATION_16_17 = object : Migration(16, 17) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS passwords (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                title TEXT NOT NULL,
+                username TEXT NOT NULL,
+                encryptedPassword TEXT NOT NULL,
+                iconType INTEGER NOT NULL,
+                createdAt INTEGER NOT NULL,
+                updatedAt INTEGER NOT NULL
+            )
+            """.trimIndent()
+        )
+    }
+}
+
 val databaseModule = module {
     single {
         Room.databaseBuilder(
@@ -21,7 +39,7 @@ val databaseModule = module {
             AppDatabase::class.java,
             "app_db"
         )
-            .addMigrations(MIGRATION_15_16)
+            .addMigrations(MIGRATION_15_16, MIGRATION_16_17)
             .fallbackToDestructiveMigration()
             .build()
     }
@@ -36,4 +54,5 @@ val databaseModule = module {
     single { get<AppDatabase>().installmentDao() }
     single { get<AppDatabase>().installmentItemDao() }
     single { get<AppDatabase>().assetDao() }
+    single { get<AppDatabase>().passwordItemDao() }
 }
