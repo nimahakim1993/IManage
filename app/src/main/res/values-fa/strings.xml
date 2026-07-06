@@ -88,6 +88,7 @@
     <string name="assets">دارایی</string>
     <string name="bank_account_home">حساب بانکی</string>
     <string name="report">گزارش</string>
+    <string name="car_services">سرویس خودرو</string>
     <string name="home_report_title">گزارش مالی</string>
     <string name="home_net_balance">تراز خالص</string>
     <string name="home_bank_accounts">حساب‌های بانکی</string>
@@ -334,5 +335,44 @@
     <string name="settlement_note_label">یادداشت</string>
     <string name="settlement_dialog_title">ثبت تسویه</string>
     <string name="settlement_save">ثبت</string>
+
+    <!-- Car Services -->
+    <string name="car_services_title">سرویس‌های خودرو</string>
+    <string name="create_car_service_title">سرویس جدید</string>
+    <string name="edit_car_service_title">ویرایش سرویس</string>
+    <string name="car_service_type_label">نوع سرویس</string>
+    <string name="car_service_date_label">تاریخ سرویس</string>
+    <string name="car_service_km_label">کیلومتر هنگام سرویس</string>
+    <string name="car_next_service_date_label">تاریخ سرویس بعدی</string>
+    <string name="car_next_service_km_label">کیلومتر سرویس بعدی</string>
+    <string name="car_amount_paid_label">مبلغ پرداختی</string>
+    <string name="car_product_brand_label">برند محصول (مثلا مارک روغن)</string>
+    <string name="car_part_name_label">نام قطعه</string>
+    <string name="car_description_label">توضیحات</string>
+    <string name="car_service_date">سرویس: %s</string>
+    <string name="car_service_km">کیلومتر: %s</string>
+    <string name="car_next_service_date">بعدی: %s</string>
+    <string name="car_next_service_km">کیلومتر بعدی: %s</string>
+    <string name="car_part_label">قطعه</string>
+    <string name="car_select_service_date">انتخاب تاریخ سرویس</string>
+    <string name="car_select_next_service_date">انتخاب تاریخ سرویس بعدی</string>
+    <string name="empty_car_services">هنوز سرویس خودرو ثبت نشده</string>
+    <string name="empty_car_services_hint">برای افزودن اولین سرویس روی + بزنید</string>
+    <string name="empty_car_services_filtered">سرویسی یافت نشد</string>
+    <string name="empty_car_services_filtered_hint">فیلترها را تغییر دهید</string>
+    <string name="car_total_expenses">مجموع هزینه‌های خودرو</string>
+    <string name="car_filter_year">فیلتر بر اساس سال</string>
+    <string name="car_filter_type">فیلتر بر اساس نوع سرویس</string>
+    <string name="car_type_oil_change">تعویض روغن</string>
+    <string name="car_type_tire_change">تعویض لاستیک</string>
+    <string name="car_type_brake_pad">لنت ترمز</string>
+    <string name="car_type_filter">فیلتر</string>
+    <string name="car_type_belt">تسمه</string>
+    <string name="car_type_lamp">لامپ</string>
+    <string name="car_type_battery">باتری</string>
+    <string name="car_type_engine">موتور</string>
+    <string name="car_type_general">سرویس عمومی</string>
+    <string name="car_type_insurance">بیمه</string>
+    <string name="car_type_other">سایر</string>
 
 </resources>

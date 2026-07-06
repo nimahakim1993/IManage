@@ -88,6 +88,7 @@
     <string name="assets">Assets</string>
     <string name="bank_account_home">Bank Account</string>
     <string name="report">Report</string>
+    <string name="car_services">Car Services</string>
     <string name="home_report_title">Financial Report</string>
     <string name="home_net_balance">Net Balance</string>
     <string name="home_bank_accounts">Bank Accounts</string>
@@ -334,5 +335,44 @@
     <string name="settlement_note_label">Note</string>
     <string name="settlement_dialog_title">Record Settlement</string>
     <string name="settlement_save">Save</string>
+
+    <!-- Car Services -->
+    <string name="car_services_title">Car Services</string>
+    <string name="create_car_service_title">New Car Service</string>
+    <string name="edit_car_service_title">Edit Car Service</string>
+    <string name="car_service_type_label">Service Type</string>
+    <string name="car_service_date_label">Service Date</string>
+    <string name="car_service_km_label">Kilometer at Service</string>
+    <string name="car_next_service_date_label">Next Service Date</string>
+    <string name="car_next_service_km_label">Next Service Kilometer</string>
+    <string name="car_amount_paid_label">Amount Paid</string>
+    <string name="car_product_brand_label">Product Brand (e.g. Oil Mark)</string>
+    <string name="car_part_name_label">Part Name</string>
+    <string name="car_description_label">Description</string>
+    <string name="car_service_date">Service: %s</string>
+    <string name="car_service_km">Km: %s</string>
+    <string name="car_next_service_date">Next: %s</string>
+    <string name="car_next_service_km">Next Km: %s</string>
+    <string name="car_part_label">Part</string>
+    <string name="car_select_service_date">Select Service Date</string>
+    <string name="car_select_next_service_date">Select Next Service Date</string>
+    <string name="empty_car_services">No car services yet</string>
+    <string name="empty_car_services_hint">Tap + to add your first car service record</string>
+    <string name="empty_car_services_filtered">No matching services</string>
+    <string name="empty_car_services_filtered_hint">Try changing the filters</string>
+    <string name="car_total_expenses">Total Car Expenses</string>
+    <string name="car_filter_year">Filter by Year</string>
+    <string name="car_filter_type">Filter by Service Type</string>
+    <string name="car_type_oil_change">Oil Change</string>
+    <string name="car_type_tire_change">Tire Change</string>
+    <string name="car_type_brake_pad">Brake Pad</string>
+    <string name="car_type_filter">Filter</string>
+    <string name="car_type_belt">Belt</string>
+    <string name="car_type_lamp">Lamp</string>
+    <string name="car_type_battery">Battery</string>
+    <string name="car_type_engine">Engine</string>
+    <string name="car_type_general">General Service</string>
+    <string name="car_type_insurance">Insurance</string>
+    <string name="car_type_other">Other</string>
 
 </resources>

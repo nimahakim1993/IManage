@@ -21,7 +21,9 @@ import androidx.navigation.navArgument
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.view.AssetsScreen
 import com.nima.app.imanage.presentation.view.BankCardsScreen
+import com.nima.app.imanage.presentation.view.CarServicesScreen
 import com.nima.app.imanage.presentation.view.CreateBankCardScreen
+import com.nima.app.imanage.presentation.view.CreateCarServiceScreen
 import com.nima.app.imanage.presentation.view.CreateInstallmentScreen
 import com.nima.app.imanage.presentation.view.CreateLoanScreen
 import com.nima.app.imanage.presentation.view.CreateNoteBoxScreen
@@ -261,6 +263,19 @@ fun Navigation(
         ) { backStack ->
             val tripId = backStack.arguments?.getInt("tripId") ?: -1
             TripSettlementScreen(setToolbar, navController, tripId)
+        }
+        composable(Screen.CarServices.route) { CarServicesScreen(setToolbar, navController) }
+        composable(
+            route = Screen.CreateCarService.route,
+            arguments = listOf(
+                navArgument(name = "serviceId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
+        ) { backStack ->
+            val serviceId = backStack.arguments?.getInt("serviceId") ?: -1
+            CreateCarServiceScreen(setToolbar, navController, serviceId)
         }
     }
 }
