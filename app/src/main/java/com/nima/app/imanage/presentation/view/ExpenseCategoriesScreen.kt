@@ -118,6 +118,8 @@ fun ExpenseCategoriesScreen(
 
     if (showAddDialog) {
         CategoryEditDialog(
+            categories = categories,
+            editingCategoryId = null,
             initialTitle = "",
             initialColorIndex = 0,
             confirmLabel = stringResource(R.string.add),
@@ -131,6 +133,8 @@ fun ExpenseCategoriesScreen(
 
     editing?.let { category ->
         CategoryEditDialog(
+            categories = categories,
+            editingCategoryId = category.id,
             initialTitle = category.title,
             initialColorIndex = category.colorIndex,
             confirmLabel = stringResource(R.string.confirm),
@@ -209,6 +213,8 @@ private fun CategoryItem(
 
 @Composable
 private fun CategoryEditDialog(
+    categories: List<ExpenseCategoryEntity>,
+    editingCategoryId: Int?,
     initialTitle: String,
     initialColorIndex: Int,
     confirmLabel: String,
@@ -217,6 +223,7 @@ private fun CategoryEditDialog(
 ) {
     var title by remember { mutableStateOf(initialTitle) }
     var colorIndex by remember { mutableIntStateOf(initialColorIndex) }
+    var duplicateError by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -225,9 +232,21 @@ private fun CategoryEditDialog(
             Column {
                 OutlinedTextField(
                     value = title,
-                    onValueChange = { title = it },
+                    onValueChange = {
+                        title = it
+                        duplicateError = false
+                    },
                     label = { Text(stringResource(R.string.category_title)) },
                     singleLine = true,
+                    isError = duplicateError,
+                    supportingText = if (duplicateError) {
+                        {
+                            Text(
+                                stringResource(R.string.duplicate_category_title),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    } else null,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.size(12.dp))
@@ -273,7 +292,19 @@ private fun CategoryEditDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    if (title.isNotBlank()) onConfirm(title.trim(), colorIndex)
+                    val trimmedTitle = title.trim()
+                    if (trimmedTitle.isBlank()) return@TextButton
+                    val exists = categories.any {
+                        it.id != editingCategoryId && it.title.equals(
+                            trimmedTitle,
+                            ignoreCase = true
+                        )
+                    }
+                    if (exists) {
+                        duplicateError = true
+                        return@TextButton
+                    }
+                    onConfirm(trimmedTitle, colorIndex)
                 }
             ) {
                 Text(confirmLabel)

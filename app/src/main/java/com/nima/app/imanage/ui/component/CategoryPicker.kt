@@ -26,6 +26,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -54,9 +55,19 @@ fun CategoryPicker(
 ) {
     var expanded by remember { mutableStateOf(false) }
     var showAddDialog by remember { mutableStateOf(false) }
+    var pendingTitle by remember { mutableStateOf<String?>(null) }
 
     val selectedCategory = categories.firstOrNull { it.id == selectedCategoryId }
     val displayText = selectedCategory?.title ?: stringResource(R.string.no_category)
+
+    LaunchedEffect(categories, pendingTitle) {
+        val title = pendingTitle ?: return@LaunchedEffect
+        val found = categories.firstOrNull { it.title.equals(title, ignoreCase = true) }
+        if (found != null) {
+            onCategorySelected(found.id)
+            pendingTitle = null
+        }
+    }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -159,9 +170,11 @@ fun CategoryPicker(
 
     if (showAddDialog) {
         AddCategoryDialog(
+            categories = categories,
             onDismiss = { showAddDialog = false },
             onConfirm = { title, colorIndex ->
                 onAddCategory(title, colorIndex)
+                pendingTitle = title
                 showAddDialog = false
             }
         )
@@ -170,11 +183,13 @@ fun CategoryPicker(
 
 @Composable
 private fun AddCategoryDialog(
+    categories: List<ExpenseCategoryEntity>,
     onDismiss: () -> Unit,
     onConfirm: (title: String, colorIndex: Int) -> Unit
 ) {
     var title by remember { mutableStateOf("") }
     var colorIndex by remember { mutableIntStateOf(0) }
+    var duplicateError by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -183,9 +198,21 @@ private fun AddCategoryDialog(
             Column {
                 OutlinedTextField(
                     value = title,
-                    onValueChange = { title = it },
+                    onValueChange = {
+                        title = it
+                        duplicateError = false
+                    },
                     label = { Text(stringResource(R.string.category_title)) },
                     singleLine = true,
+                    isError = duplicateError,
+                    supportingText = if (duplicateError) {
+                        {
+                            Text(
+                                stringResource(R.string.duplicate_category_title),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    } else null,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.size(12.dp))
@@ -231,7 +258,14 @@ private fun AddCategoryDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    if (title.isNotBlank()) onConfirm(title.trim(), colorIndex)
+                    val trimmedTitle = title.trim()
+                    if (trimmedTitle.isBlank()) return@TextButton
+                    val exists = categories.any { it.title.equals(trimmedTitle, ignoreCase = true) }
+                    if (exists) {
+                        duplicateError = true
+                        return@TextButton
+                    }
+                    onConfirm(trimmedTitle, colorIndex)
                 }
             ) {
                 Text(stringResource(R.string.confirm))

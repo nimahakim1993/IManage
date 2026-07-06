@@ -116,6 +116,8 @@ fun IncomeSourcesScreen(
 
     if (showAddDialog) {
         SourceEditDialog(
+            sources = sources,
+            editingSourceId = null,
             initialTitle = "",
             initialColorIndex = 0,
             confirmLabel = stringResource(R.string.add),
@@ -129,6 +131,8 @@ fun IncomeSourcesScreen(
 
     editing?.let { source ->
         SourceEditDialog(
+            sources = sources,
+            editingSourceId = source.id,
             initialTitle = source.title,
             initialColorIndex = source.colorIndex,
             confirmLabel = stringResource(R.string.confirm),
@@ -207,6 +211,8 @@ private fun SourceItem(
 
 @Composable
 private fun SourceEditDialog(
+    sources: List<IncomeSourceEntity>,
+    editingSourceId: Int?,
     initialTitle: String,
     initialColorIndex: Int,
     confirmLabel: String,
@@ -215,6 +221,7 @@ private fun SourceEditDialog(
 ) {
     var title by remember { mutableStateOf(initialTitle) }
     var colorIndex by remember { mutableIntStateOf(initialColorIndex) }
+    var duplicateError by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -223,9 +230,21 @@ private fun SourceEditDialog(
             Column {
                 OutlinedTextField(
                     value = title,
-                    onValueChange = { title = it },
+                    onValueChange = {
+                        title = it
+                        duplicateError = false
+                    },
                     label = { Text(stringResource(R.string.source_title)) },
                     singleLine = true,
+                    isError = duplicateError,
+                    supportingText = if (duplicateError) {
+                        {
+                            Text(
+                                stringResource(R.string.duplicate_source_title),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    } else null,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.size(12.dp))
@@ -271,7 +290,16 @@ private fun SourceEditDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    if (title.isNotBlank()) onConfirm(title.trim(), colorIndex)
+                    val trimmedTitle = title.trim()
+                    if (trimmedTitle.isBlank()) return@TextButton
+                    val exists = sources.any {
+                        it.id != editingSourceId && it.title.equals(trimmedTitle, ignoreCase = true)
+                    }
+                    if (exists) {
+                        duplicateError = true
+                        return@TextButton
+                    }
+                    onConfirm(trimmedTitle, colorIndex)
                 }
             ) {
                 Text(confirmLabel)

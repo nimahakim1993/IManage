@@ -149,6 +149,35 @@
     <string name="created_at">ایجاد %s</string>
     <string name="just_now">همین الان</string>
 
+    <!-- ExpensesScreen -->
+    <string name="expenses_title">هزینه‌ها</string>
+    <string name="create_expense_title">هزینه جدید</string>
+    <string name="edit_expense_title">ویرایش هزینه</string>
+    <string name="expense_title_label">عنوان</string>
+    <string name="expense_title_hint">مثلا: خواربار، اجاره، بنزین</string>
+    <string name="description_optional_hint">توضیح اختیاری</string>
+    <string name="empty_expenses">هنوز هزینه‌ای ندارید</string>
+    <string name="empty_expenses_hint">برای ثبت اولین هزینه روی + بزنید</string>
+    <string name="empty_expenses_filtered">هزینه‌ای یافت نشد</string>
+    <string name="empty_expenses_filtered_hint">فیلتر یا جستجو را تغییر دهید</string>
+    <string name="total_expenses">مجموع هزینه‌ها</string>
+    <string name="items_count">تعداد</string>
+    <string name="expense_date">تاریخ هزینه</string>
+    <string name="select_expense_date">انتخاب تاریخ هزینه</string>
+
+    <!-- Categories -->
+    <string name="category">دسته‌بندی</string>
+    <string name="no_category">بدون دسته‌بندی</string>
+    <string name="category_title">عنوان دسته‌بندی</string>
+    <string name="add_new_category">افزودن دسته‌بندی جدید…</string>
+    <string name="expense_categories_title">دسته‌بندی هزینه‌ها</string>
+    <string name="manage_categories">مدیریت دسته‌بندی‌ها</string>
+    <string name="empty_categories">هنوز دسته‌بندی ندارید</string>
+    <string name="empty_categories_hint">برای ایجاد اولین دسته‌بندی روی + بزنید</string>
+    <string name="filter_by_category">فیلتر بر اساس دسته‌بندی</string>
+    <string name="duplicate_category_title">دسته‌بندی با این عنوان قبلا ثبت شده است</string>
+    <string name="duplicate_source_title">منبعی با این عنوان قبلا ثبت شده است</string>
+
     <!-- IncomesScreen -->
     <string name="incomes_title">درآمدها</string>
     <string name="create_income_title">درآمد جدید</string>
@@ -174,8 +203,14 @@
     <string name="filter_by_source">فیلتر بر اساس منبع</string>
 
     <!-- Shamsi Date Picker -->
-    <string name="today">امروز</string>
+    <string name="select_date">انتخاب تاریخ</string>
     <string name="select_month_year">انتخاب ماه / سال</string>
+    <string name="select_payment_date">انتخاب تاریخ پرداخت</string>
+    <string name="select_receive_date">انتخاب تاریخ دریافت</string>
+    <string name="shamsi_day">روز</string>
+    <string name="shamsi_month">ماه</string>
+    <string name="shamsi_year">سال</string>
+    <string name="today">امروز</string>
     <string name="no_filter">بدون فیلتر</string>
 
     <!-- Installments -->
@@ -218,6 +253,8 @@
     <string name="unit_count">مقدار</string>
     <string name="unit_count_hint">مثلا: ۱۰۰</string>
     <string name="unit">واحد</string>
+    <string name="unit_name_label">نام واحد</string>
+    <string name="unit_name_hint">مثلا: متر، گرم، لیتر</string>
     <string name="price_per_unit">قیمت هر واحد</string>
     <string name="price_per_unit_hint">مثلا: ۱۷۰۰۰۰</string>
     <string name="toman">تومان</string>

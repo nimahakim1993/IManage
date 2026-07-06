@@ -10,6 +10,7 @@ data class AssetEntity(
     val iconType: Int,
     val unitCount: Double,
     val pricePerUnit: Long,
+    val unitName: String = "",
     val createdAt: Long,
     val updatedAt: Long
 )

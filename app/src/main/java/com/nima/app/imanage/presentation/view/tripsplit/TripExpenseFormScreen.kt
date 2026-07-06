@@ -172,7 +172,7 @@ fun TripExpenseFormScreen(
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
-                label = { Text(stringResource(R.string.expense_title_label)) },
+                label = { Text(stringResource(R.string.expense_trip_title_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp)
             )

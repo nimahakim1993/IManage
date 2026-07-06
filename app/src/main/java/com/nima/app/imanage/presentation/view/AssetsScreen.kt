@@ -485,8 +485,9 @@ private fun AssetRectangle(
                         else
                             String.format(Locale.ENGLISH, "%.3f", asset.unitCount)
                                 .trimEnd('0').trimEnd('.')
+                        val unitLabel = asset.unitName.ifBlank { stringResource(R.string.unit) }
                         Text(
-                            text = unitDisplay + " " + stringResource(R.string.unit),
+                            text = unitDisplay + " " + unitLabel,
                             color = textSecondary,
                             fontSize = 12.sp,
                             fontFamily = vazirFontFamily
@@ -611,6 +612,7 @@ private fun CreateAssetSheet(
     var name by remember { mutableStateOf("") }
     var iconType by remember { mutableStateOf(AssetIconType.DEFAULT.value) }
     var unitCount by remember { mutableStateOf(TextFieldValue("")) }
+    var unitName by remember { mutableStateOf("") }
     var pricePerUnit by remember { mutableStateOf(TextFieldValue("")) }
 
     val unitCountFocusRequester = remember { FocusRequester() }
@@ -622,6 +624,7 @@ private fun CreateAssetSheet(
             name = asset.name
             iconType = asset.iconType
             unitCount = TextFieldValue(formatUnitCountForInput(asset.unitCount))
+            unitName = asset.unitName
             pricePerUnit = TextFieldValue(NumberFormatUtils.format(asset.pricePerUnit))
         }
     }
@@ -717,28 +720,47 @@ private fun CreateAssetSheet(
 
             Spacer(modifier = Modifier.size(12.dp))
 
-            OutlinedTextField(
-                value = unitCount,
-                onValueChange = { newValue ->
-                    val filtered = newValue.text.filter { c ->
-                        (c in '0'..'9') || c == '.'
-                    }
-                    if (filtered.count { it == '.' } <= 1) {
-                        unitCount = TextFieldValue(
-                            text = filtered,
-                            selection = newValue.selection
-                        )
-                    }
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Next),
-                keyboardActions = KeyboardActions(onNext = { pricePerUnitFocusRequester.requestFocus() }),
-                label = { Text(stringResource(R.string.unit_count)) },
-                placeholder = { Text(stringResource(R.string.unit_count_hint)) },
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(unitCountFocusRequester)
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Top
+            ) {
+                OutlinedTextField(
+                    value = unitCount,
+                    onValueChange = { newValue ->
+                        val filtered = newValue.text.filter { c ->
+                            (c in '0'..'9') || c == '.'
+                        }
+                        if (filtered.count { it == '.' } <= 1) {
+                            unitCount = TextFieldValue(
+                                text = filtered,
+                                selection = newValue.selection
+                            )
+                        }
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Decimal,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(onNext = { pricePerUnitFocusRequester.requestFocus() }),
+                    label = { Text(stringResource(R.string.unit_count)) },
+                    placeholder = { Text(stringResource(R.string.unit_count_hint)) },
+                    singleLine = true,
+                    modifier = Modifier
+                        .weight(1f)
+                        .focusRequester(unitCountFocusRequester)
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+                OutlinedTextField(
+                    value = unitName,
+                    onValueChange = { unitName = it },
+                    label = { Text(stringResource(R.string.unit_name_label)) },
+                    placeholder = { Text(stringResource(R.string.unit_name_hint)) },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { pricePerUnitFocusRequester.requestFocus() }),
+                    modifier = Modifier.width(120.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.size(12.dp))
 
@@ -771,6 +793,7 @@ private fun CreateAssetSheet(
                         name = finalName,
                         iconType = iconType,
                         unitCount = unitCountVal,
+                        unitName = unitName.trim(),
                         pricePerUnit = priceVal,
                         createdAt = editing?.createdAt ?: now,
                         updatedAt = now

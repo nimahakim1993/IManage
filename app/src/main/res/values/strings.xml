@@ -175,6 +175,8 @@
     <string name="empty_categories">No categories yet</string>
     <string name="empty_categories_hint">Tap + to create your first category</string>
     <string name="filter_by_category">Filter by category</string>
+    <string name="duplicate_category_title">Category with this title already exists</string>
+    <string name="duplicate_source_title">Source with this title already exists</string>
 
     <!-- IncomesScreen -->
     <string name="incomes_title">Incomes</string>
@@ -251,6 +253,8 @@
     <string name="unit_count">Amount</string>
     <string name="unit_count_hint">e.g. 100</string>
     <string name="unit">unit</string>
+    <string name="unit_name_label">Unit Name</string>
+    <string name="unit_name_hint">e.g. meter, gram, liter</string>
     <string name="price_per_unit">Price per unit</string>
     <string name="price_per_unit_hint">e.g. 170000</string>
     <string name="toman">Toman</string>
