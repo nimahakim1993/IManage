@@ -2,14 +2,11 @@ package com.nima.app.imanage.presentation.view
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -20,8 +17,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
@@ -37,25 +32,26 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -65,6 +61,7 @@ import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.BankCardViewModel
 import com.nima.app.imanage.util.NumberFormatUtils
+import com.nima.app.imanage.util.normalizeDigits
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -107,6 +104,9 @@ fun CreateBankCardScreen(
         Color(0xFF7C2D12),
         Color(0xFF4C1D95),
         Color(0xFF374151),
+        Color(0xFF1C1C1E),
+        Color(0xFFC5A44B),
+        Color(0xFF8B0000),
     )
 
     val selectedCard by viewModel.selectedCard.collectAsState()
@@ -178,9 +178,11 @@ fun CreateBankCardScreen(
         )
 
         OutlinedTextField(
-            value = cardNumber,
+            value = NumberFormatUtils.toLocalizedDigits(cardNumber),
             onValueChange = {
-                if (it.length <= 16 && it.all(Char::isDigit)) cardNumber = it
+                val normalized = it.normalizeDigits()
+                if (normalized.length <= 16 && normalized.all(Char::isDigit)) cardNumber =
+                    normalized
             },
             label = { Text(stringResource(R.string.card_number)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -188,9 +190,10 @@ fun CreateBankCardScreen(
         )
 
         OutlinedTextField(
-            value = cvv,
+            value = NumberFormatUtils.toLocalizedDigits(cvv),
             onValueChange = {
-                if (it.length <= 4 && it.all(Char::isDigit)) cvv = it
+                val normalized = it.normalizeDigits()
+                if (normalized.length <= 4 && normalized.all(Char::isDigit)) cvv = normalized
             },
             label = { Text(stringResource(R.string.cvv2)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -203,11 +206,12 @@ fun CreateBankCardScreen(
         ) {
 
             OutlinedTextField(
-                value = month,
+                value = NumberFormatUtils.toLocalizedDigits(month),
                 onValueChange = {
-                    if (it.length <= 2 && it.all(Char::isDigit)) {
-                        month = it
-                        if (it.length == 2) yearFocusRequester.requestFocus()
+                    val normalized = it.normalizeDigits()
+                    if (normalized.length <= 2 && normalized.all(Char::isDigit)) {
+                        month = normalized
+                        if (normalized.length == 2) yearFocusRequester.requestFocus()
                     }
                 },
                 label = { Text(stringResource(R.string.month)) },
@@ -216,9 +220,10 @@ fun CreateBankCardScreen(
             )
 
         OutlinedTextField(
-            value = year,
+            value = NumberFormatUtils.toLocalizedDigits(year),
             onValueChange = {
-                if (it.length <= 2 && it.all(Char::isDigit)) year = it
+                val normalized = it.normalizeDigits()
+                if (normalized.length <= 2 && normalized.all(Char::isDigit)) year = normalized
             },
             label = { Text(stringResource(R.string.year)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -229,8 +234,8 @@ fun CreateBankCardScreen(
     }
 
     OutlinedTextField(
-        value = shebaNumber,
-        onValueChange = { shebaNumber = it.uppercase() },
+        value = NumberFormatUtils.toLocalizedDigits(shebaNumber),
+        onValueChange = { shebaNumber = it.normalizeDigits().uppercase() },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         label = { Text(stringResource(R.string.sheba_number)) },
         singleLine = true,
@@ -238,9 +243,10 @@ fun CreateBankCardScreen(
     )
 
     OutlinedTextField(
-        value = accountNumber,
+        value = NumberFormatUtils.toLocalizedDigits(accountNumber),
         onValueChange = {
-            if (it.length <= 20 && it.all(Char::isDigit)) accountNumber = it
+            val normalized = it.normalizeDigits()
+            if (normalized.length <= 20 && normalized.all(Char::isDigit)) accountNumber = normalized
         },
         label = { Text(stringResource(R.string.account_number)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -350,12 +356,15 @@ fun AtmCardPreview(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = NumberFormatUtils.toLocalizedDigits(cardNumber).chunked(4).joinToString(" "),
-                    color = Color.White,
-                    style = MaterialTheme.typography.titleLarge,
-                    letterSpacing = 2.sp
-                )
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                    Text(
+                        text = NumberFormatUtils.toLocalizedDigits(cardNumber).chunked(4)
+                            .joinToString(" "),
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleLarge,
+                        letterSpacing = 2.sp
+                    )
+                }
                 if (onCopyCardNumber != null) {
                     IconButton(onClick = onCopyCardNumber) {
                         Icon(

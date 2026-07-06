@@ -157,6 +157,8 @@ class TripDetailViewModel(
                 )
             }
             splitRepository.insertAll(splitEntities)
+
+            recalculate(_participants.value, _expenses.value, _settlements.value)
         }
     }
 
@@ -192,11 +194,17 @@ class TripDetailViewModel(
                 )
             }
             splitRepository.insertAll(splitEntities)
+
+            recalculate(_participants.value, _expenses.value, _settlements.value)
         }
     }
 
     fun deleteExpense(expense: TripExpenseEntity) {
         viewModelScope.launch { expenseRepository.delete(expense) }
+    }
+
+    suspend fun getInvolvedParticipantIds(expenseId: Int): List<Int> {
+        return splitRepository.getByExpenseOnce(expenseId).map { it.participantId }
     }
 
     fun recordSettlement(

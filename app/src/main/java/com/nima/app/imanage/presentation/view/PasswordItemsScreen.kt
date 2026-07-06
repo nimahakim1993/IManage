@@ -116,9 +116,12 @@ fun PasswordItemsScreen(
     val addDesc = stringResource(R.string.add)
     val editDesc = stringResource(R.string.edit)
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(items.isEmpty()) {
         if (authRequested) return@LaunchedEffect
         authRequested = true
+        if (items.isEmpty()) {
+            authenticated = true; return@LaunchedEffect
+        }
         if (authType == AuthType.NONE) { authenticated = true; return@LaunchedEffect }
         val activity = context.findFragmentActivity()
         if (activity == null) { authenticated = true; return@LaunchedEffect }
@@ -428,7 +431,9 @@ private fun PasswordItemRectangle(
                             .size(52.dp)
                             .clip(CircleShape)
                             .background(
-                                if (isDark) Color.White.copy(alpha = 0.18f) else Color.White.copy(alpha = 0.25f)
+                                if (isDark) Color.White.copy(alpha = 0.18f) else Color.White.copy(
+                                    alpha = 0.25f
+                                )
                             )
                             .border(1.dp, glassBorder.copy(alpha = 0.5f), CircleShape),
                         contentAlignment = Alignment.Center

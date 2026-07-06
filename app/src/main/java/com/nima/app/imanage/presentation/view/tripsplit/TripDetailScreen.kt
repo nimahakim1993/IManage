@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -56,6 +57,7 @@ import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.TripDetailViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
+import com.nima.app.imanage.ui.theme.NoteBoxPalettes
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
@@ -162,7 +164,13 @@ fun TripDetailScreen(
                         ) {
                             row.forEach { participant ->
                                 val balance = balances.find { it.participantId == participant.id }
-                                ParticipantChip(participant.name, balance?.netBalance ?: 0.0)
+                                val color =
+                                    NoteBoxPalettes.getOrElse(participant.colorIndex) { NoteBoxPalettes.first() }
+                                ParticipantChip(
+                                    participant.name,
+                                    balance?.netBalance ?: 0.0,
+                                    color.secondary
+                                )
                             }
                         }
                         Spacer(modifier = Modifier.height(8.dp))
@@ -200,11 +208,15 @@ fun TripDetailScreen(
                 }
 
                 items(expenses, key = { it.id }) { expense ->
-                    val payerName =
-                        participants.find { it.id == expense.payerParticipantId }?.name ?: "?"
+                    val payer = participants.find { it.id == expense.payerParticipantId }
+                    val payerName = payer?.name ?: "?"
+                    val payerColor = NoteBoxPalettes.getOrElse(
+                        payer?.colorIndex ?: 0
+                    ) { NoteBoxPalettes.first() }
                     ExpenseCard(
                         expense = expense,
                         payerName = payerName,
+                        payerColor = payerColor.secondary,
                         onEdit = {
                             navController.navigate(
                                 Screen.CreateTripExpense.createRoute(
@@ -296,7 +308,7 @@ private fun SummaryStat(label: String, value: String, color: Color) {
 }
 
 @Composable
-private fun RowScope.ParticipantChip(name: String, netBalance: Double) {
+private fun RowScope.ParticipantChip(name: String, netBalance: Double, dotColor: Color) {
     val chipColor = when {
         netBalance > 0.001 -> Color(0xFF4CAF50).copy(alpha = 0.15f)
         netBalance < -0.001 -> Color(0xFFF44336).copy(alpha = 0.15f)
@@ -321,13 +333,22 @@ private fun RowScope.ParticipantChip(name: String, netBalance: Double) {
             .padding(horizontal = 10.dp, vertical = 8.dp)
     ) {
         Column {
-            Text(
-                text = name,
-                style = MaterialTheme.typography.bodySmall,
-                fontWeight = FontWeight.SemiBold,
-                fontFamily = vazirFontFamily,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(dotColor)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = vazirFontFamily,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
             Text(
                 text = "$sign${NumberFormatUtils.format(kotlin.math.abs(netBalance).toLong())}",
                 style = MaterialTheme.typography.labelSmall,
@@ -342,6 +363,7 @@ private fun RowScope.ParticipantChip(name: String, netBalance: Double) {
 private fun ExpenseCard(
     expense: com.nima.app.imanage.data.db.entity.TripExpenseEntity,
     payerName: String,
+    payerColor: Color,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
@@ -361,15 +383,14 @@ private fun ExpenseCard(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
+                    .background(payerColor.copy(alpha = 0.15f)),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = expense.title.take(1).uppercase(),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontFamily = vazirFontFamily
+                Icon(
+                    imageVector = Icons.Default.Receipt,
+                    contentDescription = null,
+                    tint = payerColor,
+                    modifier = Modifier.size(22.dp)
                 )
             }
             Spacer(modifier = Modifier.width(12.dp))

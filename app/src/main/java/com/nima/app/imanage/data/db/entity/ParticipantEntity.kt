@@ -20,5 +20,6 @@ import androidx.room.PrimaryKey
 data class ParticipantEntity(
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     var tripId: Int,
-    var name: String
+    var name: String,
+    var colorIndex: Int = 0
 )

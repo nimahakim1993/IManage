@@ -6,6 +6,18 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
+fun String.normalizeDigits(): String {
+    val out = StringBuilder(length)
+    for (c in this) {
+        when {
+            c in '\u06F0'..'\u06F9' -> out.append(('0'.code + (c.code - '\u06F0'.code)).toChar())
+            c in '\u0660'..'\u0669' -> out.append(('0'.code + (c.code - '\u0660'.code)).toChar())
+            else -> out.append(c)
+        }
+    }
+    return out.toString()
+}
+
 object NumberFormatUtils {
 
     private val westernFormatter = DecimalFormat(

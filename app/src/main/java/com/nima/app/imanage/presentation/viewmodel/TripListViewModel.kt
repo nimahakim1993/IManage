@@ -6,6 +6,7 @@ import com.nima.app.imanage.data.db.entity.ParticipantEntity
 import com.nima.app.imanage.data.db.entity.TripEntity
 import com.nima.app.imanage.data.repository.ParticipantRepository
 import com.nima.app.imanage.data.repository.TripRepository
+import com.nima.app.imanage.ui.theme.NoteBoxPalettes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -80,8 +81,13 @@ class TripListViewModel(
         names: List<String>,
         hostIndex: Int?
     ) {
-        val participants = names.filter { it.isNotBlank() }.map { name ->
-            ParticipantEntity(tripId = trip.id, name = name.trim())
+        val colorCount = NoteBoxPalettes.size
+        val participants = names.filter { it.isNotBlank() }.mapIndexed { index, name ->
+            ParticipantEntity(
+                tripId = trip.id,
+                name = name.trim(),
+                colorIndex = index % colorCount
+            )
         }
         participants.forEach { participantRepository.insert(it) }
         val savedParticipants = participantRepository.getByTripOnce(trip.id)

@@ -94,6 +94,7 @@ fun TripExpenseFormScreen(
             date = existing.date
             payerId = existing.payerParticipantId
             description = existing.description
+            involvedIds = viewModel.getInvolvedParticipantIds(existing.id).toSet()
             editInitialized = true
         }
     }

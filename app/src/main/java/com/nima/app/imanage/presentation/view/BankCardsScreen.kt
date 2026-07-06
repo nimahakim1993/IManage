@@ -91,40 +91,43 @@ fun BankCardsScreen(
     }
 
     LaunchedEffect(toggleSensitive, toggleEditMode, cards.isEmpty()) {
-        val actions = mutableListOf(
-            ToolbarAction(
-                icon = if (toggleSensitive)
-                    Icons.Default.VisibilityOff
-                else
-                    Icons.Default.Visibility,
-                contentDescription = visibilityDesc,
-                onClick = {
-                    if (toggleSensitive) {
-                        // Hiding — instant, no auth needed
-                        toggleSensitive = false
-                    } else {
-                        // Revealing sensitive data — require authentication
-                        val activity = context.findFragmentActivity()
-                        if (activity == null || authType == AuthType.NONE) {
-                            toggleSensitive = true
+        val actions = mutableListOf<ToolbarAction>()
+        if (cards.isNotEmpty()) {
+            actions.add(
+                ToolbarAction(
+                    icon = if (toggleSensitive)
+                        Icons.Default.VisibilityOff
+                    else
+                        Icons.Default.Visibility,
+                    contentDescription = visibilityDesc,
+                    onClick = {
+                        if (toggleSensitive) {
+                            // Hiding — instant, no auth needed
+                            toggleSensitive = false
                         } else {
-                            BiometricHelper.authenticate(
-                                activity = activity,
-                                title = context.getString(R.string.biometric_reveal_title),
-                                subtitle = context.getString(R.string.biometric_reveal_subtitle),
-                                authType = authType,
-                                onSuccess = { toggleSensitive = true },
-                                onError = { msg ->
-                                    val text =
-                                        if (msg.isBlank()) context.getString(R.string.biometric_auth_failed) else msg
-                                    Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-                                }
-                            )
+                            // Revealing sensitive data — require authentication
+                            val activity = context.findFragmentActivity()
+                            if (activity == null || authType == AuthType.NONE) {
+                                toggleSensitive = true
+                            } else {
+                                BiometricHelper.authenticate(
+                                    activity = activity,
+                                    title = context.getString(R.string.biometric_reveal_title),
+                                    subtitle = context.getString(R.string.biometric_reveal_subtitle),
+                                    authType = authType,
+                                    onSuccess = { toggleSensitive = true },
+                                    onError = { msg ->
+                                        val text =
+                                            if (msg.isBlank()) context.getString(R.string.biometric_auth_failed) else msg
+                                        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                                    }
+                                )
+                            }
                         }
                     }
-                }
+                )
             )
-        )
+        }
         if (cards.isNotEmpty()) {
             actions.add(
                 ToolbarAction(
@@ -159,6 +162,9 @@ fun BankCardsScreen(
         Color(0xFF7C2D12),
         Color(0xFF4C1D95),
         Color(0xFF374151),
+        Color(0xFF1C1C1E),
+        Color(0xFFC5A44B),
+        Color(0xFF8B0000),
     )
 
     val listState = rememberLazyListState()

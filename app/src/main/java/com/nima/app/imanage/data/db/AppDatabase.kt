@@ -58,7 +58,7 @@ import com.nima.app.imanage.data.db.entity.TripExpenseSplitEntity
         TripExpenseSplitEntity::class,
         SettlementEntity::class
     ],
-    version = 21,
+    version = 22,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
