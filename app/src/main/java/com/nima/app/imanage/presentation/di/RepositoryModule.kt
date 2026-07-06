@@ -11,7 +11,12 @@ import com.nima.app.imanage.data.repository.InstallmentRepository
 import com.nima.app.imanage.data.repository.LoanRepository
 import com.nima.app.imanage.data.repository.NoteBoxRepository
 import com.nima.app.imanage.data.repository.NoteRepository
+import com.nima.app.imanage.data.repository.ParticipantRepository
 import com.nima.app.imanage.data.repository.PasswordItemRepository
+import com.nima.app.imanage.data.repository.SettlementRepository
+import com.nima.app.imanage.data.repository.TripExpenseRepository
+import com.nima.app.imanage.data.repository.TripExpenseSplitRepository
+import com.nima.app.imanage.data.repository.TripRepository
 import org.koin.dsl.module
 
 val repositoryModule = module {
@@ -27,4 +32,9 @@ val repositoryModule = module {
     single { InstallmentItemRepository(get()) }
     single { AssetRepository(get()) }
     single { PasswordItemRepository(get()) }
+    single { TripRepository(get()) }
+    single { ParticipantRepository(get()) }
+    single { TripExpenseRepository(get()) }
+    single { TripExpenseSplitRepository(get()) }
+    single { SettlementRepository(get()) }
 }

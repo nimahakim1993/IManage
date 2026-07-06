@@ -2,6 +2,7 @@ package com.nima.app.imanage.presentation.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,12 +18,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.NoteAlt
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.outlined.Settings
@@ -38,8 +39,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.icons.filled.NoteAlt
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -274,7 +273,9 @@ private fun DashboardGrid(navController: NavHostController) {
         DashboardEntry(stringResource(R.string.bank_account_home), Icons.Default.AccountBalance) {
             navController.navigate(Screen.BankCards.route)
         },
-        DashboardEntry(stringResource(R.string.shared_trip), Icons.Default.Groups) {},
+        DashboardEntry(stringResource(R.string.shared_trip), Icons.Default.Groups) {
+            navController.navigate(Screen.TripList.route)
+        },
         DashboardEntry(stringResource(R.string.note), Icons.Default.NoteAlt) {
             navController.navigate(Screen.Notes.route)
         },

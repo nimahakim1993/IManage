@@ -1,36 +1,8 @@
 package com.nima.app.imanage.presentation.di
 
 import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.nima.app.imanage.data.db.AppDatabase
 import org.koin.dsl.module
-
-
-val MIGRATION_15_16 = object : Migration(15, 16) {
-    override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL("ALTER TABLE bank_cards ADD COLUMN sortKey INTEGER NOT NULL DEFAULT 0")
-        database.execSQL("UPDATE bank_cards SET sortKey = id")
-    }
-}
-
-val MIGRATION_16_17 = object : Migration(16, 17) {
-    override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL(
-            """
-            CREATE TABLE IF NOT EXISTS passwords (
-                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                title TEXT NOT NULL,
-                username TEXT NOT NULL,
-                encryptedPassword TEXT NOT NULL,
-                iconType INTEGER NOT NULL,
-                createdAt INTEGER NOT NULL,
-                updatedAt INTEGER NOT NULL
-            )
-            """.trimIndent()
-        )
-    }
-}
 
 val databaseModule = module {
     single {
@@ -39,7 +11,6 @@ val databaseModule = module {
             AppDatabase::class.java,
             "app_db"
         )
-            .addMigrations(MIGRATION_15_16, MIGRATION_16_17)
             .fallbackToDestructiveMigration()
             .build()
     }
@@ -55,4 +26,9 @@ val databaseModule = module {
     single { get<AppDatabase>().installmentItemDao() }
     single { get<AppDatabase>().assetDao() }
     single { get<AppDatabase>().passwordItemDao() }
+    single { get<AppDatabase>().tripDao() }
+    single { get<AppDatabase>().participantDao() }
+    single { get<AppDatabase>().tripExpenseDao() }
+    single { get<AppDatabase>().tripExpenseSplitDao() }
+    single { get<AppDatabase>().settlementDao() }
 }

@@ -253,4 +253,49 @@
     <string name="biometric_auth_failed">احراز هویت ناموفق بود</string>
     <string name="authenticate">احراز هویت</string>
 
+    <!-- Trip Split -->
+    <string name="trip_list_title">سفرهای مشترک</string>
+    <string name="trip_empty_title">هیچ سفری ثبت نشده</string>
+    <string name="trip_empty_hint">برای ایجاد سفر جدید، دکمه + را فشار دهید</string>
+    <string name="trip_create_title">ایجاد سفر جدید</string>
+    <string name="trip_edit_title">ویرایش سفر</string>
+    <string name="trip_name_label">نام سفر</string>
+    <string name="trip_start_date_label">تاریخ شروع</string>
+    <string name="trip_participants_label">شرکت‌کنندگان</string>
+    <string name="trip_person_name_label">نام شخص %d</string>
+    <string name="trip_add_participant">افزودن شرکت‌کننده</string>
+    <string name="trip_host_label">میزبان (مدیر هزینه‌ها)</string>
+    <string name="trip_select_host">انتخاب میزبان</string>
+    <string name="trip_detail_loading">در حال بارگذاری…</string>
+    <string name="trip_detail_fallback_title">جزئیات سفر</string>
+    <string name="trip_total_expenses">مجموع هزینه‌ها</string>
+    <string name="trip_participant_count">شرکت‌کنندگان</string>
+    <string name="trip_expenses_header">هزینه‌ها</string>
+    <string name="trip_no_expenses">هیچ هزینه‌ای ثبت نشده</string>
+    <string name="trip_settlement_button">تسویه حساب</string>
+    <string name="expense_create_title">ثبت هزینه</string>
+    <string name="expense_edit_title">ویرایش هزینه</string>
+    <string name="expense_trip_title_label">عنوان</string>
+    <string name="expense_amount_label">مبلغ (تومان)</string>
+    <string name="expense_date_label">تاریخ</string>
+    <string name="expense_payer_label">پرداخت‌کننده</string>
+    <string name="expense_description_label">توضیحات</string>
+    <string name="expense_involved_label">افراد مشارکت‌کننده در این هزینه</string>
+    <string name="settlement_title">تسویه حساب</string>
+    <string name="settlement_balance_header">وضعیت شرکت‌کنندگان</string>
+    <string name="settlement_suggestions_header">تسویه‌های پیشنهادی</string>
+    <string name="settlement_record_button">ثبت تسویه</string>
+    <string name="settlement_all_cleared">تمام حساب‌ها تسویه شده‌اند</string>
+    <string name="settlement_label_creditor">طلبکار</string>
+    <string name="settlement_label_debtor">بدهکار</string>
+    <string name="settlement_label_settled">تسویه</string>
+    <string name="settlement_paid_share">پرداختی: %1$s  |  سهم: %2$s</string>
+    <string name="settlement_suggestion_tag">پیشنهادی</string>
+    <string name="settlement_recorded_tag">ثبت شده</string>
+    <string name="settlement_from_label">از</string>
+    <string name="settlement_to_label">به</string>
+    <string name="settlement_note_label">یادداشت</string>
+    <string name="settlement_dialog_title">ثبت تسویه</string>
+    <string name="settlement_save">ثبت</string>
+
 </resources>

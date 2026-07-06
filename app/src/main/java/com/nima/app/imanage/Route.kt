@@ -52,4 +52,23 @@ sealed class Screen(val route: String) {
     data object InstallmentDetail : Screen("installmentDetail/{installmentId}") {
         fun createRoute(installmentId: Int) = "installmentDetail/$installmentId"
     }
+
+    data object TripList : Screen("tripList")
+    data object CreateTrip : Screen("createTrip?tripId={tripId}") {
+        fun createRoute(tripId: Int? = null): String =
+            if (tripId == null) "createTrip" else "createTrip?tripId=$tripId"
+    }
+
+    data object TripDetail : Screen("tripDetail/{tripId}") {
+        fun createRoute(tripId: Int) = "tripDetail/$tripId"
+    }
+
+    data object CreateTripExpense : Screen("createTripExpense/{tripId}?expenseId={expenseId}") {
+        fun createRoute(tripId: Int, expenseId: Int? = null): String =
+            if (expenseId == null) "createTripExpense/$tripId" else "createTripExpense/$tripId?expenseId=$expenseId"
+    }
+
+    data object TripSettlement : Screen("tripSettlement/{tripId}") {
+        fun createRoute(tripId: Int) = "tripSettlement/$tripId"
+    }
 }

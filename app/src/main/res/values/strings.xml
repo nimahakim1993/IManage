@@ -286,4 +286,49 @@
     <string name="biometric_auth_failed">Authentication failed</string>
     <string name="authenticate">Authenticate</string>
 
+    <!-- Trip Split -->
+    <string name="trip_list_title">Shared Trips</string>
+    <string name="trip_empty_title">No trips yet</string>
+    <string name="trip_empty_hint">Tap + to create a new trip</string>
+    <string name="trip_create_title">Create New Trip</string>
+    <string name="trip_edit_title">Edit Trip</string>
+    <string name="trip_name_label">Trip Name</string>
+    <string name="trip_start_date_label">Start Date</string>
+    <string name="trip_participants_label">Participants</string>
+    <string name="trip_person_name_label">Person %d Name</string>
+    <string name="trip_add_participant">Add Participant</string>
+    <string name="trip_host_label">Host (Expense Manager)</string>
+    <string name="trip_select_host">Select Host</string>
+    <string name="trip_detail_loading">Loading…</string>
+    <string name="trip_detail_fallback_title">Trip Details</string>
+    <string name="trip_total_expenses">Total Expenses</string>
+    <string name="trip_participant_count">Participants</string>
+    <string name="trip_expenses_header">Expenses</string>
+    <string name="trip_no_expenses">No expenses recorded yet</string>
+    <string name="trip_settlement_button">Settlement</string>
+    <string name="expense_create_title">Add Expense</string>
+    <string name="expense_edit_title">Edit Expense</string>
+    <string name="expense_trip_title_label">Title</string>
+    <string name="expense_amount_label">Amount (Toman)</string>
+    <string name="expense_date_label">Date</string>
+    <string name="expense_payer_label">Paid By</string>
+    <string name="expense_description_label">Description</string>
+    <string name="expense_involved_label">Participants Involved in This Expense</string>
+    <string name="settlement_title">Settlement</string>
+    <string name="settlement_balance_header">Participant Balances</string>
+    <string name="settlement_suggestions_header">Suggested Settlements</string>
+    <string name="settlement_record_button">Record Settlement</string>
+    <string name="settlement_all_cleared">All accounts are settled</string>
+    <string name="settlement_label_creditor">Creditor</string>
+    <string name="settlement_label_debtor">Debtor</string>
+    <string name="settlement_label_settled">Settled</string>
+    <string name="settlement_paid_share">Paid: %1$s  |  Share: %2$s</string>
+    <string name="settlement_suggestion_tag">Suggested</string>
+    <string name="settlement_recorded_tag">Recorded</string>
+    <string name="settlement_from_label">From</string>
+    <string name="settlement_to_label">To</string>
+    <string name="settlement_note_label">Note</string>
+    <string name="settlement_dialog_title">Record Settlement</string>
+    <string name="settlement_save">Save</string>
+
 </resources>

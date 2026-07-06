@@ -22,24 +22,29 @@ import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.view.AssetsScreen
 import com.nima.app.imanage.presentation.view.BankCardsScreen
 import com.nima.app.imanage.presentation.view.CreateBankCardScreen
+import com.nima.app.imanage.presentation.view.CreateInstallmentScreen
 import com.nima.app.imanage.presentation.view.CreateLoanScreen
 import com.nima.app.imanage.presentation.view.CreateNoteBoxScreen
 import com.nima.app.imanage.presentation.view.CreateNoteScreen
 import com.nima.app.imanage.presentation.view.ExpenseCategoriesScreen
 import com.nima.app.imanage.presentation.view.ExpensesScreen
-import com.nima.app.imanage.presentation.view.IncomesScreen
+import com.nima.app.imanage.presentation.view.FinancialScreen
+import com.nima.app.imanage.presentation.view.HomeScreen
 import com.nima.app.imanage.presentation.view.IncomeSourcesScreen
-import com.nima.app.imanage.presentation.view.CreateInstallmentScreen
+import com.nima.app.imanage.presentation.view.IncomesScreen
 import com.nima.app.imanage.presentation.view.InstallmentDetailScreen
 import com.nima.app.imanage.presentation.view.InstallmentsScreen
 import com.nima.app.imanage.presentation.view.LoansScreen
-import com.nima.app.imanage.presentation.view.FinancialScreen
-import com.nima.app.imanage.presentation.view.HomeScreen
 import com.nima.app.imanage.presentation.view.MainToolbar
 import com.nima.app.imanage.presentation.view.NoteBoxDetailScreen
 import com.nima.app.imanage.presentation.view.NotesScreen
 import com.nima.app.imanage.presentation.view.PasswordItemsScreen
 import com.nima.app.imanage.presentation.view.SettingsScreen
+import com.nima.app.imanage.presentation.view.tripsplit.CreateTripScreen
+import com.nima.app.imanage.presentation.view.tripsplit.TripDetailScreen
+import com.nima.app.imanage.presentation.view.tripsplit.TripExpenseFormScreen
+import com.nima.app.imanage.presentation.view.tripsplit.TripListScreen
+import com.nima.app.imanage.presentation.view.tripsplit.TripSettlementScreen
 import com.nima.app.imanage.ui.theme.IManageTheme
 import com.nima.app.imanage.util.LanguageManager
 import com.nima.app.imanage.util.ThemeManager
@@ -199,6 +204,63 @@ fun Navigation(
         ) { backStack ->
             val installmentId = backStack.arguments?.getInt("installmentId") ?: -1
             InstallmentDetailScreen(setToolbar, navController, installmentId)
+        }
+
+        composable(Screen.TripList.route) { TripListScreen(setToolbar, navController) }
+        composable(
+            route = Screen.CreateTrip.route,
+            arguments = listOf(
+                navArgument(name = "tripId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
+        ) { backStack ->
+            val tripId = backStack.arguments?.getInt("tripId") ?: -1
+            CreateTripScreen(setToolbar, navController, if (tripId == -1) null else tripId)
+        }
+        composable(
+            route = Screen.TripDetail.route,
+            arguments = listOf(
+                navArgument(name = "tripId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStack ->
+            val tripId = backStack.arguments?.getInt("tripId") ?: -1
+            TripDetailScreen(setToolbar, navController, tripId)
+        }
+        composable(
+            route = Screen.CreateTripExpense.route,
+            arguments = listOf(
+                navArgument(name = "tripId") {
+                    type = NavType.IntType
+                },
+                navArgument(name = "expenseId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
+        ) { backStack ->
+            val tripId = backStack.arguments?.getInt("tripId") ?: -1
+            val expenseId = backStack.arguments?.getInt("expenseId") ?: -1
+            TripExpenseFormScreen(
+                setToolbar,
+                navController,
+                tripId,
+                if (expenseId == -1) null else expenseId
+            )
+        }
+        composable(
+            route = Screen.TripSettlement.route,
+            arguments = listOf(
+                navArgument(name = "tripId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStack ->
+            val tripId = backStack.arguments?.getInt("tripId") ?: -1
+            TripSettlementScreen(setToolbar, navController, tripId)
         }
     }
 }

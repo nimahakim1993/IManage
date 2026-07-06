@@ -10,6 +10,8 @@ import com.nima.app.imanage.presentation.viewmodel.LoanViewModel
 import com.nima.app.imanage.presentation.viewmodel.NoteBoxViewModel
 import com.nima.app.imanage.presentation.viewmodel.NoteViewModel
 import com.nima.app.imanage.presentation.viewmodel.PasswordItemViewModel
+import com.nima.app.imanage.presentation.viewmodel.TripDetailViewModel
+import com.nima.app.imanage.presentation.viewmodel.TripListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -24,4 +26,6 @@ val viewModelModule = module {
     viewModel { InstallmentViewModel(get(), get()) }
     viewModel { AssetViewModel(get()) }
     viewModel { PasswordItemViewModel(get()) }
+    viewModel { TripListViewModel(get(), get()) }
+    viewModel { TripDetailViewModel(get(), get(), get(), get(), get()) }
 }
