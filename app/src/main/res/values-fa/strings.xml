@@ -404,4 +404,20 @@
     <string name="report_category_breakdown">جزئیات دسته‌بندی</string>
     <string name="report_no_data">داده‌ای برای بازه انتخاب شده وجود ندارد</string>
 
+    <!-- Office -->
+    <string name="office">دفتر</string>
+    <string name="office_title">دفتر کار</string>
+    <string name="office_previous_month">ماه قبل</string>
+    <string name="office_next_month">ماه بعد</string>
+    <string name="office_today">امروز</string>
+    <string name="office_events_for_date">رویدادهای %s</string>
+    <string name="office_no_events">رویدادی برای این روز وجود ندارد</string>
+    <string name="office_type_expense">هزینه</string>
+    <string name="office_type_income">درآمد</string>
+    <string name="office_type_loan">وام</string>
+    <string name="office_type_trip">سفر</string>
+    <string name="office_type_trip_expense">هزینه سفر</string>
+    <string name="office_type_car_service">سرویس خودرو</string>
+    <string name="office_type_installment">قسط</string>
+
 </resources>

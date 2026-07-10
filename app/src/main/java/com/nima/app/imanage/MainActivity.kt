@@ -40,6 +40,7 @@ import com.nima.app.imanage.presentation.view.LoansScreen
 import com.nima.app.imanage.presentation.view.MainToolbar
 import com.nima.app.imanage.presentation.view.NoteBoxDetailScreen
 import com.nima.app.imanage.presentation.view.NotesScreen
+import com.nima.app.imanage.presentation.view.OfficeScreen
 import com.nima.app.imanage.presentation.view.PasswordItemsScreen
 import com.nima.app.imanage.presentation.view.ReportScreen
 import com.nima.app.imanage.presentation.view.SettingsScreen
@@ -108,6 +109,7 @@ fun Navigation(
     ) {
         composable(Screen.Home.route) { HomeScreen(setToolbar, navController) }
         composable(Screen.Report.route) { ReportScreen(setToolbar, navController) }
+        composable(Screen.Office.route) { OfficeScreen(setToolbar, navController) }
         composable(Screen.Assets.route) { AssetsScreen(setToolbar, navController) }
         composable(Screen.Passwords.route) { PasswordItemsScreen(setToolbar, navController) }
         composable(Screen.BankCards.route) { BankCardsScreen(setToolbar, navController) }

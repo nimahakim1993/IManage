@@ -10,6 +10,7 @@ import com.nima.app.imanage.presentation.viewmodel.InstallmentViewModel
 import com.nima.app.imanage.presentation.viewmodel.LoanViewModel
 import com.nima.app.imanage.presentation.viewmodel.NoteBoxViewModel
 import com.nima.app.imanage.presentation.viewmodel.NoteViewModel
+import com.nima.app.imanage.presentation.viewmodel.OfficeViewModel
 import com.nima.app.imanage.presentation.viewmodel.PasswordItemViewModel
 import com.nima.app.imanage.presentation.viewmodel.ReportViewModel
 import com.nima.app.imanage.presentation.viewmodel.TripDetailViewModel
@@ -32,4 +33,5 @@ val viewModelModule = module {
     viewModel { TripDetailViewModel(get(), get(), get(), get(), get()) }
     viewModel { CarServiceViewModel(get()) }
     viewModel { ReportViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { OfficeViewModel(get(), get(), get(), get(), get(), get()) }
 }

@@ -22,6 +22,7 @@ import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Assessment
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.NoteAlt
@@ -291,6 +292,9 @@ private fun DashboardGrid(navController: NavHostController) {
         },
         DashboardEntry(stringResource(R.string.car_services), Icons.Default.DirectionsCar) {
             navController.navigate(Screen.CarServices.route)
+        },
+        DashboardEntry(stringResource(R.string.office_title), Icons.Default.CalendarMonth) {
+            navController.navigate(Screen.Office.route)
         },
     )
 

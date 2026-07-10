@@ -404,4 +404,20 @@
     <string name="report_category_breakdown">Category Breakdown</string>
     <string name="report_no_data">No data for selected period</string>
 
+    <!-- Office -->
+    <string name="office">Office</string>
+    <string name="office_title">Office</string>
+    <string name="office_previous_month">Previous Month</string>
+    <string name="office_next_month">Next Month</string>
+    <string name="office_today">Today</string>
+    <string name="office_events_for_date">Events for %s</string>
+    <string name="office_no_events">No events for this day</string>
+    <string name="office_type_expense">Expense</string>
+    <string name="office_type_income">Income</string>
+    <string name="office_type_loan">Loan</string>
+    <string name="office_type_trip">Trip</string>
+    <string name="office_type_trip_expense">Trip Expense</string>
+    <string name="office_type_car_service">Car Service</string>
+    <string name="office_type_installment">Installment</string>
+
 </resources>
