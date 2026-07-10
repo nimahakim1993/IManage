@@ -11,4 +11,5 @@ class TripExpenseRepository(private val dao: TripExpenseDao) {
     suspend fun getByTripOnce(tripId: Int) = dao.getByTripOnce(tripId)
     fun get(id: Int) = dao.get(id)
     suspend fun getOnce(id: Int) = dao.getOnce(id)
+    fun getAll() = dao.getAll()
 }

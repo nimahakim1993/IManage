@@ -41,6 +41,7 @@ import com.nima.app.imanage.presentation.view.MainToolbar
 import com.nima.app.imanage.presentation.view.NoteBoxDetailScreen
 import com.nima.app.imanage.presentation.view.NotesScreen
 import com.nima.app.imanage.presentation.view.PasswordItemsScreen
+import com.nima.app.imanage.presentation.view.ReportScreen
 import com.nima.app.imanage.presentation.view.SettingsScreen
 import com.nima.app.imanage.presentation.view.tripsplit.CreateTripScreen
 import com.nima.app.imanage.presentation.view.tripsplit.TripDetailScreen
@@ -106,6 +107,7 @@ fun Navigation(
         modifier = Modifier.padding(padding)
     ) {
         composable(Screen.Home.route) { HomeScreen(setToolbar, navController) }
+        composable(Screen.Report.route) { ReportScreen(setToolbar, navController) }
         composable(Screen.Assets.route) { AssetsScreen(setToolbar, navController) }
         composable(Screen.Passwords.route) { PasswordItemsScreen(setToolbar, navController) }
         composable(Screen.BankCards.route) { BankCardsScreen(setToolbar, navController) }

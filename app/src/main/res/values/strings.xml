@@ -375,4 +375,33 @@
     <string name="car_type_insurance">Insurance</string>
     <string name="car_type_other">Other</string>
 
+    <!-- Report -->
+    <string name="report_title">Reports</string>
+    <string name="report_filter">Filter</string>
+    <string name="report_filter_current_year">This Year</string>
+    <string name="report_filter_monthly">Monthly</string>
+    <string name="report_filter_yearly">Yearly</string>
+    <string name="report_filter_custom">Custom</string>
+    <string name="report_custom_range">Custom Range</string>
+    <string name="report_from_date">From Date</string>
+    <string name="report_to_date">To Date</string>
+    <string name="report_select_month">Select Month</string>
+    <string name="report_select_year">Select Year</string>
+    <string name="report_overview">Financial Overview</string>
+    <string name="report_net_balance">Net Balance</string>
+    <string name="report_income">Income</string>
+    <string name="report_expense">Expense</string>
+    <string name="report_debt">Debt</string>
+    <string name="report_receivable">Receivable</string>
+    <string name="report_trips">Trips</string>
+    <string name="report_cards">Bank Cards</string>
+    <string name="report_car">Car Services</string>
+    <string name="report_assets">Assets</string>
+    <string name="report_trip_expenses">Trip Expenses</string>
+    <string name="report_installments">Installments</string>
+    <string name="report_assets_value">Asset Value</string>
+    <string name="report_income_vs_expense">Income vs Expense</string>
+    <string name="report_category_breakdown">Category Breakdown</string>
+    <string name="report_no_data">No data for selected period</string>
+
 </resources>

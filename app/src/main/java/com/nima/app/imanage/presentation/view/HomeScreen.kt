@@ -286,7 +286,9 @@ private fun DashboardGrid(navController: NavHostController) {
         DashboardEntry(stringResource(R.string.passwords_home), Icons.Default.Password) {
             navController.navigate(Screen.Passwords.route)
         },
-        DashboardEntry(stringResource(R.string.report), Icons.Default.Assessment) {},
+        DashboardEntry(stringResource(R.string.report), Icons.Default.Assessment) {
+            navController.navigate(Screen.Report.route)
+        },
         DashboardEntry(stringResource(R.string.car_services), Icons.Default.DirectionsCar) {
             navController.navigate(Screen.CarServices.route)
         },

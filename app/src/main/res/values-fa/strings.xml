@@ -375,4 +375,33 @@
     <string name="car_type_insurance">بیمه</string>
     <string name="car_type_other">سایر</string>
 
+    <!-- Report -->
+    <string name="report_title">گزارش‌ها</string>
+    <string name="report_filter">فیلتر</string>
+    <string name="report_filter_current_year">امسال</string>
+    <string name="report_filter_monthly">ماهانه</string>
+    <string name="report_filter_yearly">سالانه</string>
+    <string name="report_filter_custom">دلخواه</string>
+    <string name="report_custom_range">بازه دلخواه</string>
+    <string name="report_from_date">از تاریخ</string>
+    <string name="report_to_date">تا تاریخ</string>
+    <string name="report_select_month">انتخاب ماه</string>
+    <string name="report_select_year">انتخاب سال</string>
+    <string name="report_overview">نمای کلی مالی</string>
+    <string name="report_net_balance">تراز خالص</string>
+    <string name="report_income">درآمد</string>
+    <string name="report_expense">هزینه</string>
+    <string name="report_debt">بدهی</string>
+    <string name="report_receivable">بستانکاری</string>
+    <string name="report_trips">سفرها</string>
+    <string name="report_cards">کارت‌های بانکی</string>
+    <string name="report_car">سرویس خودرو</string>
+    <string name="report_assets">دارایی‌ها</string>
+    <string name="report_trip_expenses">هزینه سفرها</string>
+    <string name="report_installments">اقساط</string>
+    <string name="report_assets_value">ارزش دارایی</string>
+    <string name="report_income_vs_expense">درآمد در مقابل هزینه</string>
+    <string name="report_category_breakdown">جزئیات دسته‌بندی</string>
+    <string name="report_no_data">داده‌ای برای بازه انتخاب شده وجود ندارد</string>
+
 </resources>

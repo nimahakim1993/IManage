@@ -31,4 +31,7 @@ interface TripExpenseDao {
 
     @Query("SELECT * FROM trip_expenses WHERE id = :id")
     suspend fun getOnce(id: Int): TripExpenseEntity?
+
+    @Query("SELECT * FROM trip_expenses ORDER BY date DESC, id DESC")
+    fun getAll(): Flow<List<TripExpenseEntity>>
 }
