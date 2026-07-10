@@ -292,7 +292,7 @@
     <string name="authenticate">احراز هویت</string>
 
     <!-- Trip Split -->
-    <string name="trip_list_title">سفرهای مشترک</string>
+    <string name="trip_list_title">سفرها</string>
     <string name="trip_empty_title">هیچ سفری ثبت نشده</string>
     <string name="trip_empty_hint">برای ایجاد سفر جدید، دکمه + را فشار دهید</string>
     <string name="trip_create_title">ایجاد سفر جدید</string>

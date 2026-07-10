@@ -292,7 +292,7 @@
     <string name="authenticate">Authenticate</string>
 
     <!-- Trip Split -->
-    <string name="trip_list_title">Shared Trips</string>
+    <string name="trip_list_title">Trips</string>
     <string name="trip_empty_title">No trips yet</string>
     <string name="trip_empty_hint">Tap + to create a new trip</string>
     <string name="trip_create_title">Create New Trip</string>

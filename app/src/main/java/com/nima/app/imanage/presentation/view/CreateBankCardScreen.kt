@@ -105,8 +105,7 @@ fun CreateBankCardScreen(
         Color(0xFF4C1D95),
         Color(0xFF374151),
         Color(0xFF1C1C1E),
-        Color(0xFFC5A44B),
-        Color(0xFF8B0000),
+        Color(0xFFC5A44B)
     )
 
     val selectedCard by viewModel.selectedCard.collectAsState()

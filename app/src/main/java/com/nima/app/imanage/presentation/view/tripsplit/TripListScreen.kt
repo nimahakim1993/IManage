@@ -25,7 +25,6 @@ import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -46,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
+import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.TripListViewModel
 import com.nima.app.imanage.ui.component.EmptyState
@@ -60,29 +60,28 @@ fun TripListScreen(
     navController: NavHostController,
     viewModel: TripListViewModel = koinViewModel()
 ) {
-    val tripListTitle = stringResource(R.string.trip_list_title)
     val createTripDesc = stringResource(R.string.trip_create_title)
-
-    LaunchedEffect(Unit) {
-        setToolbar(ToolbarConfig(title = tripListTitle))
-    }
+    val tripsTitle = stringResource(R.string.trip_list_title)
 
     val trips by viewModel.trips.collectAsState()
 
-    Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { navController.navigate(Screen.CreateTrip.createRoute()) },
-                containerColor = MaterialTheme.colorScheme.primary
-            ) {
-                Icon(
-                    Icons.Default.Add,
-                    contentDescription = createTripDesc,
-                    tint = MaterialTheme.colorScheme.onPrimary
+    LaunchedEffect(Unit) {
+        setToolbar(
+            ToolbarConfig(
+                title = tripsTitle,
+                showBack = true,
+                actions = listOf(
+                    ToolbarAction(
+                        icon = Icons.Default.Add,
+                        contentDescription = createTripDesc,
+                        onClick = { navController.navigate(Screen.CreateTrip.createRoute()) }
+                    )
                 )
-            }
-        }
-    ) { padding ->
+            )
+        )
+    }
+
+    Scaffold { padding ->
         if (trips.isEmpty()) {
             Box(
                 modifier = Modifier
