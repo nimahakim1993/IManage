@@ -38,11 +38,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -398,10 +398,8 @@ private fun AssetRectangle(
     val isDark = isSystemInDarkTheme()
     val iconType = AssetIconType.fromValue(asset.iconType)
 
-    val glassBorder = if (isDark)
-        Color.White.copy(alpha = 0.18f)
-    else
-        Color.White.copy(alpha = 0.95f)
+    val glassBorder =
+        if (isDark) Color.White.copy(alpha = 0.18f) else Color.White.copy(alpha = 0.95f)
 
     val textPrimary = MaterialTheme.colorScheme.onSurface
     val textSecondary = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f)
@@ -410,38 +408,16 @@ private fun AssetRectangle(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(6.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
-        Column {
+        Box(modifier = Modifier.fillMaxWidth()) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(20.dp))
-                    .border(
-                        if (editMode) 0.dp else 1.5.dp,
-                        glassBorder,
-                        RoundedCornerShape(
-                            if (editMode) 20.dp else 20.dp
-                        )
-                    )
-                    .then(
-                        if (editMode)
-                            Modifier.border(
-                                1.5.dp,
-                                glassBorder,
-                                RoundedCornerShape(
-                                    topStart = 20.dp,
-                                    topEnd = 20.dp,
-                                    bottomStart = 0.dp,
-                                    bottomEnd = 0.dp
-                                )
-                            )
-                        else Modifier
-                    )
+                    .border(1.5.dp, glassBorder, RoundedCornerShape(20.dp))
                     .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
                 Row(
@@ -480,11 +456,12 @@ private fun AssetRectangle(
                             maxLines = 1
                         )
                         Spacer(modifier = Modifier.size(2.dp))
-                        val unitDisplay = if (asset.unitCount == asset.unitCount.toLong().toDouble())
-                            NumberFormatUtils.format(asset.unitCount.toLong())
-                        else
-                            String.format(Locale.ENGLISH, "%.3f", asset.unitCount)
-                                .trimEnd('0').trimEnd('.')
+                        val unitDisplay =
+                            if (asset.unitCount == asset.unitCount.toLong().toDouble())
+                                NumberFormatUtils.format(asset.unitCount.toLong())
+                            else
+                                String.format(Locale.ENGLISH, "%.3f", asset.unitCount)
+                                    .trimEnd('0').trimEnd('.')
                         val unitLabel = asset.unitName.ifBlank { stringResource(R.string.unit) }
                         Text(
                             text = unitDisplay + " " + unitLabel,
@@ -523,73 +500,31 @@ private fun AssetRectangle(
                         fontFamily = vazirFontFamily,
                         modifier = Modifier.padding(start = 8.dp)
                     )
-                }
+            }
             }
 
             if (editMode) {
-                val editDesc = stringResource(R.string.edit)
-                val deleteDesc = stringResource(R.string.delete)
-                Box(
+                Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(
-                            RoundedCornerShape(
-                                bottomStart = 20.dp,
-                                bottomEnd = 20.dp
-                            )
-                        )
-                        .background(
-                            if (isDark)
-                                Color.White.copy(alpha = 0.06f)
-                            else
-                                Color.Black.copy(alpha = 0.03f)
-                        )
-                        .border(
-                            1.dp,
-                            if (isDark) Color.White.copy(alpha = 0.08f) else Color.Black.copy(alpha = 0.05f),
-                            RoundedCornerShape(
-                                bottomStart = 20.dp,
-                                bottomEnd = 20.dp
-                            )
-                        )
-                        .padding(vertical = 4.dp, horizontal = 8.dp)
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        TextButton(onClick = onEdit) {
-                            Icon(
-                                Icons.Default.Edit,
-                                contentDescription = editDesc,
-                                tint = textSecondary,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Spacer(modifier = Modifier.size(4.dp))
-                            Text(
-                                text = editDesc,
-                                color = textSecondary,
-                                fontSize = 13.sp,
-                                fontFamily = vazirFontFamily
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(16.dp))
-                        TextButton(onClick = onDelete) {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = deleteDesc,
-                                tint = if (isDark) Color(0xFFEF5350) else Color(0xFFC62828),
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Spacer(modifier = Modifier.size(4.dp))
-                            Text(
-                                text = deleteDesc,
-                                color = if (isDark) Color(0xFFEF5350) else Color(0xFFC62828),
-                                fontSize = 13.sp,
-                                fontFamily = vazirFontFamily
-                            )
-                        }
+                    IconButton(onClick = onEdit, modifier = Modifier.size(32.dp)) {
+                        Icon(
+                            Icons.Default.Edit,
+                            contentDescription = stringResource(R.string.edit),
+                            tint = textSecondary,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                    IconButton(onClick = onDelete, modifier = Modifier.size(32.dp)) {
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = stringResource(R.string.delete),
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(18.dp)
+                        )
                     }
                 }
             }

@@ -169,7 +169,7 @@ fun InstallmentCard(
     val isDark = isSystemInDarkTheme()
     val overdueColor = if (isDark) DebtDark else DebtLight
     val settledColor = if (isDark) Color(0xFF1565C0) else Color(0xFF1976D2)
-    val onTrackColor = if (isDark) Color(0xFF2E7D32) else Color(0xFF43A047)
+    val onTrackColor = if (isDark) Color(0xFF1565C0) else Color(0xFF1976D2)
     val warningColor = if (isDark) Color(0xFFE65100) else Color(0xFFFB8C00)
 
     val today = ShamsiDate.todayMillis()

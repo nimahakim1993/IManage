@@ -415,11 +415,6 @@ private fun PasswordItemRectangle(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(20.dp))
-                    .border(
-                        if (editMode) 0.dp else 1.5.dp,
-                        glassBorder,
-                        RoundedCornerShape(20.dp)
-                    )
                     .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
                 Row(
@@ -498,56 +493,43 @@ private fun PasswordItemRectangle(
             if (editMode) {
                 val editDesc = stringResource(R.string.edit)
                 val deleteDesc = stringResource(R.string.delete)
-                Box(
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-                        .background(
-                            if (isDark) Color.White.copy(alpha = 0.06f) else Color.Black.copy(alpha = 0.03f)
-                        )
-                        .border(
-                            1.dp,
-                            if (isDark) Color.White.copy(alpha = 0.08f) else Color.Black.copy(alpha = 0.05f),
-                            RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
-                        )
-                        .padding(vertical = 4.dp, horizontal = 8.dp)
+                        .padding(vertical = 8.dp, horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        TextButton(onClick = onEdit) {
-                            Icon(
-                                Icons.Default.Edit,
-                                contentDescription = editDesc,
-                                tint = textSecondary,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Spacer(modifier = Modifier.size(4.dp))
-                            Text(
-                                text = editDesc,
-                                color = textSecondary,
-                                fontSize = 13.sp,
-                                fontFamily = vazirFontFamily
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(16.dp))
-                        TextButton(onClick = onDelete) {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = deleteDesc,
-                                tint = if (isDark) Color(0xFFEF5350) else Color(0xFFC62828),
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Spacer(modifier = Modifier.size(4.dp))
-                            Text(
-                                text = deleteDesc,
-                                color = if (isDark) Color(0xFFEF5350) else Color(0xFFC62828),
-                                fontSize = 13.sp,
-                                fontFamily = vazirFontFamily
-                            )
-                        }
+                    TextButton(onClick = onEdit) {
+                        Icon(
+                            Icons.Default.Edit,
+                            contentDescription = editDesc,
+                            tint = textSecondary,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.size(4.dp))
+                        Text(
+                            text = editDesc,
+                            color = textSecondary,
+                            fontSize = 13.sp,
+                            fontFamily = vazirFontFamily
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(16.dp))
+                    TextButton(onClick = onDelete) {
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = deleteDesc,
+                            tint = if (isDark) Color(0xFFEF5350) else Color(0xFFC62828),
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.size(4.dp))
+                        Text(
+                            text = deleteDesc,
+                            color = if (isDark) Color(0xFFEF5350) else Color(0xFFC62828),
+                            fontSize = 13.sp,
+                            fontFamily = vazirFontFamily
+                        )
                     }
                 }
             }

@@ -92,10 +92,10 @@ fun HomeScreen(
     val cards by bankCardViewModel.cards.collectAsState()
 
     val totalDebt = remember(loans) {
-        loans.filter { it.type == LoanEntity.TYPE_DEBT }.sumOf { it.price }
+        loans.filter { it.type == LoanEntity.TYPE_DEBT && !it.settled }.sumOf { it.price }
     }
     val totalReceivable = remember(loans) {
-        loans.filter { it.type == LoanEntity.TYPE_RECEIVABLE }.sumOf { it.price }
+        loans.filter { it.type == LoanEntity.TYPE_RECEIVABLE && !it.settled }.sumOf { it.price }
     }
     val netBalance = totalReceivable - totalDebt
 

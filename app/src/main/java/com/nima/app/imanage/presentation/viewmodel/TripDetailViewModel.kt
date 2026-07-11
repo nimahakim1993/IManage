@@ -158,6 +158,7 @@ class TripDetailViewModel(
             }
             splitRepository.insertAll(splitEntities)
 
+            _expenses.value = expenseRepository.getByTripOnce(tripId)
             recalculate(_participants.value, _expenses.value, _settlements.value)
         }
     }
@@ -174,6 +175,7 @@ class TripDetailViewModel(
     ) {
         viewModelScope.launch {
             val existing = expenseRepository.getOnce(expenseId) ?: return@launch
+            val tripId = existing.tripId
             existing.title = title
             existing.amount = amount
             existing.date = date
@@ -195,6 +197,7 @@ class TripDetailViewModel(
             }
             splitRepository.insertAll(splitEntities)
 
+            _expenses.value = expenseRepository.getByTripOnce(tripId)
             recalculate(_participants.value, _expenses.value, _settlements.value)
         }
     }

@@ -45,11 +45,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
@@ -68,9 +70,10 @@ import org.koin.androidx.compose.koinViewModel
 fun TripDetailScreen(
     setToolbar: (ToolbarConfig) -> Unit,
     navController: NavHostController,
-    tripId: Int,
-    viewModel: TripDetailViewModel = koinViewModel()
+    tripId: Int
 ) {
+    val activity = LocalContext.current as FragmentActivity
+    val viewModel: TripDetailViewModel = koinViewModel(viewModelStoreOwner = activity)
     LaunchedEffect(tripId) { viewModel.loadTrip(tripId) }
 
     val tripName by viewModel.tripName.collectAsState()

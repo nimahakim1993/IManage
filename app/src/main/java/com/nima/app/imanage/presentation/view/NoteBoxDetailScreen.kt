@@ -323,7 +323,7 @@ private fun NoteListItem(
     val onSurface = MaterialTheme.colorScheme.onSurface
     val textColor = onSurface
     val subtitleColor = onSurface.copy(alpha = 0.7f)
-    val contentSurface = onSurface.copy(alpha = 0.06f)
+    val contentSurface = MaterialTheme.colorScheme.surfaceVariant
 
     Card(
         modifier = Modifier
@@ -429,7 +429,7 @@ private fun NoteIconBadge(palette: com.nima.app.imanage.ui.theme.NoteBoxPalette)
             .background(palette.accent.copy(alpha = 0.35f))
             .border(
                 width = 1.dp,
-                color = Color.White.copy(alpha = 0.6f),
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                 shape = CircleShape
             ),
         contentAlignment = Alignment.Center
@@ -437,7 +437,7 @@ private fun NoteIconBadge(palette: com.nima.app.imanage.ui.theme.NoteBoxPalette)
         Icon(
             imageVector = Icons.Outlined.StickyNote2,
             contentDescription = null,
-            tint = Color.White,
+            tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.size(20.dp)
         )
     }

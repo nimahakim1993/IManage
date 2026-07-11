@@ -165,9 +165,11 @@ fun LoansScreen(
         }
     }
 
-    val (totalDebt, totalReceivable) = remember(filteredLoans) {
-        val debt = filteredLoans.filter { it.type == LoanEntity.TYPE_DEBT }.sumOf { it.price }
-        val receivable = filteredLoans.filter { it.type == LoanEntity.TYPE_RECEIVABLE }.sumOf { it.price }
+    val (totalDebt, totalReceivable) = remember(loans) {
+        val debt =
+            loans.filter { it.type == LoanEntity.TYPE_DEBT && !it.settled }.sumOf { it.price }
+        val receivable =
+            loans.filter { it.type == LoanEntity.TYPE_RECEIVABLE && !it.settled }.sumOf { it.price }
         debt to receivable
     }
 
