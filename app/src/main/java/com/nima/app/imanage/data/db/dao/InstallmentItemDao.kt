@@ -31,4 +31,7 @@ interface InstallmentItemDao {
 
     @Query("DELETE FROM installment_items WHERE installmentId = :installmentId")
     suspend fun deleteByInstallmentId(installmentId: Int)
+
+    @Query("SELECT * FROM installment_items WHERE settled = 0 AND dueDate >= :dateStart AND dueDate < :dateEnd")
+    suspend fun getUnsettledDueBetween(dateStart: Long, dateEnd: Long): List<InstallmentItemEntity>
 }

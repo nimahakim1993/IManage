@@ -25,4 +25,7 @@ interface CarServiceDao {
 
     @Query("SELECT * FROM car_services WHERE id = :id")
     fun get(id: Int): Flow<CarServiceEntity?>
+
+    @Query("SELECT * FROM car_services WHERE nextServiceDate > 0 AND nextServiceDate >= :dateStart AND nextServiceDate < :dateEnd")
+    suspend fun getServiceDueBetween(dateStart: Long, dateEnd: Long): List<CarServiceEntity>
 }

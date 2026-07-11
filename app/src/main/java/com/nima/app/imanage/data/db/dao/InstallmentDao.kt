@@ -25,4 +25,7 @@ interface InstallmentDao {
 
     @Query("SELECT * FROM installments WHERE id = :id LIMIT 1")
     fun get(id: Int): Flow<InstallmentEntity?>
+
+    @Query("SELECT * FROM installments WHERE id = :id LIMIT 1")
+    suspend fun getById(id: Int): InstallmentEntity?
 }

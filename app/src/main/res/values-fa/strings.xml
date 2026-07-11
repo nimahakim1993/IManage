@@ -422,4 +422,18 @@
     <string name="office_type_car_service">سرویس خودرو</string>
     <string name="office_type_installment">قسط</string>
 
+    <!-- Notifications -->
+    <string name="notif_channel_name">یادآوری روزانه</string>
+    <string name="notif_channel_desc">یادآوری برای اقساط، وام‌ها و سرویس‌های خودرو</string>
+    <string name="notif_title_reminders">یادآوری امروز</string>
+    <string name="notif_type_debt">بدهی</string>
+    <string name="notif_type_receivable">بستانکاری</string>
+    <string name="notif_line_loan">%1$s: %2$s تومان</string>
+    <string name="notif_line_installment">%1$s: %2$s تومان</string>
+    <string name="notif_line_car">%1$s</string>
+    <plurals name="notif_summary">
+        <item quantity="one">%d یادآوری برای امروز</item>
+        <item quantity="other">%d یادآوری برای امروز</item>
+    </plurals>
+
 </resources>
