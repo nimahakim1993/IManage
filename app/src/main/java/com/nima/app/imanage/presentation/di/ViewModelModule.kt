@@ -33,5 +33,5 @@ val viewModelModule = module {
     viewModel { TripDetailViewModel(get(), get(), get(), get(), get()) }
     viewModel { CarServiceViewModel(get()) }
     viewModel { ReportViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { OfficeViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { OfficeViewModel(get(), get(), get(), get(), get(), get(), get()) }
 }

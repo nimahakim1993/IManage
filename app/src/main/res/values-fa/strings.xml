@@ -415,6 +415,8 @@
     <string name="office_type_expense">هزینه</string>
     <string name="office_type_income">درآمد</string>
     <string name="office_type_loan">وام</string>
+    <string name="office_type_debt">بدهی</string>
+    <string name="office_type_receivable">بستانکاری</string>
     <string name="office_type_trip">سفر</string>
     <string name="office_type_trip_expense">هزینه سفر</string>
     <string name="office_type_car_service">سرویس خودرو</string>

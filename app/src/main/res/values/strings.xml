@@ -415,6 +415,8 @@
     <string name="office_type_expense">Expense</string>
     <string name="office_type_income">Income</string>
     <string name="office_type_loan">Loan</string>
+    <string name="office_type_debt">Debt</string>
+    <string name="office_type_receivable">Receivable</string>
     <string name="office_type_trip">Trip</string>
     <string name="office_type_trip_expense">Trip Expense</string>
     <string name="office_type_car_service">Car Service</string>

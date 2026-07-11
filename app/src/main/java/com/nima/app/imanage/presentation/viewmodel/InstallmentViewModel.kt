@@ -6,13 +6,13 @@ import com.nima.app.imanage.data.db.entity.InstallmentEntity
 import com.nima.app.imanage.data.db.entity.InstallmentItemEntity
 import com.nima.app.imanage.data.repository.InstallmentItemRepository
 import com.nima.app.imanage.data.repository.InstallmentRepository
+import com.nima.app.imanage.util.ShamsiDate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import com.nima.app.imanage.util.ShamsiDate
 
 class InstallmentViewModel(
     private val repository: InstallmentRepository,
@@ -69,6 +69,13 @@ class InstallmentViewModel(
 
         var currentMillis = installment.startDate
         for (i in 0 until installment.numberOfInstallments) {
+            itemRepository.insert(
+                InstallmentItemEntity(
+                    installmentId = installment.id,
+                    dueDate = currentMillis,
+                    amount = perItemAmount
+                )
+            )
             val periodMs = when (installment.periodType) {
                 InstallmentEntity.PERIOD_MONTHLY -> {
                     val (jy, jm, _) = ShamsiDate.fromMillis(currentMillis)
@@ -78,15 +85,7 @@ class InstallmentViewModel(
                 InstallmentEntity.PERIOD_WEEKLY -> 7L * 24 * 60 * 60 * 1000
                 else -> installment.periodDays.toLong() * 24L * 60 * 60 * 1000
             }
-            val dueDate = currentMillis + periodMs
-            itemRepository.insert(
-                InstallmentItemEntity(
-                    installmentId = installment.id,
-                    dueDate = dueDate,
-                    amount = perItemAmount
-                )
-            )
-            currentMillis = dueDate
+            currentMillis += periodMs
         }
     }
 

@@ -524,17 +524,16 @@ private fun EventCard(event: OfficeEvent) {
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = displayTitle,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = vazirFontFamily,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
                     text = when (event.type) {
                         com.nima.app.imanage.domain.model.EventType.EXPENSE -> stringResource(R.string.office_type_expense)
                         com.nima.app.imanage.domain.model.EventType.INCOME -> stringResource(R.string.office_type_income)
-                        com.nima.app.imanage.domain.model.EventType.LOAN -> stringResource(R.string.office_type_loan)
+                        com.nima.app.imanage.domain.model.EventType.LOAN -> {
+                            if (event.loanType == com.nima.app.imanage.data.db.entity.LoanEntity.TYPE_DEBT) {
+                                stringResource(R.string.office_type_debt)
+                            } else {
+                                stringResource(R.string.office_type_receivable)
+                            }
+                        }
                         com.nima.app.imanage.domain.model.EventType.TRIP -> stringResource(R.string.office_type_trip)
                         com.nima.app.imanage.domain.model.EventType.CAR_SERVICE -> stringResource(R.string.office_type_car_service)
                         com.nima.app.imanage.domain.model.EventType.INSTALLMENT -> stringResource(R.string.office_type_installment)
@@ -542,6 +541,13 @@ private fun EventCard(event: OfficeEvent) {
                     style = MaterialTheme.typography.bodySmall,
                     fontFamily = vazirFontFamily,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = displayTitle,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = vazirFontFamily,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 

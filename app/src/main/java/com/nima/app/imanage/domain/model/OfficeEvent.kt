@@ -11,7 +11,8 @@ data class OfficeEvent(
     val icon: ImageVector,
     val color: Color,
     val date: Long,
-    val serviceType: Int? = null
+    val serviceType: Int? = null,
+    val loanType: Int? = null
 )
 
 enum class EventType {

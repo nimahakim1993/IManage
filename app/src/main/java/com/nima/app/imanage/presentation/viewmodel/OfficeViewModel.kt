@@ -16,6 +16,7 @@ import com.nima.app.imanage.data.repository.CarServiceRepository
 import com.nima.app.imanage.data.repository.ExpenseRepository
 import com.nima.app.imanage.data.repository.IncomeRepository
 import com.nima.app.imanage.data.repository.InstallmentItemRepository
+import com.nima.app.imanage.data.repository.InstallmentRepository
 import com.nima.app.imanage.data.repository.LoanRepository
 import com.nima.app.imanage.data.repository.TripRepository
 import com.nima.app.imanage.domain.model.EventType
@@ -32,7 +33,8 @@ class OfficeViewModel(
     private val loanRepository: LoanRepository,
     private val tripRepository: TripRepository,
     private val carServiceRepository: CarServiceRepository,
-    private val installmentItemRepository: InstallmentItemRepository
+    private val installmentItemRepository: InstallmentItemRepository,
+    private val installmentRepository: InstallmentRepository
 ) : ViewModel() {
 
     private val expenses = expenseRepository.getAll()
@@ -53,8 +55,11 @@ class OfficeViewModel(
     private val installmentItems = installmentItemRepository.getAllItems()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    private val installments = installmentRepository.getAll()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
     val allEvents: StateFlow<List<OfficeEvent>> = combine(
-        expenses, incomes, loans, trips, carServices, installmentItems
+        expenses, incomes, loans, trips, carServices, installmentItems, installments
     ) { values ->
         val expList = values[0] as List<com.nima.app.imanage.data.db.entity.ExpenseEntity>
         val incList = values[1] as List<com.nima.app.imanage.data.db.entity.IncomeEntity>
@@ -62,6 +67,8 @@ class OfficeViewModel(
         val tripList = values[3] as List<com.nima.app.imanage.data.db.entity.TripEntity>
         val carList = values[4] as List<com.nima.app.imanage.data.db.entity.CarServiceEntity>
         val instList = values[5] as List<com.nima.app.imanage.data.db.entity.InstallmentItemEntity>
+        val instMap = (values[6] as List<com.nima.app.imanage.data.db.entity.InstallmentEntity>)
+            .associateBy { it.id }
 
         buildList {
             expList.forEach { exp ->
@@ -102,7 +109,8 @@ class OfficeViewModel(
                         type = EventType.LOAN,
                         icon = if (isDebt) Icons.Default.MoneyOff else Icons.Default.Payment,
                         color = if (isDebt) Color(0xFFFF9800) else Color(0xFF2196F3),
-                        date = loan.dateLoan
+                        date = loan.dateLoan,
+                        loanType = loan.type
                     )
                 )
             }
@@ -137,10 +145,11 @@ class OfficeViewModel(
             }
 
             instList.forEach { inst ->
+                val instTitle = instMap[inst.installmentId]?.title ?: "Installment"
                 add(
                     OfficeEvent(
                         id = "installment_${inst.id}",
-                        title = "Installment",
+                        title = instTitle,
                         amount = inst.amount,
                         type = EventType.INSTALLMENT,
                         icon = Icons.Default.AccountBalanceWallet,

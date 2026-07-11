@@ -853,7 +853,7 @@ private fun CategoryBreakdownCard(data: ReportData) {
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = ShamsiDate.toPersianDigits("${(fraction * 100).toInt()}%"),
+                            text = NumberFormatUtils.toLocalizedDigits("%${(fraction * 100).toInt()}"),
                             modifier = Modifier.weight(0.15f),
                             fontSize = 11.sp,
                             fontFamily = vazirFontFamily,
