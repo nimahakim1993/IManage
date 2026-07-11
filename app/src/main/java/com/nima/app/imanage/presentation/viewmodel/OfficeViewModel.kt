@@ -142,6 +142,20 @@ class OfficeViewModel(
                         serviceType = car.serviceType
                     )
                 )
+                if (car.nextServiceDate > 0) {
+                    add(
+                        OfficeEvent(
+                            id = "car_next_${car.id}",
+                            title = "",
+                            amount = null,
+                            type = EventType.CAR_SERVICE,
+                            icon = Icons.Default.DirectionsCar,
+                            color = Color(0xFF795548),
+                            date = car.nextServiceDate,
+                            serviceType = car.serviceType
+                        )
+                    )
+                }
             }
 
             instList.forEach { inst ->

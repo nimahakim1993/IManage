@@ -58,6 +58,7 @@ import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.CarServiceIconType
 import com.nima.app.imanage.data.model.ToolbarConfig
+import com.nima.app.imanage.domain.model.EventType
 import com.nima.app.imanage.domain.model.OfficeEvent
 import com.nima.app.imanage.presentation.viewmodel.OfficeViewModel
 import com.nima.app.imanage.ui.theme.vazirFontFamily
@@ -103,9 +104,27 @@ fun OfficeScreen(
     }
 
     val listState = rememberLazyListState()
+    var onceCollapsed by remember { mutableStateOf(false) }
     val isCalendarCollapsed by remember {
         derivedStateOf {
-            listState.firstVisibleItemIndex >= 2
+            when {
+                listState.firstVisibleItemIndex == 0 -> {
+                    onceCollapsed = false
+                    false
+                }
+
+                listState.firstVisibleItemIndex > 1 -> {
+                    onceCollapsed = true
+                    true
+                }
+
+                listState.firstVisibleItemIndex == 1 && listState.firstVisibleItemScrollOffset > 400 -> {
+                    onceCollapsed = true
+                    true
+                }
+
+                else -> onceCollapsed
+            }
         }
     }
 
@@ -227,10 +246,11 @@ private fun CompactDateCard(
     year: Int,
     month: Int,
     day: Int,
-    onTodayClick: () -> Unit
+    onTodayClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         elevation = CardDefaults.cardElevation(4.dp)
@@ -486,7 +506,7 @@ private fun RowScope.DayCell(
 @Composable
 private fun EventCard(event: OfficeEvent) {
     val displayTitle = when {
-        event.type == com.nima.app.imanage.domain.model.EventType.CAR_SERVICE && event.serviceType != null -> {
+        event.type == EventType.CAR_SERVICE && event.serviceType != null -> {
             val iconType = CarServiceIconType.fromValue(event.serviceType)
             stringResource(iconType.labelRes())
         }
@@ -525,18 +545,19 @@ private fun EventCard(event: OfficeEvent) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = when (event.type) {
-                        com.nima.app.imanage.domain.model.EventType.EXPENSE -> stringResource(R.string.office_type_expense)
-                        com.nima.app.imanage.domain.model.EventType.INCOME -> stringResource(R.string.office_type_income)
-                        com.nima.app.imanage.domain.model.EventType.LOAN -> {
+                        EventType.EXPENSE -> stringResource(R.string.office_type_expense)
+                        EventType.INCOME -> stringResource(R.string.office_type_income)
+                        EventType.LOAN -> {
                             if (event.loanType == com.nima.app.imanage.data.db.entity.LoanEntity.TYPE_DEBT) {
                                 stringResource(R.string.office_type_debt)
                             } else {
                                 stringResource(R.string.office_type_receivable)
                             }
                         }
-                        com.nima.app.imanage.domain.model.EventType.TRIP -> stringResource(R.string.office_type_trip)
-                        com.nima.app.imanage.domain.model.EventType.CAR_SERVICE -> stringResource(R.string.office_type_car_service)
-                        com.nima.app.imanage.domain.model.EventType.INSTALLMENT -> stringResource(R.string.office_type_installment)
+
+                        EventType.TRIP -> stringResource(R.string.office_type_trip)
+                        EventType.CAR_SERVICE -> stringResource(R.string.office_type_car_service)
+                        EventType.INSTALLMENT -> stringResource(R.string.office_type_installment)
                     },
                     style = MaterialTheme.typography.bodySmall,
                     fontFamily = vazirFontFamily,
