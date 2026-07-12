@@ -2,6 +2,9 @@ package com.nima.app.imanage.presentation.view
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -21,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
+import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -53,6 +57,7 @@ import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.BankCardViewModel
 import com.nima.app.imanage.presentation.viewmodel.LoanViewModel
+import com.nima.app.imanage.presentation.viewmodel.SettingsViewModel
 import com.nima.app.imanage.ui.theme.DebtDark
 import com.nima.app.imanage.ui.theme.DebtLight
 import com.nima.app.imanage.ui.theme.IncomeDark
@@ -62,20 +67,38 @@ import com.nima.app.imanage.util.BiometricHelper
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.SecurityManager
 import org.koin.androidx.compose.koinViewModel
+import java.time.LocalDate
 
 @Composable
 fun HomeScreen(
     setToolbar: (ToolbarConfig) -> Unit,
     navController: NavHostController,
     loanViewModel: LoanViewModel = koinViewModel(),
-    bankCardViewModel: BankCardViewModel = koinViewModel()
+    bankCardViewModel: BankCardViewModel = koinViewModel(),
+    settingsViewModel: SettingsViewModel = koinViewModel()
 ) {
 
     val settingsDesc = stringResource(R.string.settings)
+    val backupDesc = stringResource(R.string.backup_data)
+    val context = LocalContext.current
+
+    val createBackupFile = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        uri?.let { settingsViewModel.export(context, it) }
+    }
 
     LaunchedEffect(Unit) {
         setToolbar(
             ToolbarConfig(title = "", actions = listOf(
+                ToolbarAction(
+                    icon = Icons.Default.Backup,
+                    contentDescription = backupDesc,
+                    onClick = {
+                        val filename = "imanage_backup_${LocalDate.now()}.json"
+                        createBackupFile.launch(filename)
+                    }
+                ),
                 ToolbarAction(
                     icon = Icons.Outlined.Settings,
                     contentDescription = settingsDesc,
@@ -275,6 +298,7 @@ private fun DashboardGrid(navController: NavHostController) {
         DashboardEntry(
             title = stringResource(module.titleRes),
             icon = module.icon,
+            color = module.color,
             onClick = {
                 if (isProtected) {
                     val activity = context.findFragmentActivity()
@@ -307,6 +331,7 @@ private fun DashboardGrid(navController: NavHostController) {
                         modifier = Modifier.weight(1f),
                         title = entry.title,
                         icon = entry.icon,
+                        color = entry.color,
                         onClick = entry.onClick
                     )
                 }
@@ -321,6 +346,7 @@ private fun DashboardGrid(navController: NavHostController) {
 private data class DashboardEntry(
     val title: String,
     val icon: ImageVector,
+    val color: Color,
     val onClick: () -> Unit
 )
 
@@ -329,6 +355,7 @@ private fun DashboardItem(
     modifier: Modifier = Modifier,
     title: String,
     icon: ImageVector,
+    color: Color,
     onClick: () -> Unit
 ) {
     Card(
@@ -337,9 +364,9 @@ private fun DashboardItem(
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primary
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         ),
-        elevation = CardDefaults.cardElevation(6.dp)
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(
             modifier = Modifier
@@ -348,17 +375,25 @@ private fun DashboardItem(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.size(34.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(CircleShape)
+                    .background(color.copy(alpha = 0.15f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = color,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontFamily = vazirFontFamily,
                 maxLines = 1
             )

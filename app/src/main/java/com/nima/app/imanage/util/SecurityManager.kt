@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.NoteAlt
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Payments
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
@@ -27,19 +28,29 @@ object SecurityManager {
         val key: String,
         val screen: Screen,
         val titleRes: Int,
-        val icon: ImageVector
+        val icon: ImageVector,
+        val color: Color
     )
 
     val modules = listOf(
-        ModuleEntry("financial", Screen.Financial, R.string.financial_title, Icons.Default.Payments),
-        ModuleEntry("bankCards", Screen.BankCards, R.string.bank_account_home, Icons.Default.AccountBalance),
-        ModuleEntry("tripList", Screen.TripList, R.string.shared_trip, Icons.Default.Groups),
-        ModuleEntry("notes", Screen.Notes, R.string.note, Icons.Default.NoteAlt),
-        ModuleEntry("assets", Screen.Assets, R.string.assets, Icons.Default.AccountBalanceWallet),
-        ModuleEntry("passwords", Screen.Passwords, R.string.passwords_home, Icons.Default.Password),
-        ModuleEntry("report", Screen.Report, R.string.report, Icons.Default.Assessment),
-        ModuleEntry("carServices", Screen.CarServices, R.string.car_services, Icons.Default.DirectionsCar),
-        ModuleEntry("office", Screen.Office, R.string.office_title, Icons.Default.CalendarMonth),
+        ModuleEntry("financial", Screen.Financial, R.string.financial_title, Icons.Default.Payments,
+            Color(0xFF4CAF50)),
+        ModuleEntry("bankCards", Screen.BankCards, R.string.bank_account_home, Icons.Default.AccountBalance,
+            Color(0xFF2196F3)),
+        ModuleEntry("tripList", Screen.TripList, R.string.shared_trip, Icons.Default.Groups,
+            Color(0xFF9C27B0)),
+        ModuleEntry("notes", Screen.Notes, R.string.note, Icons.Default.NoteAlt,
+            Color(0xFFFF9800)),
+        ModuleEntry("assets", Screen.Assets, R.string.assets, Icons.Default.AccountBalanceWallet,
+            Color(0xFF009688)),
+        ModuleEntry("passwords", Screen.Passwords, R.string.passwords_home, Icons.Default.Password,
+            Color(0xFFE91E63)),
+        ModuleEntry("report", Screen.Report, R.string.report, Icons.Default.Assessment,
+            Color(0xFF3F51B5)),
+        ModuleEntry("carServices", Screen.CarServices, R.string.car_services, Icons.Default.DirectionsCar,
+            Color(0xFF795548)),
+        ModuleEntry("office", Screen.Office, R.string.office_title, Icons.Default.CalendarMonth,
+            Color(0xFF607D8B)),
     )
 
     fun isModuleProtected(context: Context, key: String): Boolean {
