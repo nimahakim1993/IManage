@@ -440,6 +440,8 @@
     <string name="office_type_trip_expense">هزینه سفر</string>
     <string name="office_type_car_service">سرویس خودرو</string>
     <string name="office_type_installment">قسط</string>
+    <string name="office_type_loan_due_debt">موعد تسویه حساب بدهی</string>
+    <string name="office_type_loan_due_receivable">موعد تسویه حساب بستانکاری</string>
 
     <!-- Notifications -->
     <string name="notif_channel_name">یادآوری روزانه</string>

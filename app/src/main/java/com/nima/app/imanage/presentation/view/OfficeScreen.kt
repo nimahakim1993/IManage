@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.CarServiceIconType
+import com.nima.app.imanage.data.db.entity.LoanEntity
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.domain.model.EventType
 import com.nima.app.imanage.domain.model.OfficeEvent
@@ -90,6 +91,9 @@ fun OfficeScreen(
     var currentYear by remember { mutableStateOf(today.first) }
     var currentMonth by remember { mutableStateOf(today.second) }
     var selectedDay by remember { mutableStateOf(today.third) }
+
+    val isTodaySelected =
+        currentYear == today.first && currentMonth == today.second && selectedDay == today.third
 
     val daysInMonth = ShamsiDate.daysInMonth(currentYear, currentMonth)
     val daysWithEvents = remember(allEvents, currentYear, currentMonth) {
@@ -149,6 +153,7 @@ fun OfficeScreen(
                     CalendarHeader(
                         year = currentYear,
                         month = currentMonth,
+                        isTodaySelected = isTodaySelected,
                         onPreviousMonth = {
                             if (currentMonth > 1) currentMonth--
                             else {
@@ -190,6 +195,7 @@ fun OfficeScreen(
                     year = currentYear,
                     month = currentMonth,
                     day = selectedDay,
+                    isTodaySelected = isTodaySelected,
                     onTodayClick = {
                         val t = ShamsiDate.today()
                         currentYear = t.first
@@ -246,6 +252,7 @@ private fun CompactDateCard(
     year: Int,
     month: Int,
     day: Int,
+    isTodaySelected: Boolean,
     onTodayClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -295,20 +302,22 @@ private fun CompactDateCard(
                     )
                 }
             }
-            TextButton(onClick = onTodayClick) {
-                Icon(
-                    Icons.Default.CalendarToday,
-                    contentDescription = null,
-                    modifier = Modifier.size(16.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = stringResource(R.string.office_today),
-                    fontFamily = vazirFontFamily,
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.primary
-                )
+            if (!isTodaySelected) {
+                TextButton(onClick = onTodayClick) {
+                    Icon(
+                        Icons.Default.CalendarToday,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = stringResource(R.string.office_today),
+                        fontFamily = vazirFontFamily,
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
             }
         }
     }
@@ -318,6 +327,7 @@ private fun CompactDateCard(
 private fun CalendarHeader(
     year: Int,
     month: Int,
+    isTodaySelected: Boolean,
     onPreviousMonth: () -> Unit,
     onNextMonth: () -> Unit,
     onTodayClick: () -> Unit
@@ -366,19 +376,21 @@ private fun CalendarHeader(
                 )
             }
 
-            TextButton(onClick = onTodayClick) {
-                Icon(
-                    Icons.Default.CalendarToday,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp),
-                    tint = MaterialTheme.colorScheme.secondary
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = stringResource(R.string.office_today),
-                    fontFamily = vazirFontFamily,
-                    color = MaterialTheme.colorScheme.secondary
-                )
+            if (!isTodaySelected) {
+                TextButton(onClick = onTodayClick) {
+                    Icon(
+                        Icons.Default.CalendarToday,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = stringResource(R.string.office_today),
+                        fontFamily = vazirFontFamily,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
             }
         }
     }
@@ -548,7 +560,13 @@ private fun EventCard(event: OfficeEvent) {
                         EventType.EXPENSE -> stringResource(R.string.office_type_expense)
                         EventType.INCOME -> stringResource(R.string.office_type_income)
                         EventType.LOAN -> {
-                            if (event.loanType == com.nima.app.imanage.data.db.entity.LoanEntity.TYPE_DEBT) {
+                            if (event.isSettlementDue) {
+                                if (event.loanType == LoanEntity.TYPE_DEBT) {
+                                    stringResource(R.string.office_type_loan_due_debt)
+                                } else {
+                                    stringResource(R.string.office_type_loan_due_receivable)
+                                }
+                            } else if (event.loanType == LoanEntity.TYPE_DEBT) {
                                 stringResource(R.string.office_type_debt)
                             } else {
                                 stringResource(R.string.office_type_receivable)

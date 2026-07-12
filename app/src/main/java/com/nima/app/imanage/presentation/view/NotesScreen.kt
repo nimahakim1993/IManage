@@ -29,6 +29,7 @@ import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -330,19 +331,23 @@ private fun NoteBoxCard(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 12.dp),
+                            .padding(top = 10.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        GlassActionButton(
-                            icon = Icons.Default.Edit,
-                            label = stringResource(R.string.edit),
-                            onClick = onEdit
-                        )
-                        GlassActionButton(
-                            icon = Icons.Default.Delete,
-                            label = stringResource(R.string.delete),
-                            onClick = onDelete
-                        )
+                        IconButton(onClick = onEdit) {
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = stringResource(R.string.edit),
+                                tint = Color.White
+                            )
+                        }
+                        IconButton(onClick = onDelete) {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.delete),
+                                tint = Color.White
+                            )
+                        }
                     }
                 }
             }

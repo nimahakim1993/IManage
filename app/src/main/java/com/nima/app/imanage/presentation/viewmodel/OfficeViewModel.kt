@@ -113,6 +113,21 @@ class OfficeViewModel(
                         loanType = loan.type
                     )
                 )
+                if (loan.dateReceiveBack > 0) {
+                    add(
+                        OfficeEvent(
+                            id = "loan_due_${loan.id}",
+                            title = loan.targetPersonName,
+                            amount = loan.price,
+                            type = EventType.LOAN,
+                            icon = if (isDebt) Icons.Default.MoneyOff else Icons.Default.Payment,
+                            color = if (isDebt) Color(0xFFFF9800) else Color(0xFF2196F3),
+                            date = loan.dateReceiveBack,
+                            loanType = loan.type,
+                            isSettlementDue = true
+                        )
+                    )
+                }
             }
 
             tripList.forEach { trip ->
