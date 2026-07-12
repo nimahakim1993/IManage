@@ -457,4 +457,16 @@
         <item quantity="other">%d یادآوری برای امروز</item>
     </plurals>
 
+    <!-- About -->
+    <string name="about">درباره</string>
+    <string name="about_title">درباره IManage</string>
+    <string name="about_description">IManage اپلیکیشن جامع مدیریت مالی و وظایف شخصی شماست. پیگیری هزینه‌ها، درآمدها، بدهی‌ها، بستانکاری‌ها، کارت‌های بانکی، سفرها، سرویس‌های خودرو، رمزها و موارد دیگر — همه در یک جا.</string>
+    <string name="about_developer">نیما حکیم الهی</string>
+    <string name="about_telegram">nimahakim93</string>
+    <string name="about_contact">ارتباط با سازنده و بازخورد</string>
+    <string name="about_phone_label">شماره تماس</string>
+    <string name="about_phone">09367356585</string>
+    <string name="about_email">support@imanage.app</string>
+    <string name="open">باز کردن</string>
+
 </resources>

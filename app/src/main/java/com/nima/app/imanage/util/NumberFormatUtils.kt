@@ -33,8 +33,14 @@ object NumberFormatUtils {
         }
     )
 
-    fun format(value: Long): String =
-        (if (isPersianLocale()) persianFormatter else westernFormatter).format(value)
+    fun format(value: Long): String {
+        if (isPersianLocale()) {
+            val absVal = kotlin.math.abs(value)
+            val formatted = persianFormatter.format(absVal)
+            return if (value < 0) "\u200E-$formatted" else formatted
+        }
+        return westernFormatter.format(value)
+    }
 
     fun format(value: Int): String = format(value.toLong())
 

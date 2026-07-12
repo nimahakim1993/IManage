@@ -2,7 +2,6 @@ package com.nima.app.imanage.presentation.view
 
 import android.content.Context
 import android.content.ContextWrapper
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -25,6 +24,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.Backup
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -35,7 +35,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -80,7 +82,10 @@ fun HomeScreen(
 
     val settingsDesc = stringResource(R.string.settings)
     val backupDesc = stringResource(R.string.backup_data)
+    val aboutDesc = stringResource(R.string.about)
     val context = LocalContext.current
+
+    var showAboutSheet by remember { mutableStateOf(false) }
 
     val createBackupFile = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/json")
@@ -98,6 +103,11 @@ fun HomeScreen(
                         val filename = "imanage_backup_${LocalDate.now()}.json"
                         createBackupFile.launch(filename)
                     }
+                ),
+                ToolbarAction(
+                    icon = Icons.Outlined.Info,
+                    contentDescription = aboutDesc,
+                    onClick = { showAboutSheet = true }
                 ),
                 ToolbarAction(
                     icon = Icons.Outlined.Settings,
@@ -135,6 +145,10 @@ fun HomeScreen(
 
         DashboardGrid(navController = navController)
     }
+
+    if (showAboutSheet) {
+        AboutSheet(onDismiss = { showAboutSheet = false })
+    }
 }
 
 @Composable
@@ -144,11 +158,14 @@ private fun ReportCard(
     netBalance: Long,
     bankAccountCount: Int
 ) {
+    val isDark = isSystemInDarkTheme()
     val primary = MaterialTheme.colorScheme.primary
-    val secondary = MaterialTheme.colorScheme.secondary
+    val secondary =
+        if (isDark) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f) else MaterialTheme.colorScheme.secondaryContainer.copy(
+            alpha = 0.85f
+        )
     val onPrimary = MaterialTheme.colorScheme.onPrimary
 
-    val isDark = isSystemInDarkTheme()
     val debtColor = if (isDark) DebtDark else DebtLight
     val incomeColor = if (isDark) IncomeDark else IncomeLight
     val netBalanceColor = if (netBalance >= 0) incomeColor else debtColor
