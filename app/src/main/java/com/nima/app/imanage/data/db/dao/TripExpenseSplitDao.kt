@@ -30,4 +30,7 @@ interface TripExpenseSplitDao {
 
     @Query("SELECT * FROM trip_expense_splits WHERE expenseId IN (:expenseIds)")
     suspend fun getByExpenseIds(expenseIds: List<Int>): List<TripExpenseSplitEntity>
+
+    @Query("SELECT * FROM trip_expense_splits")
+    suspend fun getAllOnce(): List<TripExpenseSplitEntity>
 }

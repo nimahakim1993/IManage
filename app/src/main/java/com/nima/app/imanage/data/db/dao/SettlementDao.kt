@@ -24,4 +24,7 @@ interface SettlementDao {
 
     @Query("SELECT * FROM trip_settlements WHERE id = :id")
     suspend fun getOnce(id: Int): SettlementEntity?
+
+    @Query("SELECT * FROM trip_settlements ORDER BY date DESC, id DESC")
+    suspend fun getAllOnce(): List<SettlementEntity>
 }

@@ -24,4 +24,7 @@ interface NoteDao {
 
     @Query("SELECT COUNT(*) FROM notes WHERE boxId = :boxId")
     fun countByBox(boxId: Int): Flow<Int>
+
+    @Query("SELECT * FROM notes ORDER BY updatedAt DESC")
+    suspend fun getAllOnce(): List<NoteEntity>
 }

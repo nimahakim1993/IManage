@@ -117,6 +117,21 @@
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
 
+    <!-- Backup & Restore -->
+    <string name="backup_restore">Backup &amp; Restore</string>
+    <string name="backup_data">Backup Data</string>
+    <string name="restore_data">Restore Data</string>
+    <string name="restore_confirmation_message">This will replace all existing data with the backup. This action cannot be undone. Are you sure?</string>
+    <string name="backup_in_progress">Backing up\u2026</string>
+    <string name="restore_in_progress">Restoring\u2026</string>
+    <string name="backup_success">Backup completed successfully</string>
+    <string name="restore_success">Restore completed successfully</string>
+    <string name="backup_failed">Backup failed</string>
+    <string name="restore_failed">Restore failed</string>
+    <string name="success">Success</string>
+    <string name="error_title">Error</string>
+    <string name="ok">OK</string>
+
     <!-- NotesScreen -->
     <string name="notes_title">Notes</string>
     <string name="create_note_box_title">Create Note Box</string>

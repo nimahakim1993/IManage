@@ -31,4 +31,7 @@ interface ParticipantDao {
 
     @Query("SELECT * FROM trip_participants WHERE id = :id")
     suspend fun getOnce(id: Int): ParticipantEntity?
+
+    @Query("SELECT * FROM trip_participants ORDER BY id ASC")
+    suspend fun getAllOnce(): List<ParticipantEntity>
 }

@@ -117,6 +117,21 @@
     <string name="theme_light">روشن</string>
     <string name="theme_dark">تیره</string>
 
+    <!-- Backup & Restore -->
+    <string name="backup_restore">پشتیبان‌گیری و بازیابی</string>
+    <string name="backup_data">پشتیبان‌گیری</string>
+    <string name="restore_data">بازیابی</string>
+    <string name="restore_confirmation_message">تمام اطلاعات فعلی با فایل پشتیبان جایگزین می‌شود. این عملیات قابل بازگشت نیست. آیا مطمئن هستید؟</string>
+    <string name="backup_in_progress">در حال پشتیبان‌گیری…</string>
+    <string name="restore_in_progress">در حال بازیابی…</string>
+    <string name="backup_success">پشتیبان‌گیری با موفقیت انجام شد</string>
+    <string name="restore_success">بازیابی با موفقیت انجام شد</string>
+    <string name="backup_failed">پشتیبان‌گیری ناموفق بود</string>
+    <string name="restore_failed">بازیابی ناموفق بود</string>
+    <string name="success">موفق</string>
+    <string name="error_title">خطا</string>
+    <string name="ok">باشه</string>
+
     <!-- NotesScreen -->
     <string name="notes_title">یادداشت‌ها</string>
     <string name="create_note_box_title">ایجاد جعبه یادداشت</string>
