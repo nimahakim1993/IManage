@@ -1,5 +1,7 @@
 package com.nima.app.imanage.presentation.view
 
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -19,15 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
-import androidx.compose.material.icons.filled.AccountBalance
-import androidx.compose.material.icons.filled.AccountBalanceWallet
-import androidx.compose.material.icons.filled.Assessment
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.DirectionsCar
-import androidx.compose.material.icons.filled.Groups
-import androidx.compose.material.icons.filled.NoteAlt
-import androidx.compose.material.icons.filled.Password
-import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -46,10 +39,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
@@ -63,7 +58,9 @@ import com.nima.app.imanage.ui.theme.DebtLight
 import com.nima.app.imanage.ui.theme.IncomeDark
 import com.nima.app.imanage.ui.theme.IncomeLight
 import com.nima.app.imanage.ui.theme.vazirFontFamily
+import com.nima.app.imanage.util.BiometricHelper
 import com.nima.app.imanage.util.NumberFormatUtils
+import com.nima.app.imanage.util.SecurityManager
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -268,38 +265,39 @@ private fun ReportStatTile(
 
 @Composable
 private fun DashboardGrid(navController: NavHostController) {
-    val items = listOf(
-        DashboardEntry(stringResource(R.string.financial_title), Icons.Default.Payments) {
-            navController.navigate(Screen.Financial.route)
-        },
-        DashboardEntry(stringResource(R.string.bank_account_home), Icons.Default.AccountBalance) {
-            navController.navigate(Screen.BankCards.route)
-        },
-        DashboardEntry(stringResource(R.string.shared_trip), Icons.Default.Groups) {
-            navController.navigate(Screen.TripList.route)
-        },
-        DashboardEntry(stringResource(R.string.note), Icons.Default.NoteAlt) {
-            navController.navigate(Screen.Notes.route)
-        },
-        DashboardEntry(stringResource(R.string.assets), Icons.Default.AccountBalanceWallet) {
-            navController.navigate(Screen.Assets.route)
-        },
-        DashboardEntry(stringResource(R.string.passwords_home), Icons.Default.Password) {
-            navController.navigate(Screen.Passwords.route)
-        },
-        DashboardEntry(stringResource(R.string.report), Icons.Default.Assessment) {
-            navController.navigate(Screen.Report.route)
-        },
-        DashboardEntry(stringResource(R.string.car_services), Icons.Default.DirectionsCar) {
-            navController.navigate(Screen.CarServices.route)
-        },
-        DashboardEntry(stringResource(R.string.office_title), Icons.Default.CalendarMonth) {
-            navController.navigate(Screen.Office.route)
-        },
-    )
+    val context = LocalContext.current
+
+    val biometricTitle = stringResource(R.string.biometric_module_title)
+    val biometricSubtitle = stringResource(R.string.biometric_module_subtitle)
+
+    val modules = SecurityManager.modules.map { module ->
+        val isProtected = SecurityManager.isModuleProtected(context, module.key)
+        DashboardEntry(
+            title = stringResource(module.titleRes),
+            icon = module.icon,
+            onClick = {
+                if (isProtected) {
+                    val activity = context.findFragmentActivity()
+                    if (activity != null) {
+                        BiometricHelper.authenticate(
+                            activity = activity,
+                            title = biometricTitle,
+                            subtitle = biometricSubtitle,
+                            onSuccess = { navController.navigate(module.screen.route) },
+                            onError = { }
+                        )
+                    } else {
+                        navController.navigate(module.screen.route)
+                    }
+                } else {
+                    navController.navigate(module.screen.route)
+                }
+            }
+        )
+    }
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        items.chunked(3).forEach { rowItems ->
+        modules.chunked(3).forEach { rowItems ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -367,3 +365,10 @@ private fun DashboardItem(
         }
     }
 }
+
+private fun Context.findFragmentActivity(): FragmentActivity? =
+    when (this) {
+        is FragmentActivity -> this
+        is ContextWrapper -> this.baseContext.findFragmentActivity()
+        else -> null
+    }

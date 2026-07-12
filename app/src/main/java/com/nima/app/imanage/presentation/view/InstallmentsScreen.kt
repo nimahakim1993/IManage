@@ -257,7 +257,7 @@ fun InstallmentCard(
                         )
                     }
                     Text(
-                        text = "$settledCount/${installment.numberOfInstallments}",
+                        text = NumberFormatUtils.toLocalizedDigits("$settledCount/${installment.numberOfInstallments}"),
                         color = Color.White.copy(alpha = 0.9f),
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp,

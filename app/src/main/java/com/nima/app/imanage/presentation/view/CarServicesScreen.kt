@@ -379,7 +379,7 @@ private fun DonutCard(
                                 )
                                 Spacer(modifier = Modifier.size(6.dp))
                                 Text(
-                                    text = "%$percent",
+                                    text = "%${NumberFormatUtils.toLocalizedDigits(percent.toString())}",
                                     color = textColor,
                                     fontWeight = FontWeight.SemiBold,
                                     fontSize = 12.sp,

@@ -6,21 +6,38 @@ import android.content.ContextWrapper
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Backup
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -32,14 +49,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.SettingsViewModel
+import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.LanguageManager
+import com.nima.app.imanage.util.SecurityManager
 import com.nima.app.imanage.util.ThemeManager
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
@@ -85,114 +108,40 @@ fun SettingsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
-            text = stringResource(R.string.language),
-            style = MaterialTheme.typography.titleMedium
-        )
-
-        LanguageOption(
-            label = stringResource(R.string.language_english),
-            selected = currentLanguage == LanguageManager.LANG_EN,
-            onClick = {
-                if (currentLanguage != LanguageManager.LANG_EN) {
-                    LanguageManager.setLanguage(context, LanguageManager.LANG_EN)
-                    currentLanguage = LanguageManager.LANG_EN
-                    activity?.recreate()
-                }
+        LanguageSection(
+            currentLanguage = currentLanguage,
+            onLanguageChange = { lang ->
+                LanguageManager.setLanguage(context, lang)
+                currentLanguage = lang
+                activity?.recreate()
             }
         )
 
-        LanguageOption(
-            label = stringResource(R.string.language_persian),
-            selected = currentLanguage == LanguageManager.LANG_FA,
-            onClick = {
-                if (currentLanguage != LanguageManager.LANG_FA) {
-                    LanguageManager.setLanguage(context, LanguageManager.LANG_FA)
-                    currentLanguage = LanguageManager.LANG_FA
-                    activity?.recreate()
-                }
+        ThemeSection(
+            currentTheme = currentTheme,
+            onThemeChange = { theme ->
+                ThemeManager.setThemeMode(context, theme)
+                currentTheme = theme
+                activity?.recreate()
             }
         )
 
-        Spacer(modifier = Modifier.size(16.dp))
+        ModuleProtectionSection(context = context)
 
-        Text(
-            text = stringResource(R.string.theme),
-            style = MaterialTheme.typography.titleMedium
-        )
-
-        ThemeOption(
-            label = stringResource(R.string.theme_system),
-            selected = currentTheme == ThemeManager.THEME_SYSTEM,
-            onClick = {
-                if (currentTheme != ThemeManager.THEME_SYSTEM) {
-                    ThemeManager.setThemeMode(context, ThemeManager.THEME_SYSTEM)
-                    currentTheme = ThemeManager.THEME_SYSTEM
-                    activity?.recreate()
-                }
-            }
-        )
-
-        ThemeOption(
-            label = stringResource(R.string.theme_light),
-            selected = currentTheme == ThemeManager.THEME_LIGHT,
-            onClick = {
-                if (currentTheme != ThemeManager.THEME_LIGHT) {
-                    ThemeManager.setThemeMode(context, ThemeManager.THEME_LIGHT)
-                    currentTheme = ThemeManager.THEME_LIGHT
-                    activity?.recreate()
-                }
-            }
-        )
-
-        ThemeOption(
-            label = stringResource(R.string.theme_dark),
-            selected = currentTheme == ThemeManager.THEME_DARK,
-            onClick = {
-                if (currentTheme != ThemeManager.THEME_DARK) {
-                    ThemeManager.setThemeMode(context, ThemeManager.THEME_DARK)
-                    currentTheme = ThemeManager.THEME_DARK
-                    activity?.recreate()
-                }
-            }
-        )
-
-        Spacer(modifier = Modifier.size(24.dp))
-        HorizontalDivider()
-        Spacer(modifier = Modifier.size(16.dp))
-
-        Text(
-            text = stringResource(R.string.backup_restore),
-            style = MaterialTheme.typography.titleMedium
-        )
-
-        Spacer(modifier = Modifier.size(8.dp))
-
-        Button(
-            onClick = {
+        BackupRestoreSection(
+            backupState = backupState,
+            onBackup = {
                 val filename = "imanage_backup_${LocalDate.now()}.json"
                 createBackupFile.launch(filename)
             },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = backupState !is SettingsViewModel.BackupState.Exporting &&
-                    backupState !is SettingsViewModel.BackupState.Importing
-        ) {
-            Text(stringResource(R.string.backup_data))
-        }
-
-        OutlinedButton(
-            onClick = {
+            onRestore = {
                 openRestoreFile.launch(arrayOf("application/json"))
-            },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = backupState !is SettingsViewModel.BackupState.Exporting &&
-                    backupState !is SettingsViewModel.BackupState.Importing
-        ) {
-            Text(stringResource(R.string.restore_data))
-        }
+            }
+        )
     }
 
     if (showRestoreConfirmation && pendingRestoreUri != null) {
@@ -288,21 +237,251 @@ fun SettingsScreen(
 }
 
 @Composable
-private fun LanguageOption(
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit
+private fun SettingsCard(
+    modifier: Modifier = Modifier,
+    icon: ImageVector,
+    iconTint: Color = MaterialTheme.colorScheme.primary,
+    title: String,
+    description: String? = null,
+    content: @Composable () -> Unit
 ) {
-    OptionRow(label = label, selected = selected, onClick = onClick)
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(iconTint.copy(alpha = 0.12f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = iconTint,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                Column {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = vazirFontFamily
+                    )
+                    if (description != null) {
+                        Text(
+                            text = description,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontFamily = vazirFontFamily
+                        )
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            content()
+        }
+    }
 }
 
 @Composable
-private fun ThemeOption(
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit
+private fun LanguageSection(
+    currentLanguage: String,
+    onLanguageChange: (String) -> Unit
 ) {
-    OptionRow(label = label, selected = selected, onClick = onClick)
+    SettingsCard(
+        icon = Icons.Default.Language,
+        iconTint = MaterialTheme.colorScheme.primary,
+        title = stringResource(R.string.language)
+    ) {
+        OptionRow(
+            label = stringResource(R.string.language_english),
+            selected = currentLanguage == LanguageManager.LANG_EN,
+            onClick = {
+                if (currentLanguage != LanguageManager.LANG_EN) {
+                    onLanguageChange(LanguageManager.LANG_EN)
+                }
+            }
+        )
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+            modifier = Modifier.padding(vertical = 4.dp)
+        )
+        OptionRow(
+            label = stringResource(R.string.language_persian),
+            selected = currentLanguage == LanguageManager.LANG_FA,
+            onClick = {
+                if (currentLanguage != LanguageManager.LANG_FA) {
+                    onLanguageChange(LanguageManager.LANG_FA)
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun ThemeSection(
+    currentTheme: String,
+    onThemeChange: (String) -> Unit
+) {
+    SettingsCard(
+        icon = Icons.Default.Palette,
+        iconTint = MaterialTheme.colorScheme.tertiary,
+        title = stringResource(R.string.theme)
+    ) {
+        OptionRow(
+            label = stringResource(R.string.theme_system),
+            selected = currentTheme == ThemeManager.THEME_SYSTEM,
+            onClick = {
+                if (currentTheme != ThemeManager.THEME_SYSTEM) {
+                    onThemeChange(ThemeManager.THEME_SYSTEM)
+                }
+            }
+        )
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+            modifier = Modifier.padding(vertical = 4.dp)
+        )
+        OptionRow(
+            label = stringResource(R.string.theme_light),
+            selected = currentTheme == ThemeManager.THEME_LIGHT,
+            onClick = {
+                if (currentTheme != ThemeManager.THEME_LIGHT) {
+                    onThemeChange(ThemeManager.THEME_LIGHT)
+                }
+            }
+        )
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+            modifier = Modifier.padding(vertical = 4.dp)
+        )
+        OptionRow(
+            label = stringResource(R.string.theme_dark),
+            selected = currentTheme == ThemeManager.THEME_DARK,
+            onClick = {
+                if (currentTheme != ThemeManager.THEME_DARK) {
+                    onThemeChange(ThemeManager.THEME_DARK)
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun ModuleProtectionSection(context: Context) {
+    val modules = remember { SecurityManager.modules }
+
+    SettingsCard(
+        icon = Icons.Default.Shield,
+        iconTint = Color(0xFFE65100),
+        title = stringResource(R.string.module_protection),
+        description = stringResource(R.string.module_protection_desc)
+    ) {
+        modules.forEachIndexed { index, module ->
+            val isProtected = remember { mutableStateOf(SecurityManager.isModuleProtected(context, module.key)) }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        val newValue = !isProtected.value
+                        isProtected.value = newValue
+                        SecurityManager.setModuleProtected(context, module.key, newValue)
+                    }
+                    .padding(vertical = 10.dp, horizontal = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primaryContainer),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = module.icon,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = stringResource(module.titleRes),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontFamily = vazirFontFamily
+                    )
+                }
+                Switch(
+                    checked = isProtected.value,
+                    onCheckedChange = { checked ->
+                        isProtected.value = checked
+                        SecurityManager.setModuleProtected(context, module.key, checked)
+                    }
+                )
+            }
+
+            if (index < modules.lastIndex) {
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun BackupRestoreSection(
+    backupState: SettingsViewModel.BackupState,
+    onBackup: () -> Unit,
+    onRestore: () -> Unit
+) {
+    val isBusy = backupState is SettingsViewModel.BackupState.Exporting ||
+            backupState is SettingsViewModel.BackupState.Importing
+
+    SettingsCard(
+        icon = Icons.Default.Backup,
+        iconTint = MaterialTheme.colorScheme.secondary,
+        title = stringResource(R.string.backup_restore)
+    ) {
+        Button(
+            onClick = onBackup,
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !isBusy,
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text(
+                stringResource(R.string.backup_data),
+                fontFamily = vazirFontFamily
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedButton(
+            onClick = onRestore,
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !isBusy,
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text(
+                stringResource(R.string.restore_data),
+                fontFamily = vazirFontFamily
+            )
+        }
+    }
 }
 
 @Composable
@@ -315,12 +494,16 @@ private fun OptionRow(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(12.dp),
+            .padding(vertical = 6.dp, horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         RadioButton(selected = selected, onClick = onClick)
-        Spacer(modifier = Modifier.size(8.dp))
-        Text(text = label)
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            fontFamily = vazirFontFamily
+        )
     }
 }
 

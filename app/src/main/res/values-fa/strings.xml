@@ -305,6 +305,10 @@
     <string name="biometric_not_available">احراز هویت بیومتریک روی این دستگاه موجود نیست</string>
     <string name="biometric_auth_failed">احراز هویت ناموفق بود</string>
     <string name="authenticate">احراز هویت</string>
+    <string name="biometric_module_title">احراز هویت برای دسترسی</string>
+    <string name="biometric_module_subtitle">برای دسترسی به این بخش، اثر انگشت خود را تأیید کنید</string>
+    <string name="module_protection">محافظت از بخش‌ها</string>
+    <string name="module_protection_desc">فعال‌سازی قفل اثر انگشت برای بخش‌های حساس</string>
 
     <!-- Trip Split -->
     <string name="trip_list_title">سفرها</string>

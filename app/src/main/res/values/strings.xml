@@ -305,6 +305,10 @@
     <string name="biometric_not_available">Biometric authentication is not available on this device</string>
     <string name="biometric_auth_failed">Authentication failed</string>
     <string name="authenticate">Authenticate</string>
+    <string name="biometric_module_title">Authenticate to Access</string>
+    <string name="biometric_module_subtitle">Verify your fingerprint to access this section</string>
+    <string name="module_protection">Module Protection</string>
+    <string name="module_protection_desc">Enable fingerprint lock for sensitive modules</string>
 
     <!-- Trip Split -->
     <string name="trip_list_title">Trips</string>
