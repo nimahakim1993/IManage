@@ -28,4 +28,7 @@ interface LoanDao {
 
     @Query("SELECT * FROM loans WHERE settled = 0 AND dateReceiveBack >= :dateStart AND dateReceiveBack < :dateEnd")
     suspend fun getUnsettledDueBetween(dateStart: Long, dateEnd: Long): List<LoanEntity>
+
+    @Query("SELECT * FROM loans WHERE dateLoan >= :dateStart AND dateLoan < :dateEnd")
+    suspend fun getLoanDateBetween(dateStart: Long, dateEnd: Long): List<LoanEntity>
 }

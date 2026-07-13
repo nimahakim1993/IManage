@@ -1,6 +1,7 @@
 package com.nima.app.imanage
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -12,9 +13,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavHostController
@@ -56,6 +59,7 @@ import com.nima.app.imanage.presentation.view.tripsplit.TripListScreen
 import com.nima.app.imanage.presentation.view.tripsplit.TripSettlementScreen
 import com.nima.app.imanage.ui.theme.IManageTheme
 import com.nima.app.imanage.util.LanguageManager
+import com.nima.app.imanage.util.NotificationHelper
 import com.nima.app.imanage.util.ThemeManager
 
 class MainActivity : FragmentActivity() {
@@ -93,8 +97,13 @@ class MainActivity : FragmentActivity() {
 @Composable
 fun AppScaffold() {
     val navController = rememberNavController()
+    val context = LocalContext.current
 
     val toolbarState = remember { mutableStateOf<ToolbarConfig?>(null) }
+
+    val navigateTo = remember {
+        (context as? Activity)?.intent?.getStringExtra(NotificationHelper.EXTRA_NAVIGATE_TO)
+    }
 
     Scaffold(
         topBar = {
@@ -112,7 +121,8 @@ fun AppScaffold() {
             navController = navController,
             setToolbar = { toolbarConfig ->
                 toolbarState.value = toolbarConfig
-            }
+            },
+            navigateTo = navigateTo
         )
     }
 }
@@ -121,8 +131,17 @@ fun AppScaffold() {
 fun Navigation(
     padding: PaddingValues,
     navController: NavHostController,
-    setToolbar: (ToolbarConfig) -> Unit
+    setToolbar: (ToolbarConfig) -> Unit,
+    navigateTo: String? = null
 ) {
+    LaunchedEffect(navigateTo) {
+        when (navigateTo) {
+            "loans" -> navController.navigate(Screen.Loans.route)
+            "car_services" -> navController.navigate(Screen.CarServices.route)
+            "installments" -> navController.navigate(Screen.Installments.route)
+        }
+    }
+
     NavHost(
         navController = navController,
         startDestination = Screen.Home.route,

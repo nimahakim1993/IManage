@@ -18,6 +18,7 @@ class NotificationHelper(private val context: Context) {
         const val CHANNEL_ID = "daily_reminders"
         const val GROUP_KEY = "daily_reminders_group"
         const val NOTIFICATION_ID = 1001
+        const val EXTRA_NAVIGATE_TO = "navigate_to"
     }
 
     fun createChannel() {
@@ -34,24 +35,49 @@ class NotificationHelper(private val context: Context) {
     }
 
     fun showReminderNotification(
-        loans: List<LoanEntity>,
+        dueLoans: List<LoanEntity>,
+        settlementLoans: List<LoanEntity>,
         installmentItems: List<Pair<InstallmentItemEntity, String>>,
-        carServices: List<CarServiceEntity>
+        serviceDateCarServices: List<CarServiceEntity>,
+        nextServiceCarServices: List<CarServiceEntity>
     ) {
-        val totalCount = loans.size + installmentItems.size + carServices.size
-        if (totalCount == 0) return
+        val count = dueLoans.size + settlementLoans.size + installmentItems.size +
+                serviceDateCarServices.size + nextServiceCarServices.size
+        if (count == 0) return
 
         val inboxStyle = NotificationCompat.InboxStyle()
             .setBigContentTitle(context.getString(R.string.notif_title_reminders))
 
-        loans.forEach { loan ->
-            val label = if (loan.type == LoanEntity.TYPE_DEBT)
-                context.getString(R.string.notif_type_debt)
-            else
-                context.getString(R.string.notif_type_receivable)
+        var targetScreen: String? = null
+
+        dueLoans.forEach { loan ->
+            val (label, screen) = if (loan.type == LoanEntity.TYPE_DEBT) {
+                context.getString(R.string.notif_label_debt_due) to "loans"
+            } else {
+                context.getString(R.string.notif_label_receivable_due) to "loans"
+            }
+            if (targetScreen == null) targetScreen = screen
             inboxStyle.addLine(
                 context.getString(
-                    R.string.notif_line_loan,
+                    R.string.notif_line_amount,
+                    label,
+                    loan.targetPersonName,
+                    NumberFormatUtils.format(loan.price)
+                )
+            )
+        }
+
+        settlementLoans.forEach { loan ->
+            val (label, screen) = if (loan.type == LoanEntity.TYPE_DEBT) {
+                context.getString(R.string.notif_label_debt_settlement) to "loans"
+            } else {
+                context.getString(R.string.notif_label_receivable_settlement) to "loans"
+            }
+            if (targetScreen == null) targetScreen = screen
+            inboxStyle.addLine(
+                context.getString(
+                    R.string.notif_line_amount,
+                    label,
                     loan.targetPersonName,
                     NumberFormatUtils.format(loan.price)
                 )
@@ -59,20 +85,37 @@ class NotificationHelper(private val context: Context) {
         }
 
         installmentItems.forEach { (item, title) ->
+            if (targetScreen == null) targetScreen = "installments"
             inboxStyle.addLine(
                 context.getString(
-                    R.string.notif_line_installment,
+                    R.string.notif_line_amount,
+                    context.getString(R.string.notif_label_installment),
                     title,
                     NumberFormatUtils.format(item.amount)
                 )
             )
         }
 
-        carServices.forEach { service ->
+        serviceDateCarServices.forEach { service ->
+            if (targetScreen == null) targetScreen = "car_services"
             val typeName = getCarServiceTypeName(service.serviceType)
             inboxStyle.addLine(
                 context.getString(
-                    R.string.notif_line_car,
+                    R.string.notif_line_amount,
+                    context.getString(R.string.notif_label_car_service),
+                    typeName,
+                    NumberFormatUtils.format(service.amountPaid)
+                )
+            )
+        }
+
+        nextServiceCarServices.forEach { service ->
+            if (targetScreen == null) targetScreen = "car_services"
+            val typeName = getCarServiceTypeName(service.serviceType)
+            inboxStyle.addLine(
+                context.getString(
+                    R.string.notif_line_no_amount,
+                    context.getString(R.string.notif_label_car_next_service),
                     typeName
                 )
             )
@@ -80,6 +123,7 @@ class NotificationHelper(private val context: Context) {
 
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            targetScreen?.let { putExtra(EXTRA_NAVIGATE_TO, it) }
         }
         val pendingIntent = PendingIntent.getActivity(
             context,
@@ -89,11 +133,11 @@ class NotificationHelper(private val context: Context) {
         )
 
         val summaryText = context.resources.getQuantityString(
-            R.plurals.notif_summary, totalCount, totalCount
+            R.plurals.notif_summary, count, count
         )
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setSmallIcon(R.drawable.imanage_logo)
             .setContentTitle(context.getString(R.string.notif_title_reminders))
             .setContentText(summaryText)
             .setStyle(inboxStyle)

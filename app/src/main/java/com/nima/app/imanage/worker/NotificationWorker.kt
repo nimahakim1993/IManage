@@ -27,16 +27,24 @@ class NotificationWorker(
         val todayStart = ShamsiDate.todayMillis()
         val todayEnd = todayStart + 86_400_000L
 
-        val loans = loanDao.getUnsettledDueBetween(todayStart, todayEnd)
+        val dueLoans = loanDao.getLoanDateBetween(todayStart, todayEnd)
+        val settlementLoans = loanDao.getUnsettledDueBetween(todayStart, todayEnd)
         val items = itemDao.getUnsettledDueBetween(todayStart, todayEnd)
-        val carServices = carDao.getServiceDueBetween(todayStart, todayEnd)
+        val serviceDateCarServices = carDao.getServiceDateBetween(todayStart, todayEnd)
+        val nextServiceCarServices = carDao.getNextServiceDueBetween(todayStart, todayEnd)
 
-        val installmentItems = items.mapNotNull { item ->
+        val installmentTitles = items.mapNotNull { item ->
             val installment = installmentDao.getById(item.installmentId)
             installment?.let { item to it.title }
         }
 
-        notifHelper.showReminderNotification(loans, installmentItems, carServices)
+        notifHelper.showReminderNotification(
+            dueLoans = dueLoans,
+            settlementLoans = settlementLoans,
+            installmentItems = installmentTitles,
+            serviceDateCarServices = serviceDateCarServices,
+            nextServiceCarServices = nextServiceCarServices
+        )
 
         return Result.success()
     }
