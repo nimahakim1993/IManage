@@ -19,7 +19,7 @@ object ThemeManager {
     private val fontScaleMap = mapOf(
         FONT_SMALL to 0.85f,
         FONT_NORMAL to 1.0f,
-        FONT_LARGE to 1.15f
+        FONT_LARGE to 1.20f
     )
 
     fun getThemeMode(context: Context): String {

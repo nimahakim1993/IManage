@@ -2,6 +2,7 @@ package com.nima.app.imanage.presentation.di
 
 import androidx.room.Room
 import com.nima.app.imanage.data.db.AppDatabase
+import com.nima.app.imanage.data.db.DatabaseMigrations
 import org.koin.dsl.module
 
 val databaseModule = module {
@@ -9,9 +10,9 @@ val databaseModule = module {
         Room.databaseBuilder(
             get(),
             AppDatabase::class.java,
-            "app_db"
+            "imanage_db"
         )
-            .fallbackToDestructiveMigration()
+            .addMigrations(*DatabaseMigrations.MIGRATIONS)
             .build()
     }
     single { get<AppDatabase>().bankCardDao() }

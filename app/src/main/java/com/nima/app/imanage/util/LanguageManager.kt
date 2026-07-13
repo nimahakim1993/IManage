@@ -14,7 +14,7 @@ object LanguageManager {
 
     fun getLanguage(context: Context): String {
         val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        return prefs.getString(KEY_LANGUAGE, LANG_EN) ?: LANG_EN
+        return prefs.getString(KEY_LANGUAGE, LANG_FA) ?: LANG_FA
     }
 
     fun setLanguage(context: Context, language: String) {
