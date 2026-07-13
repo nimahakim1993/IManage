@@ -45,10 +45,12 @@ object SecurityManager {
             Color(0xFF009688)),
         ModuleEntry("passwords", Screen.Passwords, R.string.passwords_home, Icons.Default.Password,
             Color(0xFFE91E63)),
+        ModuleEntry(
+            "carServices", Screen.CarServices, R.string.car_services, Icons.Default.DirectionsCar,
+            Color(0xFF795548)
+        ),
         ModuleEntry("report", Screen.Report, R.string.report, Icons.Default.Assessment,
             Color(0xFF3F51B5)),
-        ModuleEntry("carServices", Screen.CarServices, R.string.car_services, Icons.Default.DirectionsCar,
-            Color(0xFF795548)),
         ModuleEntry("office", Screen.Office, R.string.office_title, Icons.Default.CalendarMonth,
             Color(0xFF607D8B)),
     )

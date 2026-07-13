@@ -24,8 +24,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.Backup
-import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.ContactSupport
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.WbIncandescent
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -83,6 +84,7 @@ fun HomeScreen(
     val settingsDesc = stringResource(R.string.settings)
     val backupDesc = stringResource(R.string.backup_data)
     val aboutDesc = stringResource(R.string.about)
+    val helpDesc = stringResource(R.string.help_title)
     val context = LocalContext.current
 
     var showAboutSheet by remember { mutableStateOf(false) }
@@ -105,9 +107,14 @@ fun HomeScreen(
                     }
                 ),
                 ToolbarAction(
-                    icon = Icons.Outlined.Info,
+                    icon = Icons.Outlined.ContactSupport,
                     contentDescription = aboutDesc,
                     onClick = { showAboutSheet = true }
+                ),
+                ToolbarAction(
+                    icon = Icons.Outlined.WbIncandescent,
+                    contentDescription = helpDesc,
+                    onClick = { navController.navigate(Screen.Help.route) }
                 ),
                 ToolbarAction(
                     icon = Icons.Outlined.Settings,

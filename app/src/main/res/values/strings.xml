@@ -473,4 +473,34 @@
     <string name="about_email">support@imanage.app</string>
     <string name="open">Open</string>
 
+    <!-- Help / Guide -->
+    <string name="help_title">Module Guide</string>
+
+    <string name="help_financial_short">Manage expenses, incomes, loans &amp; installments</string>
+    <string name="help_financial_long">Track all your financial activities in one place. Record daily expenses and incomes, manage debts and receivables with settlement tracking, and set up installment plans with automatic due date calculation. Filter and search through your financial history effortlessly.</string>
+
+    <string name="help_bank_cards_short">Store and manage your bank cards securely</string>
+    <string name="help_bank_cards_long">Keep all your bank card details organized and accessible. Store card numbers, CVV, expiry dates, Sheba and account numbers. Cards are displayed in a customizable order with visibility toggles for sensitive information. Copy details to clipboard with one tap.</string>
+
+    <string name="help_trips_short">Split travel expenses with friends fairly</string>
+    <string name="help_trips_long">Create trips and add participants to track shared expenses. Record who paid for what and automatically calculate how much each person owes or is owed. View settlement suggestions to easily balance accounts among group members. Perfect for road trips, group dinners, or any shared activity.</string>
+
+    <string name="help_notes_short">Organize your thoughts in colorful note boxes</string>
+    <string name="help_notes_long">Create themed note boxes to categorize your notes by topic. Each box can have a custom color and description. Add unlimited notes within each box with titles and full content. Notes track creation and update timestamps so you always know when you last edited them.</string>
+
+    <string name="help_assets_short">Track your investments and asset values</string>
+    <string name="help_assets_long">Monitor your investment portfolio and physical assets. Add assets like gold, currency, stocks, or property with unit count and price per unit. View total asset values at a glance and see the distribution of your wealth across different asset types with a visual breakdown.</string>
+
+    <string name="help_passwords_short">Store encrypted passwords and credentials</string>
+    <string name="help_passwords_long">Securely store your passwords, usernames and credentials with AES-256-GCM encryption backed by Android Keystore. Each password entry has a customizable icon for quick identification. Access is protected by biometric authentication for an extra layer of security.</string>
+
+    <string name="help_report_short">Visual financial reports and analytics</string>
+    <string name="help_report_long">Generate comprehensive financial reports with flexible date ranges. Compare income vs expenses, view category breakdowns, and track your net balance over time. Filter by monthly, yearly, or custom date ranges. Includes detailed breakdowns for trips, car expenses, and asset values.</string>
+
+    <string name="help_car_short">Log vehicle maintenance and service history</string>
+    <string name="help_car_long">Keep a detailed record of all vehicle maintenance. Log oil changes, tire changes, brake pad replacements and more. Track service dates, kilometer readings, costs, product brands and part names. Set next service reminders with date and kilometer targets to never miss maintenance.</string>
+
+    <string name="help_office_short">Calendar view of all your financial events</string>
+    <string name="help_office_long">View all your financial activities in a unified calendar interface. See expenses, incomes, loans, trips, car services and installments on their respective dates. Get a bird\'s-eye view of your month with event indicators on each day. Tap any day to see detailed events and navigate to related modules.</string>
+
 </resources>

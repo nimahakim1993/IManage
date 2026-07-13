@@ -300,7 +300,7 @@ private fun LanguageSection(
 ) {
     SettingsCard(
         icon = Icons.Default.Language,
-        iconTint = MaterialTheme.colorScheme.primary,
+        iconTint = Color(0xFF1565C0),
         title = stringResource(R.string.language)
     ) {
         OptionRow(
