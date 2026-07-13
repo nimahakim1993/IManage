@@ -74,7 +74,7 @@ fun AboutSheet(onDismiss: () -> Unit) {
             Image(
                 painter = painterResource(R.drawable.imanage_logo),
                 contentDescription = null,
-                modifier = Modifier.size(80.dp)
+                modifier = Modifier.size(160.dp)
             )
 
             Spacer(modifier = Modifier.height(12.dp))

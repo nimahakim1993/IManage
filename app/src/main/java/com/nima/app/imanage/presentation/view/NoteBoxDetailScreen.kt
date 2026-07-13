@@ -67,6 +67,7 @@ import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.NoteBoxViewModel
 import com.nima.app.imanage.presentation.viewmodel.NoteViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
+import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.NoteBoxPalettes
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import org.koin.androidx.compose.koinViewModel
@@ -223,7 +224,7 @@ private fun DetailBackdrop(palette: com.nima.app.imanage.ui.theme.NoteBoxPalette
 @Composable
 private fun BoxHeader(box: NoteBoxEntity, noteCount: Int) {
     val palette = NoteBoxPalettes.getOrElse(box.colorIndex) { NoteBoxPalettes.first() }
-    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val isDark = LocalIsDarkTheme.current
 
     val cardBrush = Brush.linearGradient(
         colors = listOf(

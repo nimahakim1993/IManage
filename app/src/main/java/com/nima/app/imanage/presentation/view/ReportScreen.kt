@@ -3,7 +3,6 @@ package com.nima.app.imanage.presentation.view
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -69,6 +68,7 @@ import com.nima.app.imanage.domain.model.ReportData
 import com.nima.app.imanage.presentation.viewmodel.ReportViewModel
 import com.nima.app.imanage.ui.component.ShamsiDatePicker
 import com.nima.app.imanage.ui.component.ShamsiMonthYearPicker
+import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
@@ -388,7 +388,7 @@ private fun FilterChipRow(
 
 @Composable
 private fun ReportOverviewCard(data: ReportData) {
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalIsDarkTheme.current
     val gradient = Brush.linearGradient(
         colors = listOf(
             MaterialTheme.colorScheme.primary,
@@ -572,7 +572,7 @@ private fun BarChartCard(
     monthlyExpenses: List<MonthAmount>,
     monthlyIncomes: List<MonthAmount>
 ) {
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalIsDarkTheme.current
     val expenseColor = if (isDark) Color(0xFFEF9A9A) else Color(0xFFE53935)
     val incomeColor = if (isDark) Color(0xFFA5D6A7) else Color(0xFF43A047)
     val textColor = MaterialTheme.colorScheme.onSurface

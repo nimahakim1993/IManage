@@ -5,7 +5,6 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,8 +61,8 @@ import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.InstallmentViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
-import com.nima.app.imanage.ui.theme.DebtDark
-import com.nima.app.imanage.ui.theme.DebtLight
+import com.nima.app.imanage.ui.theme.LocalAppColors
+import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.NoteBoxBlue
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
@@ -166,8 +165,8 @@ fun InstallmentCard(
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
-    val isDark = isSystemInDarkTheme()
-    val overdueColor = if (isDark) DebtDark else DebtLight
+    val isDark = LocalIsDarkTheme.current
+    val overdueColor = LocalAppColors.current.debt
     val settledColor = if (isDark) Color(0xFF1565C0) else Color(0xFF1976D2)
     val onTrackColor = if (isDark) Color(0xFF1565C0) else Color(0xFF1976D2)
     val warningColor = if (isDark) Color(0xFFE65100) else Color(0xFFFB8C00)

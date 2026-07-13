@@ -55,6 +55,11 @@ data class AppColors(
     val debt: Color
 )
 
+val LocalIsDarkTheme = androidx.compose.runtime.staticCompositionLocalOf { false }
+val LocalAppColors = androidx.compose.runtime.staticCompositionLocalOf {
+    AppColors(income = IncomeLight, debt = DebtLight)
+}
+
 val LightAppColors = AppColors(
     income = IncomeLight,
     debt = DebtLight
@@ -68,7 +73,6 @@ val DarkAppColors = AppColors(
 @Composable
 fun IManageTheme(
     themeMode: String = ThemeManager.THEME_SYSTEM,
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
@@ -83,14 +87,21 @@ fun IManageTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
 
+    val appColors = if (darkTheme) DarkAppColors else LightAppColors
+
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = getVazirTypography(1f),
-        content = content
-    )
+        typography = getVazirTypography(1f)
+    ) {
+        androidx.compose.runtime.CompositionLocalProvider(
+            LocalIsDarkTheme provides darkTheme,
+            LocalAppColors provides appColors
+        ) {
+            content()
+        }
+    }
 }

@@ -8,7 +8,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +36,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,17 +56,13 @@ import com.nima.app.imanage.data.db.entity.InstallmentEntity
 import com.nima.app.imanage.data.db.entity.InstallmentItemEntity
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.InstallmentViewModel
-import com.nima.app.imanage.ui.theme.DebtDark
-import com.nima.app.imanage.ui.theme.DebtLight
+import com.nima.app.imanage.ui.theme.LocalAppColors
+import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.NoteBoxBlue
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
 import org.koin.androidx.compose.koinViewModel
-import kotlin.math.PI
-import kotlin.math.asin
-import kotlin.math.cos
-import kotlin.math.sin
 
 private const val DAY_MS = 24L * 60 * 60 * 1000
 
@@ -100,8 +94,8 @@ fun InstallmentDetailScreen(
         val settledCount = items.count { it.settled }
         val allSettled = items.isNotEmpty() && items.all { it.settled }
 
-        val isDark = isSystemInDarkTheme()
-        val overdueColor = if (isDark) DebtDark else DebtLight
+        val isDark = LocalIsDarkTheme.current
+        val overdueColor = LocalAppColors.current.debt
         val settledColor = if (isDark) Color(0xFF1565C0) else Color(0xFF1976D2)
 
         val today = ShamsiDate.todayMillis()
@@ -326,13 +320,13 @@ private fun ItemCard(
     isSettled: Boolean,
     onToggleSettled: () -> Unit
 ) {
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalIsDarkTheme.current
     val today = ShamsiDate.todayMillis()
 
     val baseColor by animateColorAsState(
         targetValue = when {
             isSettled -> if (isDark) Color(0xFF1565C0) else Color(0xFF1976D2)
-            isPastDue -> if (isDark) DebtDark else DebtLight
+            isPastDue -> LocalAppColors.current.debt
             else -> MaterialTheme.colorScheme.primary
         },
         animationSpec = tween(500)

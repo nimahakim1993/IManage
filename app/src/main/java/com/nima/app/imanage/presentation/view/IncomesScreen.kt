@@ -69,6 +69,7 @@ import com.nima.app.imanage.presentation.viewmodel.IncomeViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
 import com.nima.app.imanage.ui.component.ShamsiMonthYearPicker
+import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.NoteBoxPalettes
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
@@ -431,7 +432,7 @@ fun IncomeItem(
     onEdit: () -> Unit = {},
     onDelete: () -> Unit = {}
 ) {
-    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val isDark = LocalIsDarkTheme.current
     val palette = if (source != null) {
         NoteBoxPalettes.getOrElse(source.colorIndex) { NoteBoxPalettes.first() }
     } else {

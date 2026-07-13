@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -84,6 +83,7 @@ import com.nima.app.imanage.presentation.viewmodel.PasswordItemInput
 import com.nima.app.imanage.presentation.viewmodel.PasswordItemViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
+import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.BiometricHelper
 import com.nima.app.imanage.util.BiometricHelper.AuthType
@@ -390,7 +390,7 @@ private fun PasswordItemRectangle(
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalIsDarkTheme.current
     val iconType = PasswordIconType.fromValue(item.iconType)
     val secondary = MaterialTheme.colorScheme.secondary
 

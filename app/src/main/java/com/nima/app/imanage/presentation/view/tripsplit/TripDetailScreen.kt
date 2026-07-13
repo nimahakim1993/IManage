@@ -1,7 +1,6 @@
 package com.nima.app.imanage.presentation.view.tripsplit
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -59,6 +58,7 @@ import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.TripDetailViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
+import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.NoteBoxPalettes
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
@@ -263,7 +263,7 @@ fun TripDetailScreen(
 
 @Composable
 private fun SummaryCard(totalExpenses: Double, participantCount: Int) {
-    val dark = isSystemInDarkTheme()
+    val dark = LocalIsDarkTheme.current
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),

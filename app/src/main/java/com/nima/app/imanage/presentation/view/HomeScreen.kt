@@ -6,7 +6,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -66,10 +65,8 @@ import com.nima.app.imanage.presentation.viewmodel.IncomeViewModel
 import com.nima.app.imanage.presentation.viewmodel.InstallmentViewModel
 import com.nima.app.imanage.presentation.viewmodel.LoanViewModel
 import com.nima.app.imanage.presentation.viewmodel.SettingsViewModel
-import com.nima.app.imanage.ui.theme.DebtDark
-import com.nima.app.imanage.ui.theme.DebtLight
-import com.nima.app.imanage.ui.theme.IncomeDark
-import com.nima.app.imanage.ui.theme.IncomeLight
+import com.nima.app.imanage.ui.theme.LocalAppColors
+import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.BiometricHelper
 import com.nima.app.imanage.util.NumberFormatUtils
@@ -198,7 +195,6 @@ fun HomeScreen(
             currentPage = pagerState.currentPage,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 4.dp)
         )
 
         DashboardGrid(navController = navController)
@@ -250,7 +246,7 @@ private fun ReportCard(
     rightTileValue: Long,
     rightTileAccent: Color
 ) {
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalIsDarkTheme.current
     val primary = MaterialTheme.colorScheme.primary
     val secondaryColor =
         if (isDark) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f) else MaterialTheme.colorScheme.secondaryContainer.copy(
@@ -258,8 +254,8 @@ private fun ReportCard(
         )
     val onPrimary = MaterialTheme.colorScheme.onPrimary
 
-    val debtColor = if (isDark) DebtDark else DebtLight
-    val incomeColor = if (isDark) IncomeDark else IncomeLight
+    val debtColor = LocalAppColors.current.debt
+    val incomeColor = LocalAppColors.current.income
     val netBalanceColor = if (netBalance >= 0) incomeColor else debtColor
 
     val gradient = Brush.linearGradient(

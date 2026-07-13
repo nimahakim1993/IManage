@@ -1,7 +1,6 @@
 package com.nima.app.imanage.ui.component
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.nima.app.imanage.R
+import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import java.util.Locale
 
 @Composable
@@ -39,7 +39,7 @@ fun ActionDialog(
     onDismiss: () -> Unit,
     onPositiveClicked: () -> Unit,
 ) {
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalIsDarkTheme.current
     val isRtlLocale = Locale.getDefault().language == "fa"
 
     val deleteIconColor = if (isDark) Color(0xFFEF5350) else Color(0xFFC62828)
