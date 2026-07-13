@@ -53,7 +53,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.CarServiceIconType
@@ -62,6 +61,7 @@ import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.domain.model.EventType
 import com.nima.app.imanage.domain.model.OfficeEvent
 import com.nima.app.imanage.presentation.viewmodel.OfficeViewModel
+import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
@@ -281,7 +281,7 @@ private fun CompactDateCard(
                         text = ShamsiDate.toPersianDigits(day.toString()),
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
+                        fontSize = scaledSp(18f),
                         fontFamily = vazirFontFamily
                     )
                 }
@@ -314,7 +314,7 @@ private fun CompactDateCard(
                     Text(
                         text = stringResource(R.string.office_today),
                         fontFamily = vazirFontFamily,
-                        fontSize = 12.sp,
+                        fontSize = scaledSp(12f),
                         color = MaterialTheme.colorScheme.secondary
                     )
                 }

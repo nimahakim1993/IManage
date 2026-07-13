@@ -71,7 +71,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
@@ -84,6 +83,7 @@ import com.nima.app.imanage.presentation.viewmodel.PasswordItemViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
+import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.BiometricHelper
 import com.nima.app.imanage.util.BiometricHelper.AuthType
@@ -448,7 +448,7 @@ private fun PasswordItemRectangle(
                             text = item.title,
                             color = textPrimary,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
+                            fontSize = scaledSp(16f),
                             fontFamily = vazirFontFamily,
                             maxLines = 1
                         )
@@ -511,7 +511,7 @@ private fun PasswordItemRectangle(
                         Text(
                             text = editDesc,
                             color = textSecondary,
-                            fontSize = 13.sp,
+                            fontSize = scaledSp(13f),
                             fontFamily = vazirFontFamily
                         )
                     }
@@ -527,7 +527,7 @@ private fun PasswordItemRectangle(
                         Text(
                             text = deleteDesc,
                             color = if (isDark) Color(0xFFEF5350) else Color(0xFFC62828),
-                            fontSize = 13.sp,
+                            fontSize = scaledSp(13f),
                             fontFamily = vazirFontFamily
                         )
                     }
@@ -554,14 +554,14 @@ private fun FieldRow(
         Text(
             text = label,
             color = textMuted,
-            fontSize = 11.sp,
+            fontSize = scaledSp(11f),
             fontFamily = vazirFontFamily
         )
         Spacer(modifier = Modifier.size(6.dp))
         Text(
             text = value,
             color = textSecondary,
-            fontSize = 13.sp,
+            fontSize = scaledSp(13f),
             fontFamily = vazirFontFamily,
             maxLines = 1,
             modifier = Modifier.weight(1f)

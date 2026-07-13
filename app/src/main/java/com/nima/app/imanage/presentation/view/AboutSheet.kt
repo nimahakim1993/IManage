@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nima.app.imanage.R
+import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -119,7 +120,7 @@ fun AboutSheet(onDismiss: () -> Unit) {
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontFamily = vazirFontFamily,
-                            fontSize = 16.sp
+                            fontSize = scaledSp(16f)
                         )
 
                         Spacer(modifier = Modifier.height(16.dp))
@@ -145,7 +146,7 @@ fun AboutSheet(onDismiss: () -> Unit) {
                                     text = stringResource(R.string.about_telegram),
                                     color = Color.White.copy(alpha = 0.85f),
                                     fontFamily = vazirFontFamily,
-                                    fontSize = 14.sp
+                                    fontSize = scaledSp(14f)
                                 )
                             }
                             TextButton(
@@ -188,7 +189,7 @@ fun AboutSheet(onDismiss: () -> Unit) {
                                     text = stringResource(R.string.about_phone),
                                     color = Color.White.copy(alpha = 0.85f),
                                     fontFamily = vazirFontFamily,
-                                    fontSize = 14.sp
+                                    fontSize = scaledSp(14f)
                                 )
                             }
                             TextButton(

@@ -118,6 +118,12 @@
     <string name="theme_light">روشن</string>
     <string name="theme_dark">تیره</string>
 
+    <!-- Font Size -->
+    <string name="font_size">اندازه قلم</string>
+    <string name="font_size_small">کوچک</string>
+    <string name="font_size_normal">معمولی</string>
+    <string name="font_size_large">بزرگ</string>
+
     <!-- Backup & Restore -->
     <string name="backup_restore">پشتیبان‌گیری و بازیابی</string>
     <string name="backup_data">پشتیبان‌گیری</string>

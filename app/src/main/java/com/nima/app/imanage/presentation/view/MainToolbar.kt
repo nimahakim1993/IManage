@@ -9,17 +9,16 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.model.ToolbarConfig
-import com.nima.app.imanage.ui.theme.getVazirTypography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,7 +31,7 @@ fun MainToolbar(
             Text(
                 text = config.title,
                 modifier = Modifier.padding(end = 8.dp),
-                style = getVazirTypography(1f).headlineLarge,
+                style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.End
             )
         },

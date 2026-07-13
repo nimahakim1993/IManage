@@ -44,7 +44,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.model.ToolbarConfig
@@ -52,6 +51,7 @@ import com.nima.app.imanage.domain.calculator.ParticipantBalance
 import com.nima.app.imanage.presentation.viewmodel.TripDetailViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.TextInputDropDown
+import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
 import org.koin.androidx.compose.koinViewModel
@@ -135,7 +135,10 @@ fun TripSettlementScreen(
                             modifier = Modifier.size(16.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(stringResource(R.string.settlement_record_button), fontSize = 12.sp)
+                        Text(
+                            stringResource(R.string.settlement_record_button),
+                            fontSize = scaledSp(12f)
+                        )
                     }
                 }
             }
@@ -259,7 +262,7 @@ private fun BalanceRow(balance: ParticipantBalance) {
                     }",
                     color = color,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
+                    fontSize = scaledSp(14f),
                     fontFamily = vazirFontFamily
                 )
             }

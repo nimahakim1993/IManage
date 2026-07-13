@@ -65,7 +65,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
@@ -77,6 +76,7 @@ import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
 import com.nima.app.imanage.ui.theme.LocalAppColors
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
+import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
@@ -383,7 +383,7 @@ fun LoanItem(
                             text = loan.targetPersonName,
                             color = Color.White,
                             fontWeight = FontWeight.SemiBold,
-                            fontSize = 16.sp,
+                            fontSize = scaledSp(16f),
                             fontFamily = vazirFontFamily,
                             modifier = Modifier.weight(1f, fill = false)
                         )
@@ -414,7 +414,7 @@ fun LoanItem(
                         text = NumberFormatUtils.format(loan.price),
                         color = Color.White,
                         fontWeight = FontWeight.ExtraBold,
-                        fontSize = 22.sp,
+                        fontSize = scaledSp(22f),
                         fontFamily = vazirFontFamily
                     )
                 }
@@ -431,7 +431,7 @@ fun LoanItem(
                         Text(
                             text = loan.description,
                             color = Color.White.copy(alpha = 0.92f),
-                            fontSize = 13.sp,
+                            fontSize = scaledSp(13f),
                             fontFamily = vazirFontFamily,
                             maxLines = 2
                         )
@@ -482,7 +482,7 @@ fun LoanItem(
                             if (loan.settled) R.string.settled_on else R.string.mark_settled
                         ),
                         color = Color.White,
-                        fontSize = 12.sp,
+                        fontSize = scaledSp(12f),
                         fontFamily = vazirFontFamily,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -529,7 +529,7 @@ private fun DateRow(iconTint: Color, text: String) {
         Text(
             text = text,
             color = iconTint,
-            fontSize = 11.sp,
+            fontSize = scaledSp(11f),
             fontFamily = vazirFontFamily
         )
     }

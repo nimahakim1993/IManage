@@ -51,7 +51,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
@@ -62,6 +61,7 @@ import com.nima.app.imanage.presentation.viewmodel.NoteBoxViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.NoteBoxPalettes
+import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import org.koin.androidx.compose.koinViewModel
 
@@ -301,7 +301,7 @@ private fun NoteBoxCard(
                             color = Color.White,
                             fontFamily = vazirFontFamily,
                             fontWeight = FontWeight.ExtraBold,
-                            fontSize = 20.sp,
+                            fontSize = scaledSp(20f),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             style = MaterialTheme.typography.titleLarge.copy(
@@ -322,7 +322,7 @@ private fun NoteBoxCard(
                         color = Color.White.copy(alpha = 0.9f),
                         fontFamily = vazirFontFamily,
                         fontWeight = FontWeight.Normal,
-                        fontSize = 13.sp,
+                        fontSize = scaledSp(13f),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -400,7 +400,7 @@ private fun GlassActionButton(
             color = Color.White,
             fontFamily = vazirFontFamily,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 13.sp
+            fontSize = scaledSp(13f)
         )
     }
 }

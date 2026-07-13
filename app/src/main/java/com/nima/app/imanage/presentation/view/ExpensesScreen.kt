@@ -58,7 +58,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
@@ -72,6 +71,7 @@ import com.nima.app.imanage.ui.component.EmptyState
 import com.nima.app.imanage.ui.component.ShamsiMonthYearPicker
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.NoteBoxPalettes
+import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
@@ -360,7 +360,7 @@ private fun TotalsCard(
                             text = NumberFormatUtils.format(total),
                             color = Color.White,
                             fontWeight = FontWeight.ExtraBold,
-                            fontSize = 24.sp,
+                            fontSize = scaledSp(24f),
                             fontFamily = vazirFontFamily
                         )
                     }
@@ -376,7 +376,7 @@ private fun TotalsCard(
                             text = NumberFormatUtils.format(count.toLong()),
                             color = Color.White,
                             fontWeight = FontWeight.ExtraBold,
-                            fontSize = 24.sp,
+                            fontSize = scaledSp(24f),
                             fontFamily = vazirFontFamily
                         )
                     }
@@ -403,7 +403,7 @@ private fun TotalsCard(
                     Text(
                         text = dateFilterLabel,
                         color = Color.White,
-                        fontSize = 13.sp,
+                        fontSize = scaledSp(13f),
                         fontFamily = vazirFontFamily,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.weight(1f)
@@ -472,7 +472,7 @@ fun ExpenseItem(
                             text = expense.title,
                             color = Color.White,
                             fontWeight = FontWeight.SemiBold,
-                            fontSize = 16.sp,
+                            fontSize = scaledSp(16f),
                             fontFamily = vazirFontFamily,
                             maxLines = 1
                         )
@@ -489,7 +489,7 @@ fun ExpenseItem(
                                 Text(
                                     text = category.title,
                                     color = Color.White.copy(alpha = 0.9f),
-                                    fontSize = 11.sp,
+                                    fontSize = scaledSp(11f),
                                     fontFamily = vazirFontFamily
                                 )
                             }
@@ -499,7 +499,7 @@ fun ExpenseItem(
                         text = NumberFormatUtils.format(expense.amount),
                         color = Color.White,
                         fontWeight = FontWeight.ExtraBold,
-                        fontSize = 22.sp,
+                        fontSize = scaledSp(22f),
                         fontFamily = vazirFontFamily
                     )
                 }
@@ -516,7 +516,7 @@ fun ExpenseItem(
                         Text(
                             text = expense.description,
                             color = Color.White.copy(alpha = 0.92f),
-                            fontSize = 13.sp,
+                            fontSize = scaledSp(13f),
                             fontFamily = vazirFontFamily,
                             maxLines = 2
                         )
@@ -535,7 +535,7 @@ fun ExpenseItem(
                     Text(
                         text = ShamsiDate.format(expense.createdAt),
                         color = Color.White.copy(alpha = 0.85f),
-                        fontSize = 11.sp,
+                        fontSize = scaledSp(11f),
                         fontFamily = vazirFontFamily
                     )
                 }

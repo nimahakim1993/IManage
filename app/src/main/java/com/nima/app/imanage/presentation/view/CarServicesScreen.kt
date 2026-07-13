@@ -62,7 +62,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
@@ -74,6 +73,7 @@ import com.nima.app.imanage.presentation.viewmodel.CarServiceViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
+import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
@@ -287,7 +287,7 @@ private fun DonutCard(
                     text = stringResource(R.string.car_total_expenses),
                     color = textColor,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 15.sp,
+                    fontSize = scaledSp(15f),
                     fontFamily = vazirFontFamily
                 )
 
@@ -332,13 +332,13 @@ private fun DonutCard(
                             text = NumberFormatUtils.format(totalAmount),
                             color = textColor,
                             fontWeight = FontWeight.ExtraBold,
-                            fontSize = 18.sp,
+                            fontSize = scaledSp(18f),
                             fontFamily = vazirFontFamily
                         )
                         Text(
                             text = stringResource(R.string.toman),
                             color = subTextColor,
-                            fontSize = 10.sp,
+                            fontSize = scaledSp(10f),
                             fontFamily = vazirFontFamily
                         )
                     }
@@ -382,14 +382,14 @@ private fun DonutCard(
                                     text = "%${NumberFormatUtils.toLocalizedDigits(percent.toString())}",
                                     color = textColor,
                                     fontWeight = FontWeight.SemiBold,
-                                    fontSize = 12.sp,
+                                    fontSize = scaledSp(12f),
                                     fontFamily = vazirFontFamily
                                 )
                                 Spacer(modifier = Modifier.size(4.dp))
                                 Text(
                                     text = name,
                                     color = subTextColor,
-                                    fontSize = 11.sp,
+                                    fontSize = scaledSp(11f),
                                     fontFamily = vazirFontFamily,
                                     maxLines = 1
                                 )
@@ -465,14 +465,14 @@ fun CarServiceItem(
                             text = stringResource(iconType.labelRes()),
                             color = onSurface,
                             fontWeight = FontWeight.SemiBold,
-                            fontSize = 15.sp,
+                            fontSize = scaledSp(15f),
                             fontFamily = vazirFontFamily
                         )
                         if (service.productBrand.isNotBlank()) {
                             Text(
                                 text = service.productBrand,
                                 color = onSurfaceVariant,
-                                fontSize = 12.sp,
+                                fontSize = scaledSp(12f),
                                 fontFamily = vazirFontFamily
                             )
                         }
@@ -483,7 +483,7 @@ fun CarServiceItem(
                         text = NumberFormatUtils.format(service.amountPaid),
                         color = accentColor,
                         fontWeight = FontWeight.ExtraBold,
-                        fontSize = 20.sp,
+                        fontSize = scaledSp(20f),
                         fontFamily = vazirFontFamily
                     )
                 }
@@ -503,7 +503,7 @@ fun CarServiceItem(
                             Text(
                                 text = stringResource(R.string.car_part_label) + ": " + service.partName,
                                 color = onSurfaceVariant,
-                                fontSize = 12.sp,
+                                fontSize = scaledSp(12f),
                                 fontFamily = vazirFontFamily
                             )
                         }
@@ -511,7 +511,7 @@ fun CarServiceItem(
                             Text(
                                 text = service.description,
                                 color = onSurfaceVariant,
-                                fontSize = 12.sp,
+                                fontSize = scaledSp(12f),
                                 fontFamily = vazirFontFamily,
                                 maxLines = 2
                             )
@@ -533,7 +533,7 @@ fun CarServiceItem(
                             ShamsiDate.format(service.serviceDate)
                         ),
                         color = onSurfaceVariant,
-                        fontSize = 11.sp,
+                        fontSize = scaledSp(11f),
                         fontFamily = vazirFontFamily
                     )
                     Spacer(modifier = Modifier.size(2.dp))
@@ -543,7 +543,7 @@ fun CarServiceItem(
                             NumberFormatUtils.format(service.serviceKilometer.toLong())
                         ),
                         color = onSurfaceVariant,
-                        fontSize = 11.sp,
+                        fontSize = scaledSp(11f),
                         fontFamily = vazirFontFamily
                     )
                 }
@@ -554,7 +554,7 @@ fun CarServiceItem(
                             ShamsiDate.format(service.nextServiceDate)
                         ),
                         color = onSurfaceVariant,
-                        fontSize = 11.sp,
+                        fontSize = scaledSp(11f),
                         fontFamily = vazirFontFamily
                     )
                     Spacer(modifier = Modifier.size(2.dp))
@@ -564,7 +564,7 @@ fun CarServiceItem(
                             NumberFormatUtils.format(service.nextServiceKilometer.toLong())
                         ),
                         color = onSurfaceVariant,
-                        fontSize = 11.sp,
+                        fontSize = scaledSp(11f),
                         fontFamily = vazirFontFamily
                     )
                 }

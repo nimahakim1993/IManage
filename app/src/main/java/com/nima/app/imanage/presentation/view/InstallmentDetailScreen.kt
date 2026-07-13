@@ -49,7 +49,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.InstallmentEntity
@@ -59,6 +58,7 @@ import com.nima.app.imanage.presentation.viewmodel.InstallmentViewModel
 import com.nima.app.imanage.ui.theme.LocalAppColors
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.NoteBoxBlue
+import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
@@ -193,14 +193,14 @@ private fun SummaryCard(
                         text = installment.title,
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
+                        fontSize = scaledSp(20f),
                         fontFamily = vazirFontFamily
                     )
                     Text(
                         text = NumberFormatUtils.toLocalizedDigits("$settledCount/${installment.numberOfInstallments}"),
                         color = Color.White.copy(alpha = 0.9f),
                         fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
+                        fontSize = scaledSp(16f),
                         fontFamily = vazirFontFamily
                     )
                 }
@@ -211,7 +211,7 @@ private fun SummaryCard(
                         text = NumberFormatUtils.format(installment.amount),
                         color = Color.White,
                         fontWeight = FontWeight.ExtraBold,
-                        fontSize = 24.sp,
+                        fontSize = scaledSp(24f),
                         fontFamily = vazirFontFamily
                     )
                 }
@@ -221,7 +221,7 @@ private fun SummaryCard(
                     Text(
                         text = installment.description,
                         color = Color.White.copy(alpha = 0.85f),
-                        fontSize = 13.sp,
+                        fontSize = scaledSp(13f),
                         fontFamily = vazirFontFamily
                     )
                 }
@@ -231,14 +231,14 @@ private fun SummaryCard(
                 Text(
                     text = periodTypeLabel(installment),
                     color = Color.White.copy(alpha = 0.8f),
-                    fontSize = 12.sp,
+                    fontSize = scaledSp(12f),
                     fontFamily = vazirFontFamily
                 )
                 Spacer(modifier = Modifier.size(4.dp))
                 Text(
                     text = ShamsiDate.formatLong(installment.startDate),
                     color = Color.White.copy(alpha = 0.8f),
-                    fontSize = 12.sp,
+                    fontSize = scaledSp(12f),
                     fontFamily = vazirFontFamily
                 )
 
@@ -262,7 +262,7 @@ private fun SummaryCard(
                                 else -> stringResource(R.string.days_passed, daysPassed)
                             },
                             color = Color.White.copy(alpha = 0.9f),
-                            fontSize = 11.sp,
+                            fontSize = scaledSp(11f),
                             fontFamily = vazirFontFamily,
                             fontWeight = FontWeight.Medium
                         )
@@ -273,7 +273,7 @@ private fun SummaryCard(
                                 else -> stringResource(R.string.of_total_days, totalDays)
                             },
                             color = Color.White.copy(alpha = 0.9f),
-                            fontSize = 11.sp,
+                            fontSize = scaledSp(11f),
                             fontFamily = vazirFontFamily,
                             fontWeight = FontWeight.Medium
                         )
@@ -390,7 +390,7 @@ private fun ItemCard(
                                 text = ShamsiDate.formatLong(item.dueDate),
                                 color = Color.White,
                                 fontWeight = FontWeight.SemiBold,
-                                fontSize = 14.sp,
+                                fontSize = scaledSp(14f),
                                 fontFamily = vazirFontFamily
                             )
                         }
@@ -399,7 +399,7 @@ private fun ItemCard(
                             Text(
                                 text = NumberFormatUtils.format(item.amount),
                                 color = Color.White.copy(alpha = 0.9f),
-                                fontSize = 12.sp,
+                                fontSize = scaledSp(12f),
                                 fontFamily = vazirFontFamily,
                                 fontWeight = FontWeight.Medium
                             )
@@ -431,7 +431,7 @@ private fun ItemCard(
                             else R.string.mark_settled
                         ),
                         color = Color.White,
-                        fontSize = 12.sp,
+                        fontSize = scaledSp(12f),
                         fontFamily = vazirFontFamily,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -484,7 +484,7 @@ private fun CircleProgress(
         Text(
             text = "${(progress * 100).toInt()}%",
             color = Color.White.copy(alpha = 0.85f),
-            fontSize = 10.sp,
+            fontSize = scaledSp(10f),
             fontFamily = vazirFontFamily,
             fontWeight = FontWeight.Bold
         )

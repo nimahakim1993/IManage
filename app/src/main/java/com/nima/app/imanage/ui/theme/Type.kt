@@ -1,75 +1,78 @@
 package com.nima.app.imanage.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.nima.app.imanage.R
 
-// Set of Material typography styles to start with
-val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
-)
-
 val vazirFontFamily = FontFamily(
     Font(R.font.vazir_bold, FontWeight.Bold)
 )
 
-fun getVazirTypography(fontScale: Float): Typography{
+fun getVazirTypography(fontScale: Float): Typography {
+    val default = Typography()
     return Typography(
-        bodyLarge = TextStyle(
+        displayLarge = default.displayLarge.copy(
             fontFamily = vazirFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = (16 * fontScale).sp
+            fontSize = (default.displayLarge.fontSize.value * fontScale).sp
         ),
-        headlineLarge = TextStyle(
+        displayMedium = default.displayMedium.copy(
             fontFamily = vazirFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = (20 * fontScale).sp
+            fontSize = (default.displayMedium.fontSize.value * fontScale).sp
         ),
-        bodyMedium = TextStyle(
+        displaySmall = default.displaySmall.copy(
             fontFamily = vazirFontFamily,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = (15 * fontScale).sp
+            fontSize = (default.displaySmall.fontSize.value * fontScale).sp
         ),
-        bodySmall = TextStyle(
+        headlineLarge = default.headlineLarge.copy(
+            fontFamily = vazirFontFamily, fontWeight = FontWeight.Bold,
+            fontSize = (default.headlineLarge.fontSize.value * fontScale).sp
+        ),
+        headlineMedium = default.headlineMedium.copy(
             fontFamily = vazirFontFamily,
-            fontWeight = FontWeight.Normal,
-            fontSize = (14 * fontScale).sp
+            fontSize = (default.headlineMedium.fontSize.value * fontScale).sp
         ),
-        titleLarge = TextStyle(
+        headlineSmall = default.headlineSmall.copy(
             fontFamily = vazirFontFamily,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = (18 * fontScale).sp
+            fontSize = (default.headlineSmall.fontSize.value * fontScale).sp
         ),
-        titleSmall = TextStyle(
+        titleLarge = default.titleLarge.copy(
+            fontFamily = vazirFontFamily, fontWeight = FontWeight.SemiBold,
+            fontSize = (default.titleLarge.fontSize.value * fontScale).sp
+        ),
+        titleMedium = default.titleMedium.copy(
+            fontFamily = vazirFontFamily, fontWeight = FontWeight.SemiBold,
+            fontSize = (default.titleMedium.fontSize.value * fontScale).sp
+        ),
+        titleSmall = default.titleSmall.copy(
             fontFamily = vazirFontFamily,
-            fontWeight = FontWeight.Thin,
-            fontSize = (11 * fontScale).sp
+            fontSize = (default.titleSmall.fontSize.value * fontScale).sp
         ),
+        bodyLarge = default.bodyLarge.copy(
+            fontFamily = vazirFontFamily,
+            fontSize = (default.bodyLarge.fontSize.value * fontScale).sp
+        ),
+        bodyMedium = default.bodyMedium.copy(
+            fontFamily = vazirFontFamily,
+            fontSize = (default.bodyMedium.fontSize.value * fontScale).sp
+        ),
+        bodySmall = default.bodySmall.copy(
+            fontFamily = vazirFontFamily,
+            fontSize = (default.bodySmall.fontSize.value * fontScale).sp
+        ),
+        labelLarge = default.labelLarge.copy(
+            fontFamily = vazirFontFamily,
+            fontSize = (default.labelLarge.fontSize.value * fontScale).sp
+        ),
+        labelMedium = default.labelMedium.copy(
+            fontFamily = vazirFontFamily,
+            fontSize = (default.labelMedium.fontSize.value * fontScale).sp
+        ),
+        labelSmall = default.labelSmall.copy(
+            fontFamily = vazirFontFamily,
+            fontSize = (default.labelSmall.fontSize.value * fontScale).sp
+        )
     )
 }

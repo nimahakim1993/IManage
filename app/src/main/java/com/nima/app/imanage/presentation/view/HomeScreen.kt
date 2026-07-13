@@ -51,7 +51,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
@@ -67,6 +66,7 @@ import com.nima.app.imanage.presentation.viewmodel.LoanViewModel
 import com.nima.app.imanage.presentation.viewmodel.SettingsViewModel
 import com.nima.app.imanage.ui.theme.LocalAppColors
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
+import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.BiometricHelper
 import com.nima.app.imanage.util.NumberFormatUtils
@@ -327,7 +327,7 @@ private fun ReportCard(
                     text = NumberFormatUtils.format(netBalance),
                     color = netBalanceColor.copy(alpha = 0.85f),
                     fontWeight = FontWeight.ExtraBold,
-                    fontSize = 32.sp,
+                    fontSize = scaledSp(32f),
                     fontFamily = vazirFontFamily
                 )
 

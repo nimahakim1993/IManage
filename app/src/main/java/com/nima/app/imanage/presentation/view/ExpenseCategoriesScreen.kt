@@ -47,7 +47,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.ExpenseCategoryEntity
@@ -58,6 +57,7 @@ import com.nima.app.imanage.presentation.viewmodel.ExpenseViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
 import com.nima.app.imanage.ui.theme.NoteBoxPalettes
+import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import org.koin.androidx.compose.koinViewModel
 
@@ -198,7 +198,7 @@ private fun CategoryItem(
                 text = category.title,
                 fontFamily = vazirFontFamily,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp,
+                fontSize = scaledSp(16f),
                 modifier = Modifier.weight(1f)
             )
             IconButton(onClick = onEdit) {

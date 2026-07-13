@@ -68,7 +68,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.AssetEntity
@@ -79,6 +78,7 @@ import com.nima.app.imanage.presentation.viewmodel.AssetViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
+import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
 import org.koin.androidx.compose.koinViewModel
@@ -276,7 +276,7 @@ private fun DonutChart(
                     text = stringResource(R.string.asset_distribution),
                     color = textColor,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 15.sp,
+                    fontSize = scaledSp(15f),
                     fontFamily = vazirFontFamily
                 )
 
@@ -318,13 +318,13 @@ private fun DonutChart(
                             text = NumberFormatUtils.format(totalValue),
                             color = textColor,
                             fontWeight = FontWeight.ExtraBold,
-                            fontSize = 18.sp,
+                            fontSize = scaledSp(18f),
                             fontFamily = vazirFontFamily
                         )
                         Text(
                             text = stringResource(R.string.toman),
                             color = subTextColor,
-                            fontSize = 10.sp,
+                            fontSize = scaledSp(10f),
                             fontFamily = vazirFontFamily
                         )
                     }
@@ -362,14 +362,14 @@ private fun DonutChart(
                                     text = "%${NumberFormatUtils.toLocalizedDigits(percent.toString())}",
                                     color = textColor,
                                     fontWeight = FontWeight.SemiBold,
-                                    fontSize = 12.sp,
+                                    fontSize = scaledSp(12f),
                                     fontFamily = vazirFontFamily
                                 )
                                 Spacer(modifier = Modifier.size(4.dp))
                                 Text(
                                     text = name,
                                     color = subTextColor,
-                                    fontSize = 11.sp,
+                                    fontSize = scaledSp(11f),
                                     fontFamily = vazirFontFamily,
                                     maxLines = 1
                                 )
@@ -451,7 +451,7 @@ private fun AssetRectangle(
                             text = asset.name,
                             color = textPrimary,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
+                            fontSize = scaledSp(16f),
                             fontFamily = vazirFontFamily,
                             maxLines = 1
                         )
@@ -466,7 +466,7 @@ private fun AssetRectangle(
                         Text(
                             text = unitDisplay + " " + unitLabel,
                             color = textSecondary,
-                            fontSize = 12.sp,
+                            fontSize = scaledSp(12f),
                             fontFamily = vazirFontFamily
                         )
                         Spacer(modifier = Modifier.size(2.dp))
@@ -478,14 +478,14 @@ private fun AssetRectangle(
                                 Text(
                                     text = stringResource(R.string.price_per_unit),
                                     color = textMuted,
-                                    fontSize = 11.sp,
+                                    fontSize = scaledSp(11f),
                                     fontFamily = vazirFontFamily
                                 )
                                 Spacer(modifier = Modifier.size(4.dp))
                                 Text(
                                     text = NumberFormatUtils.format(asset.pricePerUnit),
                                     color = textSecondary,
-                                    fontSize = 11.sp,
+                                    fontSize = scaledSp(11f),
                                     fontFamily = vazirFontFamily
                                 )
                             }
@@ -496,7 +496,7 @@ private fun AssetRectangle(
                         text = NumberFormatUtils.format(assetValue),
                         color = accentColor,
                         fontWeight = FontWeight.ExtraBold,
-                        fontSize = 18.sp,
+                        fontSize = scaledSp(18f),
                         fontFamily = vazirFontFamily,
                         modifier = Modifier.padding(start = 8.dp)
                     )

@@ -59,6 +59,7 @@ val LocalIsDarkTheme = androidx.compose.runtime.staticCompositionLocalOf { false
 val LocalAppColors = androidx.compose.runtime.staticCompositionLocalOf {
     AppColors(income = IncomeLight, debt = DebtLight)
 }
+val LocalFontScale = androidx.compose.runtime.staticCompositionLocalOf { 1.0f }
 
 val LightAppColors = AppColors(
     income = IncomeLight,
@@ -92,14 +93,16 @@ fun IManageTheme(
     }
 
     val appColors = if (darkTheme) DarkAppColors else LightAppColors
+    val fontScale = ThemeManager.getFontScale(LocalContext.current)
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = getVazirTypography(1f)
+        typography = getVazirTypography(fontScale)
     ) {
         androidx.compose.runtime.CompositionLocalProvider(
             LocalIsDarkTheme provides darkTheme,
-            LocalAppColors provides appColors
+            LocalAppColors provides appColors,
+            LocalFontScale provides fontScale
         ) {
             content()
         }

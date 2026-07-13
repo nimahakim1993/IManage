@@ -69,6 +69,7 @@ import com.nima.app.imanage.presentation.viewmodel.ReportViewModel
 import com.nima.app.imanage.ui.component.ShamsiDatePicker
 import com.nima.app.imanage.ui.component.ShamsiMonthYearPicker
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
+import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
@@ -290,13 +291,13 @@ private fun DateField(
             Column {
                 Text(
                     text = label,
-                    fontSize = 11.sp,
+                    fontSize = scaledSp(11f),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontFamily = vazirFontFamily
                 )
                 Text(
                     text = ShamsiDate.format(date),
-                    fontSize = 13.sp,
+                    fontSize = scaledSp(13f),
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = vazirFontFamily,
                     color = MaterialTheme.colorScheme.onSurface
@@ -323,7 +324,7 @@ private fun FilterChipRow(
                 Text(
                     stringResource(R.string.report_filter_current_year),
                     fontFamily = vazirFontFamily,
-                    fontSize = 12.sp
+                    fontSize = scaledSp(12f)
                 )
             },
             colors = FilterChipDefaults.filterChipColors(
@@ -340,7 +341,7 @@ private fun FilterChipRow(
                     selectedLabel?.takeIf { currentMode == FilterMode.MONTHLY }
                         ?: stringResource(R.string.report_filter_monthly),
                     fontFamily = vazirFontFamily,
-                    fontSize = 12.sp
+                    fontSize = scaledSp(12f)
                 )
             },
             colors = FilterChipDefaults.filterChipColors(
@@ -357,7 +358,7 @@ private fun FilterChipRow(
                     selectedLabel?.takeIf { currentMode == FilterMode.YEARLY }
                         ?: stringResource(R.string.report_filter_yearly),
                     fontFamily = vazirFontFamily,
-                    fontSize = 12.sp
+                    fontSize = scaledSp(12f)
                 )
             },
             colors = FilterChipDefaults.filterChipColors(
@@ -374,7 +375,7 @@ private fun FilterChipRow(
                     selectedLabel?.takeIf { currentMode == FilterMode.CUSTOM }
                         ?: stringResource(R.string.report_filter_custom),
                     fontFamily = vazirFontFamily,
-                    fontSize = 12.sp
+                    fontSize = scaledSp(12f)
                 )
             },
             colors = FilterChipDefaults.filterChipColors(
@@ -438,7 +439,7 @@ private fun ReportOverviewCard(data: ReportData) {
                     text = NumberFormatUtils.format(data.netBalance),
                     color = netColor,
                     fontWeight = FontWeight.ExtraBold,
-                    fontSize = 30.sp,
+                    fontSize = scaledSp(30f),
                     fontFamily = vazirFontFamily
                 )
             }
@@ -612,7 +613,7 @@ private fun BarChartCard(
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     stringResource(R.string.report_income),
-                    fontSize = 11.sp,
+                    fontSize = scaledSp(11f),
                     fontFamily = vazirFontFamily,
                     color = textColor
                 )
@@ -626,7 +627,7 @@ private fun BarChartCard(
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     stringResource(R.string.report_expense),
-                    fontSize = 11.sp,
+                    fontSize = scaledSp(11f),
                     fontFamily = vazirFontFamily,
                     color = textColor
                 )
@@ -828,7 +829,7 @@ private fun CategoryBreakdownCard(data: ReportData) {
                         Text(
                             text = label,
                             modifier = Modifier.weight(0.35f),
-                            fontSize = 12.sp,
+                            fontSize = scaledSp(12f),
                             fontFamily = vazirFontFamily,
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -855,7 +856,7 @@ private fun CategoryBreakdownCard(data: ReportData) {
                         Text(
                             text = NumberFormatUtils.toLocalizedDigits("%${(fraction * 100).toInt()}"),
                             modifier = Modifier.weight(0.15f),
-                            fontSize = 11.sp,
+                            fontSize = scaledSp(11f),
                             fontFamily = vazirFontFamily,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -863,7 +864,7 @@ private fun CategoryBreakdownCard(data: ReportData) {
                         Text(
                             text = NumberFormatUtils.format(amount),
                             modifier = Modifier.weight(0.25f),
-                            fontSize = 11.sp,
+                            fontSize = scaledSp(11f),
                             fontFamily = vazirFontFamily,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onSurface

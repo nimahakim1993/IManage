@@ -55,7 +55,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
@@ -69,6 +68,7 @@ import com.nima.app.imanage.presentation.viewmodel.NoteViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.NoteBoxPalettes
+import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import org.koin.androidx.compose.koinViewModel
 
@@ -282,7 +282,7 @@ private fun BoxHeader(box: NoteBoxEntity, noteCount: Int) {
                             color = Color.White,
                             fontFamily = vazirFontFamily,
                             fontWeight = FontWeight.ExtraBold,
-                            fontSize = 20.sp,
+                            fontSize = scaledSp(20f),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -291,7 +291,7 @@ private fun BoxHeader(box: NoteBoxEntity, noteCount: Int) {
                             color = Color.White.copy(alpha = 0.85f),
                             fontFamily = vazirFontFamily,
                             fontWeight = FontWeight.Medium,
-                            fontSize = 12.sp
+                            fontSize = scaledSp(12f)
                         )
                     }
                 }
@@ -302,7 +302,7 @@ private fun BoxHeader(box: NoteBoxEntity, noteCount: Int) {
                         color = Color.White,
                         fontFamily = vazirFontFamily,
                         fontWeight = FontWeight.Normal,
-                        fontSize = 13.sp,
+                        fontSize = scaledSp(13f),
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -350,7 +350,7 @@ private fun NoteListItem(
                     color = textColor,
                     fontFamily = vazirFontFamily,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
+                    fontSize = scaledSp(16f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
@@ -395,7 +395,7 @@ private fun NoteListItem(
                             color = subtitleColor,
                             fontFamily = vazirFontFamily,
                             fontWeight = FontWeight.Normal,
-                            fontSize = 13.sp,
+                            fontSize = scaledSp(13f),
                             maxLines = 3,
                             overflow = TextOverflow.Ellipsis
                         )

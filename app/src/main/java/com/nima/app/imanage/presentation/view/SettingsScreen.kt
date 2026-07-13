@@ -25,6 +25,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.Fingerprint
+import androidx.compose.material.icons.filled.FormatSize
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Shield
@@ -132,6 +133,12 @@ fun SettingsScreen(
             }
         )
 
+        FontSizeSection(
+            onFontChange = {
+                activity?.recreate()
+            }
+        )
+
         ModuleProtectionSection(context = context)
 
         BackupRestoreSection(
@@ -232,6 +239,57 @@ fun SettingsScreen(
                     }
                 }) {
                     Text(stringResource(R.string.ok))
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun FontSizeSection(onFontChange: () -> Unit) {
+    val context = LocalContext.current
+    val currentKey = ThemeManager.getFontSizeKey(context)
+
+    SettingsCard(
+        icon = Icons.Default.FormatSize,
+        iconTint = Color(0xFF6A1B9A),
+        title = stringResource(R.string.font_size)
+    ) {
+        OptionRow(
+            label = stringResource(R.string.font_size_small),
+            selected = currentKey == ThemeManager.FONT_SMALL,
+            onClick = {
+                if (currentKey != ThemeManager.FONT_SMALL) {
+                    ThemeManager.setFontSize(context, ThemeManager.FONT_SMALL)
+                    onFontChange()
+                }
+            }
+        )
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+            modifier = Modifier.padding(vertical = 4.dp)
+        )
+        OptionRow(
+            label = stringResource(R.string.font_size_normal),
+            selected = currentKey == ThemeManager.FONT_NORMAL,
+            onClick = {
+                if (currentKey != ThemeManager.FONT_NORMAL) {
+                    ThemeManager.setFontSize(context, ThemeManager.FONT_NORMAL)
+                    onFontChange()
+                }
+            }
+        )
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+            modifier = Modifier.padding(vertical = 4.dp)
+        )
+        OptionRow(
+            label = stringResource(R.string.font_size_large),
+            selected = currentKey == ThemeManager.FONT_LARGE,
+            onClick = {
+                if (currentKey != ThemeManager.FONT_LARGE) {
+                    ThemeManager.setFontSize(context, ThemeManager.FONT_LARGE)
+                    onFontChange()
                 }
             }
         )

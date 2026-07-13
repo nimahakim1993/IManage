@@ -49,7 +49,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
@@ -60,6 +59,7 @@ import com.nima.app.imanage.presentation.viewmodel.TripDetailViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.NoteBoxPalettes
+import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
@@ -297,14 +297,14 @@ private fun SummaryStat(label: String, value: String, color: Color) {
         Text(
             text = label,
             color = color.copy(alpha = 0.8f),
-            fontSize = 12.sp,
+            fontSize = scaledSp(12f),
             fontFamily = vazirFontFamily
         )
         Text(
             text = value,
             color = color,
             fontWeight = FontWeight.ExtraBold,
-            fontSize = 24.sp,
+            fontSize = scaledSp(24f),
             fontFamily = vazirFontFamily
         )
     }

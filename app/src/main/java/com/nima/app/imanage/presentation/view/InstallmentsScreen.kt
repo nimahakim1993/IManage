@@ -50,7 +50,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
@@ -64,6 +63,7 @@ import com.nima.app.imanage.ui.component.EmptyState
 import com.nima.app.imanage.ui.theme.LocalAppColors
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.NoteBoxBlue
+import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
@@ -250,7 +250,7 @@ fun InstallmentCard(
                             text = installment.title,
                             color = Color.White,
                             fontWeight = FontWeight.SemiBold,
-                            fontSize = 16.sp,
+                            fontSize = scaledSp(16f),
                             fontFamily = vazirFontFamily,
                             modifier = Modifier.weight(1f, fill = false)
                         )
@@ -259,7 +259,7 @@ fun InstallmentCard(
                         text = NumberFormatUtils.toLocalizedDigits("$settledCount/${installment.numberOfInstallments}"),
                         color = Color.White.copy(alpha = 0.9f),
                         fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
+                        fontSize = scaledSp(14f),
                         fontFamily = vazirFontFamily
                     )
                 }
@@ -270,7 +270,7 @@ fun InstallmentCard(
                         text = NumberFormatUtils.format(installment.amount),
                         color = Color.White,
                         fontWeight = FontWeight.ExtraBold,
-                        fontSize = 24.sp,
+                        fontSize = scaledSp(24f),
                         fontFamily = vazirFontFamily
                     )
                     Spacer(modifier = Modifier.size(4.dp))
@@ -288,7 +288,7 @@ fun InstallmentCard(
                         Text(
                             text = installment.description,
                             color = Color.White.copy(alpha = 0.92f),
-                            fontSize = 13.sp,
+                            fontSize = scaledSp(13f),
                             fontFamily = vazirFontFamily,
                             maxLines = 2
                         )
@@ -317,7 +317,7 @@ fun InstallmentCard(
                                 stringResource(R.string.days_passed, daysPassed)
                             },
                             color = Color.White.copy(alpha = 0.9f),
-                            fontSize = 11.sp,
+                            fontSize = scaledSp(11f),
                             fontFamily = vazirFontFamily,
                             fontWeight = FontWeight.Medium
                         )
@@ -330,7 +330,7 @@ fun InstallmentCard(
                                 stringResource(R.string.days_remaining, daysRemaining)
                             },
                             color = Color.White.copy(alpha = 0.9f),
-                            fontSize = 11.sp,
+                            fontSize = scaledSp(11f),
                             fontFamily = vazirFontFamily,
                             fontWeight = FontWeight.Medium
                         )
@@ -371,14 +371,14 @@ fun InstallmentCard(
                         Text(
                             text = ShamsiDate.formatLong(installment.startDate),
                             color = Color.White.copy(alpha = 0.75f),
-                            fontSize = 11.sp,
+                            fontSize = scaledSp(11f),
                             fontFamily = vazirFontFamily
                         )
                     }
                     Text(
                         text = periodTypeShortLabel(installment),
                         color = Color.White.copy(alpha = 0.7f),
-                        fontSize = 11.sp,
+                        fontSize = scaledSp(11f),
                         fontFamily = vazirFontFamily
                     )
                 }
