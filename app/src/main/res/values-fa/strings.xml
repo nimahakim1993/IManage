@@ -310,6 +310,9 @@
     <string name="biometric_module_subtitle">برای دسترسی به این بخش، اثر انگشت خود را تأیید کنید</string>
     <string name="module_protection">محافظت از بخش‌ها</string>
     <string name="module_protection_desc">فعال‌سازی قفل اثر انگشت برای بخش‌های حساس</string>
+    <string name="module_protection_locked">برای تغییر تنظیمات امنیتی هویت خود را تایید کنید</string>
+    <string name="biometric_tap_to_verify">برای تایید هویت لمس کنید</string>
+    <string name="biometric_tap_to_unlock">با پین/الگو باز کنید</string>
 
     <!-- Trip Split -->
     <string name="trip_list_title">سفرها</string>

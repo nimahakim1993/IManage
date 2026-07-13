@@ -323,8 +323,8 @@ private fun RowScope.ParticipantChip(name: String, netBalance: Double, dotColor:
         else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
     val sign = when {
-        netBalance > 0.001 -> "+"
-        netBalance < -0.001 -> "-"
+        netBalance > 0.001 -> "\u200E+"
+        netBalance < -0.001 -> "\u200E-"
         else -> ""
     }
 

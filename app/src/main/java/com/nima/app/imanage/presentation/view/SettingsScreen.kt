@@ -1,6 +1,5 @@
 package com.nima.app.imanage.presentation.view
 
-import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.net.Uri
@@ -25,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backup
+import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Shield
@@ -56,11 +56,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.SettingsViewModel
 import com.nima.app.imanage.ui.theme.vazirFontFamily
+import com.nima.app.imanage.util.BiometricHelper
 import com.nima.app.imanage.util.LanguageManager
 import com.nima.app.imanage.util.SecurityManager
 import com.nima.app.imanage.util.ThemeManager
@@ -73,7 +75,7 @@ fun SettingsScreen(
     navController: NavHostController
 ) {
     val context = LocalContext.current
-    val activity = context.findActivity()
+    val activity = context.findFragmentActivity()
     val viewModel: SettingsViewModel = koinViewModel()
 
     var currentLanguage by remember { mutableStateOf(LanguageManager.getLanguage(context)) }
@@ -379,66 +381,122 @@ private fun ThemeSection(
 @Composable
 private fun ModuleProtectionSection(context: Context) {
     val modules = remember { SecurityManager.modules }
+    val authType = remember { BiometricHelper.availableAuthType(context) }
+    var biometricVerified by remember { mutableStateOf(false) }
+
+    val activity = context.findFragmentActivity()
+    val authLabel = if (authType == BiometricHelper.AuthType.BIOMETRIC)
+        stringResource(R.string.biometric_tap_to_verify)
+    else
+        stringResource(R.string.biometric_tap_to_unlock)
 
     SettingsCard(
         icon = Icons.Default.Shield,
         iconTint = Color(0xFFE65100),
         title = stringResource(R.string.module_protection),
-        description = stringResource(R.string.module_protection_desc)
+        description = if (biometricVerified) stringResource(R.string.module_protection_desc)
+        else stringResource(R.string.module_protection_locked)
     ) {
-        modules.forEachIndexed { index, module ->
-            val isProtected = remember { mutableStateOf(SecurityManager.isModuleProtected(context, module.key)) }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        val newValue = !isProtected.value
-                        isProtected.value = newValue
-                        SecurityManager.setModuleProtected(context, module.key, newValue)
-                    }
-                    .padding(vertical = 10.dp, horizontal = 4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(34.dp)
-                            .clip(CircleShape)
-                            .background(module.color.copy(alpha = 0.15f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = module.icon,
-                            contentDescription = null,
-                            tint = module.color,
-                            modifier = Modifier.size(18.dp)
+        if (biometricVerified) {
+            modules.forEachIndexed { index, module ->
+                val isProtected = remember {
+                    mutableStateOf(
+                        SecurityManager.isModuleProtected(
+                            context,
+                            module.key
                         )
-                    }
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = stringResource(module.titleRes),
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontFamily = vazirFontFamily
                     )
                 }
-                Switch(
-                    checked = isProtected.value,
-                    onCheckedChange = { checked ->
-                        isProtected.value = checked
-                        SecurityManager.setModuleProtected(context, module.key, checked)
-                    }
-                )
-            }
 
-            if (index < modules.lastIndex) {
-                HorizontalDivider(
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            val newValue = !isProtected.value
+                            isProtected.value = newValue
+                            SecurityManager.setModuleProtected(context, module.key, newValue)
+                        }
+                        .padding(vertical = 10.dp, horizontal = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(34.dp)
+                                .clip(CircleShape)
+                                .background(module.color.copy(alpha = 0.15f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = module.icon,
+                                contentDescription = null,
+                                tint = module.color,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(
+                            text = stringResource(module.titleRes),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontFamily = vazirFontFamily
+                        )
+                    }
+                    Switch(
+                        checked = isProtected.value,
+                        onCheckedChange = { checked ->
+                            isProtected.value = checked
+                            SecurityManager.setModuleProtected(context, module.key, checked)
+                        }
+                    )
+                }
+
+                if (index < modules.lastIndex) {
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+                    )
+                }
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(14.dp))
+                    .clickable {
+                        activity?.let { act ->
+                            BiometricHelper.authenticate(
+                                activity = act,
+                                title = context.getString(R.string.biometric_reveal_title),
+                                subtitle = authLabel,
+                                authType = authType,
+                                onSuccess = { biometricVerified = true },
+                                onError = { /* stay locked */ }
+                            )
+                        }
+                    }
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Fingerprint,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(28.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = authLabel,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontFamily = vazirFontFamily,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
         }
     }
@@ -507,10 +565,10 @@ private fun OptionRow(
     }
 }
 
-private fun Context.findActivity(): Activity? {
+private fun Context.findFragmentActivity(): FragmentActivity? {
     var ctx = this
     while (ctx is ContextWrapper) {
-        if (ctx is Activity) return ctx
+        if (ctx is FragmentActivity) return ctx
         ctx = ctx.baseContext
     }
     return null

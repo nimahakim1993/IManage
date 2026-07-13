@@ -310,6 +310,9 @@
     <string name="biometric_module_subtitle">Verify your fingerprint to access this section</string>
     <string name="module_protection">Module Protection</string>
     <string name="module_protection_desc">Enable fingerprint lock for sensitive modules</string>
+    <string name="module_protection_locked">Verify your identity to change security settings</string>
+    <string name="biometric_tap_to_verify">Tap to verify your identity</string>
+    <string name="biometric_tap_to_unlock">Tap to unlock with PIN/Pattern</string>
 
     <!-- Trip Split -->
     <string name="trip_list_title">Trips</string>
