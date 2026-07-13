@@ -90,6 +90,7 @@
     <string name="report">Report</string>
     <string name="car_services">Car Services</string>
     <string name="home_report_title">Financial Report</string>
+    <string name="home_cashflow_title">Cash Flow Report</string>
     <string name="home_net_balance">Net Balance</string>
     <string name="home_bank_accounts">Bank Accounts</string>
 

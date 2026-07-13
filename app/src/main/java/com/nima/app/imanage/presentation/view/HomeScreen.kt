@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -59,6 +61,9 @@ import com.nima.app.imanage.data.db.entity.LoanEntity
 import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.BankCardViewModel
+import com.nima.app.imanage.presentation.viewmodel.ExpenseViewModel
+import com.nima.app.imanage.presentation.viewmodel.IncomeViewModel
+import com.nima.app.imanage.presentation.viewmodel.InstallmentViewModel
 import com.nima.app.imanage.presentation.viewmodel.LoanViewModel
 import com.nima.app.imanage.presentation.viewmodel.SettingsViewModel
 import com.nima.app.imanage.ui.theme.DebtDark
@@ -78,7 +83,10 @@ fun HomeScreen(
     navController: NavHostController,
     loanViewModel: LoanViewModel = koinViewModel(),
     bankCardViewModel: BankCardViewModel = koinViewModel(),
-    settingsViewModel: SettingsViewModel = koinViewModel()
+    settingsViewModel: SettingsViewModel = koinViewModel(),
+    expenseViewModel: ExpenseViewModel = koinViewModel(),
+    incomeViewModel: IncomeViewModel = koinViewModel(),
+    installmentViewModel: InstallmentViewModel = koinViewModel()
 ) {
 
     val settingsDesc = stringResource(R.string.settings)
@@ -127,6 +135,9 @@ fun HomeScreen(
 
     val loans by loanViewModel.loans.collectAsState()
     val cards by bankCardViewModel.cards.collectAsState()
+    val expenses by expenseViewModel.expenses.collectAsState()
+    val incomes by incomeViewModel.incomes.collectAsState()
+    val installments by installmentViewModel.installments.collectAsState()
 
     val totalDebt = remember(loans) {
         loans.filter { it.type == LoanEntity.TYPE_DEBT && !it.settled }.sumOf { it.price }
@@ -136,6 +147,12 @@ fun HomeScreen(
     }
     val netBalance = totalReceivable - totalDebt
 
+    val totalExpenses = remember(expenses) { expenses.sumOf { it.amount } }
+    val totalIncomes = remember(incomes) { incomes.sumOf { it.amount } }
+    val cashflowNet = totalIncomes - totalExpenses
+
+    val pagerState = rememberPagerState(pageCount = { 2 })
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -143,11 +160,45 @@ fun HomeScreen(
             .padding(horizontal = 12.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        ReportCard(
-            totalDebt = totalDebt,
-            totalReceivable = totalReceivable,
-            netBalance = netBalance,
-            bankAccountCount = cards.size
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxWidth()
+        ) { page ->
+            when (page) {
+                0 -> ReportCard(
+                    title = stringResource(R.string.home_report_title),
+                    topRightLabel = stringResource(R.string.home_bank_accounts),
+                    topRightValue = cards.size.toLong(),
+                    netBalance = netBalance,
+                    leftTileLabel = stringResource(R.string.total_debt),
+                    leftTileValue = totalDebt,
+                    leftTileAccent = Color(0xFFFFCDD2),
+                    rightTileLabel = stringResource(R.string.total_receivable),
+                    rightTileValue = totalReceivable,
+                    rightTileAccent = Color(0xFFB3E5FC)
+                )
+
+                1 -> ReportCard(
+                    title = stringResource(R.string.home_cashflow_title),
+                    topRightLabel = stringResource(R.string.installments_title),
+                    topRightValue = installments.size.toLong(),
+                    netBalance = cashflowNet,
+                    leftTileLabel = stringResource(R.string.total_expenses),
+                    leftTileValue = totalExpenses,
+                    leftTileAccent = Color(0xFFFFCDD2),
+                    rightTileLabel = stringResource(R.string.total_incomes),
+                    rightTileValue = totalIncomes,
+                    rightTileAccent = Color(0xFFB3E5FC)
+                )
+            }
+        }
+
+        DotsIndicator(
+            pageCount = 2,
+            currentPage = pagerState.currentPage,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp)
         )
 
         DashboardGrid(navController = navController)
@@ -159,15 +210,49 @@ fun HomeScreen(
 }
 
 @Composable
+private fun DotsIndicator(
+    pageCount: Int,
+    currentPage: Int,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        repeat(pageCount) { index ->
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 4.dp)
+                    .size(if (index == currentPage) 10.dp else 8.dp)
+                    .clip(CircleShape)
+                    .background(
+                        if (index == currentPage)
+                            MaterialTheme.colorScheme.primary
+                        else
+                            MaterialTheme.colorScheme.outlineVariant
+                    )
+            )
+        }
+    }
+}
+
+@Composable
 private fun ReportCard(
-    totalDebt: Long,
-    totalReceivable: Long,
+    title: String,
+    topRightLabel: String,
+    topRightValue: Long,
     netBalance: Long,
-    bankAccountCount: Int
+    leftTileLabel: String,
+    leftTileValue: Long,
+    leftTileAccent: Color,
+    rightTileLabel: String,
+    rightTileValue: Long,
+    rightTileAccent: Color
 ) {
     val isDark = isSystemInDarkTheme()
     val primary = MaterialTheme.colorScheme.primary
-    val secondary =
+    val secondaryColor =
         if (isDark) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f) else MaterialTheme.colorScheme.secondaryContainer.copy(
             alpha = 0.85f
         )
@@ -180,7 +265,7 @@ private fun ReportCard(
     val gradient = Brush.linearGradient(
         colors = listOf(
             primary,
-            secondary.copy(alpha = 0.85f)
+            secondaryColor.copy(alpha = 0.85f)
         ),
         start = Offset(0f, 0f),
         end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
@@ -219,7 +304,7 @@ private fun ReportCard(
                         }
                         Spacer(modifier = Modifier.size(10.dp))
                         Text(
-                            text = stringResource(R.string.home_report_title),
+                            text = title,
                             color = onPrimary,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold,
@@ -227,7 +312,7 @@ private fun ReportCard(
                         )
                     }
                     Text(
-                        text = stringResource(R.string.home_bank_accounts) + ": ${NumberFormatUtils.format(bankAccountCount.toLong())}",
+                        text = "$topRightLabel: ${NumberFormatUtils.format(topRightValue)}",
                         color = onPrimary.copy(alpha = 0.85f),
                         style = MaterialTheme.typography.labelMedium,
                         fontFamily = vazirFontFamily
@@ -258,15 +343,15 @@ private fun ReportCard(
                 ) {
                     ReportStatTile(
                         modifier = Modifier.weight(1f),
-                        label = stringResource(R.string.total_debt),
-                        value = NumberFormatUtils.format(totalDebt),
-                        accent = Color(0xFFFFCDD2)
+                        label = leftTileLabel,
+                        value = NumberFormatUtils.format(leftTileValue),
+                        accent = leftTileAccent
                     )
                     ReportStatTile(
                         modifier = Modifier.weight(1f),
-                        label = stringResource(R.string.total_receivable),
-                        value = NumberFormatUtils.format(totalReceivable),
-                        accent = Color(0xFFB3E5FC)
+                        label = rightTileLabel,
+                        value = NumberFormatUtils.format(rightTileValue),
+                        accent = rightTileAccent
                     )
                 }
             }

@@ -90,6 +90,7 @@
     <string name="report">گزارش</string>
     <string name="car_services">سرویس خودرو</string>
     <string name="home_report_title">گزارش مالی</string>
+    <string name="home_cashflow_title">گزارش جریان نقدی</string>
     <string name="home_net_balance">تراز خالص</string>
     <string name="home_bank_accounts">حساب‌های بانکی</string>
 
