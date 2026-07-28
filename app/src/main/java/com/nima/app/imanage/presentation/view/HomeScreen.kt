@@ -249,7 +249,7 @@ private fun ReportCard(
     val isDark = LocalIsDarkTheme.current
     val primary = MaterialTheme.colorScheme.primary
     val secondaryColor =
-        if (isDark) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f) else MaterialTheme.colorScheme.secondaryContainer.copy(
+        if (isDark) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f) else MaterialTheme.colorScheme.surfaceVariant.copy(
             alpha = 0.85f
         )
     val onPrimary = MaterialTheme.colorScheme.onPrimary
