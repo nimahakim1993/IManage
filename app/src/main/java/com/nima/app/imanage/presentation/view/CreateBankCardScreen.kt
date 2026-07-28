@@ -60,6 +60,7 @@ import com.nima.app.imanage.data.db.entity.BankCardEntity
 import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.BankCardViewModel
+import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.normalizeDigits
 import org.koin.androidx.compose.koinViewModel
@@ -332,6 +333,7 @@ fun AtmCardPreview(
                     color = Color.White,
                     style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Center,
+                    fontSize = scaledSp(18f),
                     modifier = Modifier
                         .align(Alignment.Center)
                         .padding(horizontal = if (onMenuClick != null) 40.dp else 0.dp)
@@ -361,6 +363,7 @@ fun AtmCardPreview(
                             .joinToString(" "),
                         color = Color.White,
                         style = MaterialTheme.typography.titleLarge,
+                        fontSize = scaledSp(19f),
                         letterSpacing = 2.sp
                     )
                 }
@@ -388,10 +391,12 @@ fun AtmCardPreview(
                             } else {
                                 if (cvv.isBlank()) stringResource(R.string.cvv_format, stringResource(R.string.not_set)) else NumberFormatUtils.toLocalizedDigits(stringResource(R.string.cvv_format, cvv))
                             },
+                            fontSize = scaledSp(14f),
                             color = Color.White
                         )
                         Text(
                             text = NumberFormatUtils.toLocalizedDigits(expiry).ifEmpty { stringResource(R.string.yy_mm_placeholder) },
+                            fontSize = scaledSp(14f),
                             color = Color.White
                         )
                     }

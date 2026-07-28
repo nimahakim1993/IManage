@@ -131,7 +131,7 @@ fun TripDetailScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(padding),
+                    .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(stringResource(R.string.trip_detail_loading), fontFamily = vazirFontFamily)
@@ -140,8 +140,7 @@ fun TripDetailScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(padding)
-                    .padding(horizontal = 16.dp),
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item {

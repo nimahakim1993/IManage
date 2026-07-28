@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.model.ToolbarConfig
+import com.nima.app.imanage.ui.theme.scaledSp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,7 +32,8 @@ fun MainToolbar(
             Text(
                 text = config.title,
                 modifier = Modifier.padding(end = 8.dp),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
+                fontSize = scaledSp(20f),
                 textAlign = TextAlign.End
             )
         },
