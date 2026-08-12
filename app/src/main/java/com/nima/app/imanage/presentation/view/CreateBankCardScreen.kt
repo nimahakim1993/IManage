@@ -1,19 +1,17 @@
 package com.nima.app.imanage.presentation.view
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -43,7 +41,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -60,7 +57,9 @@ import com.nima.app.imanage.data.db.entity.BankCardEntity
 import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.BankCardViewModel
+import com.nima.app.imanage.ui.component.ColorPaletteGrid
 import com.nima.app.imanage.ui.theme.scaledSp
+import com.nima.app.imanage.util.ColorUtils
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.normalizeDigits
 import org.koin.androidx.compose.koinViewModel
@@ -94,20 +93,11 @@ fun CreateBankCardScreen(
     )
 
     var cardColor by rememberSaveable(stateSaver = colorSaver) {
-        mutableStateOf(Color(0xFF0F5C5A))
+        mutableStateOf(ColorUtils.colors.first())
     }
 
     val yearFocusRequester = remember { FocusRequester() }
-
-    val colors = listOf(
-        Color(0xFF0F5C5A),
-        Color(0xFF1E3A8A),
-        Color(0xFF7C2D12),
-        Color(0xFF4C1D95),
-        Color(0xFF374151),
-        Color(0xFF1C1C1E),
-        Color(0xFFC5A44B)
-    )
+    val colors = ColorUtils.colors
 
     val selectedCard by viewModel.selectedCard.collectAsState()
     LaunchedEffect(selectedCard) {
@@ -254,35 +244,33 @@ fun CreateBankCardScreen(
         modifier = Modifier.fillMaxWidth()
     )
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            colors.forEach { color ->
-                Box(
-                    modifier = Modifier
-                        .size(36.dp)
-                        .clip(CircleShape)
-                        .background(color)
-                        .clickable { cardColor = color }
-                )
-            }
-        }
+        ColorPaletteGrid(
+            selectedIndex = colors.indexOf(cardColor),
+            onSelect = { cardColor = colors[it] }
+        )
 
-        Button(modifier = Modifier.fillMaxWidth(), onClick = {
-            val newCard = BankCardEntity(
-                id = if (cardId != -1) cardId else 0,
-                cardNumber = cardNumber,
-                cvv = cvv,
-                month = month,
-                year = year,
-                bankName = bankName,
-                color = cardColor.value.toLong(),
-                shebaNumber = shebaNumber.takeIf { it.isNotBlank() },
-                accountNumber = accountNumber.takeIf { it.isNotBlank() }
-            )
-            viewModel.saveCard(newCard)
-            navController.popBackStack()
-        }) {
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp, bottom = 12.dp)
+                .height(56.dp),
+            shape = RoundedCornerShape(16.dp),
+            onClick = {
+                val newCard = BankCardEntity(
+                    id = if (cardId != -1) cardId else 0,
+                    cardNumber = cardNumber,
+                    cvv = cvv,
+                    month = month,
+                    year = year,
+                    bankName = bankName,
+                    color = cardColor.value.toLong(),
+                    shebaNumber = shebaNumber.takeIf { it.isNotBlank() },
+                    accountNumber = accountNumber.takeIf { it.isNotBlank() }
+                )
+                viewModel.saveCard(newCard)
+                navController.popBackStack()
+            }
+        ) {
             Text(text = stringResource(R.string.confirm))
         }
     }
@@ -360,10 +348,10 @@ fun AtmCardPreview(
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                     Text(
                         text = NumberFormatUtils.toLocalizedDigits(cardNumber).chunked(4)
-                            .joinToString(" "),
+                            .joinToString("  "),
                         color = Color.White,
                         style = MaterialTheme.typography.titleLarge,
-                        fontSize = scaledSp(19f),
+                        fontSize = scaledSp(20f),
                         letterSpacing = 2.sp
                     )
                 }

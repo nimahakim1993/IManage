@@ -13,7 +13,8 @@ data class InstallmentEntity(
     var periodDays: Int,
     var amount: Long,
     var startDate: Long,
-    var createdAt: Long
+    var createdAt: Long,
+    var colorIndex: Int = 1
 ) {
     companion object {
         const val PERIOD_MONTHLY = 0

@@ -58,9 +58,9 @@ import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.TripDetailViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
-import com.nima.app.imanage.ui.theme.NoteBoxPalettes
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
+import com.nima.app.imanage.util.ColorUtils
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
 import org.koin.androidx.compose.koinViewModel
@@ -167,7 +167,7 @@ fun TripDetailScreen(
                             row.forEach { participant ->
                                 val balance = balances.find { it.participantId == participant.id }
                                 val color =
-                                    NoteBoxPalettes.getOrElse(participant.colorIndex) { NoteBoxPalettes.first() }
+                                    ColorUtils.palettes.getOrElse(participant.colorIndex) { ColorUtils.palettes.first() }
                                 ParticipantChip(
                                     participant.name,
                                     balance?.netBalance ?: 0.0,
@@ -212,9 +212,9 @@ fun TripDetailScreen(
                 items(expenses, key = { it.id }) { expense ->
                     val payer = participants.find { it.id == expense.payerParticipantId }
                     val payerName = payer?.name ?: "?"
-                    val payerColor = NoteBoxPalettes.getOrElse(
+                    val payerColor = ColorUtils.palettes.getOrElse(
                         payer?.colorIndex ?: 0
-                    ) { NoteBoxPalettes.first() }
+                    ) { ColorUtils.palettes.first() }
                     ExpenseCard(
                         expense = expense,
                         payerName = payerName,

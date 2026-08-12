@@ -69,9 +69,9 @@ import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
 import com.nima.app.imanage.ui.component.ShamsiMonthYearPicker
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
-import com.nima.app.imanage.ui.theme.NoteBoxPalettes
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
+import com.nima.app.imanage.util.ColorUtils
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
 import org.koin.androidx.compose.koinViewModel
@@ -434,9 +434,9 @@ fun IncomeItem(
 ) {
     val isDark = LocalIsDarkTheme.current
     val palette = if (source != null) {
-        NoteBoxPalettes.getOrElse(source.colorIndex) { NoteBoxPalettes.first() }
+        ColorUtils.palettes.getOrElse(source.colorIndex) { ColorUtils.palettes.first() }
     } else {
-        NoteBoxPalettes.last()
+        ColorUtils.palettes.last()
     }
     val accentColor = if (isDark) Color.White.copy(alpha = 0.18f) else Color.Black.copy(alpha = 0.08f)
 
@@ -619,7 +619,8 @@ private fun FilterDialog(
                         )
                     }
                     sources.forEach { source ->
-                        val palette = NoteBoxPalettes.getOrElse(source.colorIndex) { NoteBoxPalettes.first() }
+                        val palette =
+                            ColorUtils.palettes.getOrElse(source.colorIndex) { ColorUtils.palettes.first() }
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically

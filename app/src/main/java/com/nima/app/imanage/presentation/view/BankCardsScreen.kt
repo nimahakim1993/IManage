@@ -60,6 +60,7 @@ import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
 import com.nima.app.imanage.util.BiometricHelper
 import com.nima.app.imanage.util.BiometricHelper.AuthType
+import com.nima.app.imanage.util.ColorUtils
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -156,16 +157,7 @@ fun BankCardsScreen(
         ))
     }
 
-    val colors = listOf(
-        Color(0xFF0F5C5A),
-        Color(0xFF1E3A8A),
-        Color(0xFF7C2D12),
-        Color(0xFF4C1D95),
-        Color(0xFF374151),
-        Color(0xFF1C1C1E),
-        Color(0xFFC5A44B),
-        Color(0xFF8B0000),
-    )
+    val colors = ColorUtils.colors
 
     val listState = rememberLazyListState()
     var draggingId by remember { mutableStateOf<Int?>(null) }

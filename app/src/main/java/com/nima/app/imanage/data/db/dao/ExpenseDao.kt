@@ -20,7 +20,7 @@ interface ExpenseDao {
     @Delete
     suspend fun delete(expense: ExpenseEntity)
 
-    @Query("SELECT * FROM expenses ORDER BY createdAt DESC")
+    @Query("SELECT * FROM expenses ORDER BY createdAt DESC, id DESC")
     fun getAll(): Flow<List<ExpenseEntity>>
 
     @Query("SELECT * FROM expenses WHERE id = :id LIMIT 1")

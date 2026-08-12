@@ -57,9 +57,10 @@ import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.InstallmentViewModel
 import com.nima.app.imanage.ui.theme.LocalAppColors
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
-import com.nima.app.imanage.ui.theme.NoteBoxBlue
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
+import com.nima.app.imanage.util.AppColorPalette
+import com.nima.app.imanage.util.ColorUtils
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
 import org.koin.androidx.compose.koinViewModel
@@ -97,6 +98,9 @@ fun InstallmentDetailScreen(
         val isDark = LocalIsDarkTheme.current
         val overdueColor = LocalAppColors.current.debt
         val settledColor = if (isDark) Color(0xFF1565C0) else Color(0xFF1976D2)
+        val palette = ColorUtils.palettes.getOrElse(inst.colorIndex) {
+            ColorUtils.installmentPalette
+        }
 
         val today = ShamsiDate.todayMillis()
 
@@ -110,7 +114,7 @@ fun InstallmentDetailScreen(
         val progressColorByState = when {
             allSettled -> settledColor
             isOverdue -> overdueColor
-            else -> NoteBoxBlue.primary
+            else -> palette.primary
         }
 
         LazyColumn(
@@ -127,7 +131,8 @@ fun InstallmentDetailScreen(
                     allSettled = allSettled,
                     isOverdue = isOverdue,
                     daysPassed = daysPassed,
-                    totalDays = totalDays
+                    totalDays = totalDays,
+                    palette = palette
                 )
             }
 
@@ -159,7 +164,8 @@ private fun SummaryCard(
     allSettled: Boolean,
     isOverdue: Boolean,
     daysPassed: Int,
-    totalDays: Int
+    totalDays: Int,
+    palette: AppColorPalette
 ) {
     val animatedProgressColor by animateColorAsState(
         targetValue = progressColor,
@@ -167,7 +173,10 @@ private fun SummaryCard(
     )
 
     val gradient = Brush.linearGradient(
-        colors = listOf(NoteBoxBlue.primary, NoteBoxBlue.secondary.copy(alpha = 0.78f)),
+        colors = listOf(
+            palette.primary,
+            palette.secondary.copy(alpha = 0.78f)
+        ),
         start = Offset(0f, 0f),
         end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
     )

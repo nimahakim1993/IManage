@@ -62,9 +62,9 @@ import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
 import com.nima.app.imanage.ui.theme.LocalAppColors
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
-import com.nima.app.imanage.ui.theme.NoteBoxBlue
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
+import com.nima.app.imanage.util.ColorUtils
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
 import org.koin.androidx.compose.koinViewModel
@@ -137,8 +137,20 @@ fun InstallmentsScreen(
                     installment = installment,
                     items = items,
                     editMode = toggleEditMode,
-                    onClick = { navController.navigate(Screen.InstallmentDetail.createRoute(installment.id)) },
-                    onEdit = { navController.navigate(Screen.CreateInstallment.createRoute(installment.id)) },
+                    onClick = {
+                        navController.navigate(
+                            Screen.InstallmentDetail.createRoute(
+                                installment.id
+                            )
+                        )
+                    },
+                    onEdit = {
+                        navController.navigate(
+                            Screen.CreateInstallment.createRoute(
+                                installment.id
+                            )
+                        )
+                    },
                     onDelete = { removingInstallment = installment }
                 )
             }
@@ -199,20 +211,21 @@ fun InstallmentCard(
         animationSpec = tween(700)
     )
 
-    val palette = NoteBoxBlue
-
-    val cardBaseColor by animateColorAsState(
-        targetValue = if (allSettled) settledColor else palette.primary,
-        animationSpec = tween(700)
-    )
+    val palette = ColorUtils.palettes.getOrElse(installment.colorIndex) {
+        ColorUtils.installmentPalette
+    }
 
     val gradient = Brush.linearGradient(
-        colors = listOf(cardBaseColor, cardBaseColor.copy(alpha = 0.78f)),
+        colors = listOf(
+            palette.primary,
+            palette.secondary.copy(alpha = 0.78f)
+        ),
         start = Offset(0f, 0f),
         end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
     )
 
-    val accentColor = if (isDark) Color.White.copy(alpha = 0.18f) else Color.Black.copy(alpha = 0.08f)
+    val accentColor =
+        if (isDark) Color.White.copy(alpha = 0.18f) else Color.Black.copy(alpha = 0.08f)
 
     Card(
         modifier = Modifier
@@ -391,10 +404,18 @@ fun InstallmentCard(
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         IconButton(onClick = onEdit) {
-                            Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.edit), tint = Color.White)
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = stringResource(R.string.edit),
+                                tint = Color.White
+                            )
                         }
                         IconButton(onClick = onDelete) {
-                            Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete), tint = Color.White)
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.delete),
+                                tint = Color.White
+                            )
                         }
                     }
                 }

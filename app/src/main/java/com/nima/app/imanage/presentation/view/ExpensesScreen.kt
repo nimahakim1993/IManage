@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -70,9 +71,9 @@ import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
 import com.nima.app.imanage.ui.component.ShamsiMonthYearPicker
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
-import com.nima.app.imanage.ui.theme.NoteBoxPalettes
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
+import com.nima.app.imanage.util.ColorUtils
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
 import org.koin.androidx.compose.koinViewModel
@@ -105,6 +106,16 @@ fun ExpensesScreen(
     var showUncategorized by rememberSaveable { mutableStateOf(true) }
     var selectedMonthYear by rememberSaveable { mutableStateOf<Pair<Int, Int>?>(null) }
     var showMonthYearPicker by rememberSaveable { mutableStateOf(false) }
+    val expenseListState = rememberLazyListState()
+    var pendingScrollToTop by remember { mutableStateOf(false) }
+    var expenseCountBeforeSave by remember { mutableStateOf(0) }
+
+    LaunchedEffect(expenses, pendingScrollToTop) {
+        if (pendingScrollToTop && expenses.size > expenseCountBeforeSave) {
+            expenseListState.animateScrollToItem(0)
+            pendingScrollToTop = false
+        }
+    }
 
     LaunchedEffect(expenses.isEmpty()) {
         if (expenses.isEmpty()) toggleEditMode = false
@@ -216,6 +227,7 @@ fun ExpensesScreen(
             )
         } else {
             LazyColumn(
+                state = expenseListState,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
@@ -252,6 +264,11 @@ fun ExpensesScreen(
                 editingExpense = null
             },
             onSave = { expense ->
+                val isNewExpense = editingExpense == null
+                if (isNewExpense) {
+                    expenseCountBeforeSave = expenses.size
+                    pendingScrollToTop = true
+                }
                 viewModel.saveExpense(expense)
                 showCreateSheet = false
                 editingExpense = null
@@ -435,9 +452,9 @@ fun ExpenseItem(
 ) {
     val isDark = LocalIsDarkTheme.current
     val palette = if (category != null) {
-        NoteBoxPalettes.getOrElse(category.colorIndex) { NoteBoxPalettes.first() }
+        ColorUtils.palettes.getOrElse(category.colorIndex) { ColorUtils.palettes.first() }
     } else {
-        NoteBoxPalettes.last()
+        ColorUtils.palettes.last()
     }
     val accentColor = if (isDark) Color.White.copy(alpha = 0.18f) else Color.Black.copy(alpha = 0.08f)
 
@@ -620,7 +637,8 @@ private fun FilterDialog(
                         )
                     }
                     categories.forEach { category ->
-                        val palette = NoteBoxPalettes.getOrElse(category.colorIndex) { NoteBoxPalettes.first() }
+                        val palette =
+                            ColorUtils.palettes.getOrElse(category.colorIndex) { ColorUtils.palettes.first() }
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically

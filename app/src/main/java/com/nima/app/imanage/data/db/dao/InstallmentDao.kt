@@ -20,7 +20,7 @@ interface InstallmentDao {
     @Delete
     suspend fun delete(installment: InstallmentEntity)
 
-    @Query("SELECT * FROM installments ORDER BY createdAt DESC")
+    @Query("SELECT * FROM installments ORDER BY createdAt DESC, id DESC")
     fun getAll(): Flow<List<InstallmentEntity>>
 
     @Query("SELECT * FROM installments WHERE id = :id LIMIT 1")

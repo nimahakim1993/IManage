@@ -7,10 +7,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.Button
@@ -38,8 +41,10 @@ import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.InstallmentEntity
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.InstallmentViewModel
+import com.nima.app.imanage.ui.component.ColorPaletteGrid
 import com.nima.app.imanage.ui.component.ShamsiDatePicker
 import com.nima.app.imanage.ui.component.TextInputDropDown
+import com.nima.app.imanage.util.ColorUtils
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
 import org.koin.androidx.compose.koinViewModel
@@ -98,6 +103,7 @@ fun CreateInstallmentScreen(
     var periodDays by remember { mutableStateOf(TextFieldValue("")) }
     var amount by remember { mutableStateOf(TextFieldValue("")) }
     var startDate by remember { mutableStateOf(ShamsiDate.todayMillis()) }
+    var colorIndex by remember { mutableIntStateOf(1) }
     var showStartDatePicker by remember { mutableStateOf(false) }
 
     val periodTypeText = when (periodType) {
@@ -116,6 +122,7 @@ fun CreateInstallmentScreen(
             periodDays = TextFieldValue(inst.periodDays.toString())
             amount = TextFieldValue(NumberFormatUtils.format(inst.amount))
             startDate = inst.startDate
+            colorIndex = inst.colorIndex.coerceIn(0, ColorUtils.palettes.lastIndex)
         }
     }
 
@@ -142,6 +149,7 @@ fun CreateInstallmentScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(12.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -219,7 +227,9 @@ fun CreateInstallmentScreen(
 
         Spacer(modifier = Modifier.size(10.dp))
 
-        Box(modifier = Modifier.fillMaxWidth().clickable { showStartDatePicker = true }) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .clickable { showStartDatePicker = true }) {
             OutlinedTextField(
                 value = ShamsiDate.format(startDate),
                 onValueChange = {},
@@ -231,13 +241,22 @@ fun CreateInstallmentScreen(
             )
         }
 
-        Spacer(modifier = Modifier.weight(1f))
+        Text(
+            text = stringResource(R.string.theme),
+            style = androidx.compose.material3.MaterialTheme.typography.titleMedium
+        )
+
+        ColorPaletteGrid(
+            selectedIndex = colorIndex,
+            onSelect = { colorIndex = it }
+        )
 
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            shape = RoundedCornerShape(20.dp),
+                .padding(top = 20.dp, bottom = 12.dp)
+                .height(56.dp),
+            shape = RoundedCornerShape(16.dp),
             onClick = {
                 val num = numInstallments.text.toIntOrNull() ?: 0
                 val period = if (periodType == InstallmentEntity.PERIOD_CUSTOM) {
@@ -256,7 +275,8 @@ fun CreateInstallmentScreen(
                     periodDays = period,
                     amount = NumberFormatUtils.parseToLong(amount.text),
                     startDate = startDate,
-                    createdAt = selectedInstallment?.createdAt ?: 0
+                    createdAt = selectedInstallment?.createdAt ?: 0,
+                    colorIndex = colorIndex
                 )
                 viewModel.saveInstallment(installment)
                 navController.popBackStack()

@@ -20,7 +20,7 @@ interface NoteBoxDao {
     @Delete
     suspend fun delete(box: NoteBoxEntity)
 
-    @Query("SELECT * FROM note_boxes ORDER BY updatedAt DESC")
+    @Query("SELECT * FROM note_boxes ORDER BY updatedAt DESC, id DESC")
     fun getAll(): Flow<List<NoteBoxEntity>>
 
     @Query("SELECT * FROM note_boxes WHERE id = :id LIMIT 1")

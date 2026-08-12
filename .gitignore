@@ -13,4 +13,5 @@
 /app/release
 .externalNativeBuild
 .cxx
+.kotlin
 local.properties

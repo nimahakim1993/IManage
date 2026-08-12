@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -152,7 +153,9 @@ fun CreateLoanScreen(
 
         Spacer(modifier = Modifier.size(10.dp))
 
-        Box(modifier = Modifier.fillMaxWidth().clickable { showDateLoanPicker = true }) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .clickable { showDateLoanPicker = true }) {
             OutlinedTextField(
                 value = ShamsiDate.format(dateLoan),
                 onValueChange = {},
@@ -165,7 +168,9 @@ fun CreateLoanScreen(
 
         Spacer(modifier = Modifier.size(10.dp))
 
-        Box(modifier = Modifier.fillMaxWidth().clickable { showDateReceiveBackPicker = true }) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .clickable { showDateReceiveBackPicker = true }) {
             OutlinedTextField(
                 value = ShamsiDate.format(dateReceiveBack),
                 onValueChange = {},
@@ -189,8 +194,11 @@ fun CreateLoanScreen(
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(20.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp, bottom = 12.dp)
+                .height(56.dp),
+            shape = RoundedCornerShape(16.dp),
             onClick = {
                 val loan = LoanEntity(
                     id = if (loanId != -1) loanId else 0,

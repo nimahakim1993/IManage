@@ -60,9 +60,10 @@ import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.NoteBoxViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
-import com.nima.app.imanage.ui.theme.NoteBoxPalettes
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
+import com.nima.app.imanage.util.AppColorPalette
+import com.nima.app.imanage.util.ColorUtils
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -251,7 +252,7 @@ private fun NoteBoxCard(
     onDelete: () -> Unit
 ) {
     val palette = remember(box.colorIndex) {
-        NoteBoxPalettes.getOrElse(box.colorIndex) { NoteBoxPalettes.first() }
+        ColorUtils.palettes.getOrElse(box.colorIndex) { ColorUtils.palettes.first() }
     }
     val isDark = LocalIsDarkTheme.current
 
@@ -357,7 +358,7 @@ private fun NoteBoxCard(
 }
 
 @Composable
-private fun GlassIconBadge(palette: com.nima.app.imanage.ui.theme.NoteBoxPalette) {
+private fun GlassIconBadge(palette: AppColorPalette) {
     Box(
         modifier = Modifier
             .size(52.dp)

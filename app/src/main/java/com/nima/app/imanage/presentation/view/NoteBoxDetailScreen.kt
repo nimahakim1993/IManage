@@ -67,9 +67,10 @@ import com.nima.app.imanage.presentation.viewmodel.NoteBoxViewModel
 import com.nima.app.imanage.presentation.viewmodel.NoteViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
-import com.nima.app.imanage.ui.theme.NoteBoxPalettes
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
+import com.nima.app.imanage.util.AppColorPalette
+import com.nima.app.imanage.util.ColorUtils
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -135,7 +136,7 @@ fun NoteBoxDetailScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (box != null) {
-            DetailBackdrop(palette = NoteBoxPalettes.getOrElse(box.colorIndex) { NoteBoxPalettes.first() })
+            DetailBackdrop(palette = ColorUtils.palettes.getOrElse(box.colorIndex) { ColorUtils.palettes.first() })
         } else {
             Box(modifier = Modifier.fillMaxSize())
         }
@@ -151,7 +152,9 @@ fun NoteBoxDetailScreen(
                 )
             } else {
                 val boxPalette = remember(box?.colorIndex) {
-                    NoteBoxPalettes.getOrElse(box?.colorIndex ?: 0) { NoteBoxPalettes.first() }
+                    ColorUtils.palettes.getOrElse(
+                        box?.colorIndex ?: 0
+                    ) { ColorUtils.palettes.first() }
                 }
                 LazyColumn(
                     modifier = Modifier
@@ -204,7 +207,7 @@ fun NoteBoxDetailScreen(
 }
 
 @Composable
-private fun DetailBackdrop(palette: com.nima.app.imanage.ui.theme.NoteBoxPalette) {
+private fun DetailBackdrop(palette: AppColorPalette) {
     val brush = Brush.linearGradient(
         colors = listOf(
             palette.primary.copy(alpha = 0.15f),
@@ -223,7 +226,7 @@ private fun DetailBackdrop(palette: com.nima.app.imanage.ui.theme.NoteBoxPalette
 
 @Composable
 private fun BoxHeader(box: NoteBoxEntity, noteCount: Int) {
-    val palette = NoteBoxPalettes.getOrElse(box.colorIndex) { NoteBoxPalettes.first() }
+    val palette = ColorUtils.palettes.getOrElse(box.colorIndex) { ColorUtils.palettes.first() }
     val isDark = LocalIsDarkTheme.current
 
     val cardBrush = Brush.linearGradient(
@@ -316,7 +319,7 @@ private fun BoxHeader(box: NoteBoxEntity, noteCount: Int) {
 private fun NoteListItem(
     note: NoteEntity,
     editMode: Boolean,
-    palette: com.nima.app.imanage.ui.theme.NoteBoxPalette,
+    palette: AppColorPalette,
     onClick: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit
@@ -422,7 +425,7 @@ private fun NoteListItem(
 }
 
 @Composable
-private fun NoteIconBadge(palette: com.nima.app.imanage.ui.theme.NoteBoxPalette) {
+private fun NoteIconBadge(palette: AppColorPalette) {
     Box(
         modifier = Modifier
             .size(42.dp)

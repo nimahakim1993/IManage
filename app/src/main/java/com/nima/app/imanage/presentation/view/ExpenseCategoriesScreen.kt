@@ -2,7 +2,6 @@ package com.nima.app.imanage.presentation.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,10 +54,11 @@ import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.ExpenseCategoryViewModel
 import com.nima.app.imanage.presentation.viewmodel.ExpenseViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
+import com.nima.app.imanage.ui.component.ColorPaletteGrid
 import com.nima.app.imanage.ui.component.EmptyState
-import com.nima.app.imanage.ui.theme.NoteBoxPalettes
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
+import com.nima.app.imanage.util.ColorUtils
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -165,7 +165,7 @@ private fun CategoryItem(
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
-    val palette = NoteBoxPalettes.getOrElse(category.colorIndex) { NoteBoxPalettes.first() }
+    val palette = ColorUtils.palettes.getOrElse(category.colorIndex) { ColorUtils.palettes.first() }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -256,37 +256,10 @@ private fun CategoryEditDialog(
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.size(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    NoteBoxPalettes.forEachIndexed { index, palette ->
-                        val isSelected = index == colorIndex
-                        Box(
-                            modifier = Modifier
-                                .size(if (isSelected) 40.dp else 32.dp)
-                                .clip(CircleShape)
-                                .background(palette.primary)
-                                .border(
-                                    width = if (isSelected) 3.dp else 1.dp,
-                                    color = if (isSelected) MaterialTheme.colorScheme.onBackground
-                                    else palette.accent,
-                                    shape = CircleShape
-                                )
-                                .clickable { colorIndex = index },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            if (isSelected) {
-                                Icon(
-                                    imageVector = Icons.Default.Check,
-                                    contentDescription = null,
-                                    tint = Color.White,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
-                        }
-                    }
-                }
+                ColorPaletteGrid(
+                    selectedIndex = colorIndex,
+                    onSelect = { colorIndex = it }
+                )
             }
         },
         confirmButton = {

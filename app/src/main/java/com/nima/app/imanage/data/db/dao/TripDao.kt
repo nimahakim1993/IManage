@@ -20,7 +20,7 @@ interface TripDao {
     @Delete
     suspend fun delete(trip: TripEntity)
 
-    @Query("SELECT * FROM trips ORDER BY createdAt DESC")
+    @Query("SELECT * FROM trips ORDER BY createdAt DESC, id DESC")
     fun getAll(): Flow<List<TripEntity>>
 
     @Query("SELECT * FROM trips WHERE id = :id")
