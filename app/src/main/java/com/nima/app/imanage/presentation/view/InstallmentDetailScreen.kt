@@ -56,7 +56,6 @@ import com.nima.app.imanage.data.db.entity.InstallmentItemEntity
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.InstallmentViewModel
 import com.nima.app.imanage.ui.theme.LocalAppColors
-import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.AppColorPalette
@@ -95,12 +94,11 @@ fun InstallmentDetailScreen(
         val settledCount = items.count { it.settled }
         val allSettled = items.isNotEmpty() && items.all { it.settled }
 
-        val isDark = LocalIsDarkTheme.current
         val overdueColor = LocalAppColors.current.debt
-        val settledColor = if (isDark) Color(0xFF1565C0) else Color(0xFF1976D2)
         val palette = ColorUtils.palettes.getOrElse(inst.colorIndex) {
             ColorUtils.installmentPalette
         }
+        val settledColor = palette.accent
 
         val today = ShamsiDate.todayMillis()
 
@@ -148,6 +146,7 @@ fun InstallmentDetailScreen(
                     progress = if (item.settled) 1f else if (itemIsPastDue) 1f else itemProgress,
                     isPastDue = itemIsPastDue,
                     isSettled = item.settled,
+                    palette = palette,
                     onToggleSettled = { viewModel.toggleItemSettled(item) }
                 )
             }
@@ -327,16 +326,16 @@ private fun ItemCard(
     progress: Float,
     isPastDue: Boolean,
     isSettled: Boolean,
+    palette: AppColorPalette,
     onToggleSettled: () -> Unit
 ) {
-    val isDark = LocalIsDarkTheme.current
     val today = ShamsiDate.todayMillis()
 
     val baseColor by animateColorAsState(
         targetValue = when {
-            isSettled -> if (isDark) Color(0xFF1565C0) else Color(0xFF1976D2)
+            isSettled -> palette.accent
             isPastDue -> LocalAppColors.current.debt
-            else -> MaterialTheme.colorScheme.primary
+            else -> palette.primary
         },
         animationSpec = tween(500)
     )
@@ -347,9 +346,9 @@ private fun ItemCard(
     )
 
     val circleProgressColor = when {
-        isSettled -> Color.White.copy(alpha = 0.6f)
+        isSettled -> palette.accent.copy(alpha = 0.6f)
         isPastDue -> Color(0x66FFCDD2)
-        else -> Color(0x66FFFFFF)
+        else -> palette.primary.copy(alpha = 0.4f)
     }
 
     val gradient = Brush.linearGradient(

@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,8 @@ import com.nima.app.imanage.data.db.entity.NoteBoxEntity
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.NoteBoxViewModel
 import com.nima.app.imanage.ui.component.ColorPaletteGrid
+import com.nima.app.imanage.ui.component.RequiredFieldError
+import com.nima.app.imanage.ui.component.showRequiredFieldsToast
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -71,6 +74,9 @@ fun CreateNoteBoxScreen(
     var description by remember { mutableStateOf("") }
     var colorIndex by remember { mutableIntStateOf(0) }
     var loaded by remember { mutableStateOf(false) }
+    var showValidationErrors by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val titleError = showValidationErrors && title.isBlank()
 
     LaunchedEffect(selectedBox, isEdit) {
         if (isEdit && selectedBox != null && !loaded) {
@@ -94,7 +100,11 @@ fun CreateNoteBoxScreen(
             label = { Text(stringResource(R.string.note_box_title_label)) },
             placeholder = { Text(stringResource(R.string.note_box_title_hint)) },
             modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            singleLine = true,
+            isError = titleError,
+            supportingText = if (titleError) {
+                { RequiredFieldError(visible = true) }
+            } else null
         )
 
         OutlinedTextField(
@@ -125,11 +135,16 @@ fun CreateNoteBoxScreen(
 
         Button(
             onClick = {
+                if (title.isBlank()) {
+                    showValidationErrors = true
+                    showRequiredFieldsToast(context)
+                    return@Button
+                }
                 scope.launch {
                     val now = System.currentTimeMillis()
                     val box = NoteBoxEntity(
                         id = if (isEdit) boxId else 0,
-                        title = title.trim().ifEmpty { "Untitled" },
+                        title = title.trim(),
                         description = description.trim(),
                         colorIndex = colorIndex,
                         createdAt = selectedBox?.createdAt ?: now,

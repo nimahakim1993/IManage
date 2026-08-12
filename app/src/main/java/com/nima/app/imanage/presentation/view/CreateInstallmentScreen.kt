@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
@@ -42,8 +43,10 @@ import com.nima.app.imanage.data.db.entity.InstallmentEntity
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.InstallmentViewModel
 import com.nima.app.imanage.ui.component.ColorPaletteGrid
+import com.nima.app.imanage.ui.component.RequiredFieldError
 import com.nima.app.imanage.ui.component.ShamsiDatePicker
 import com.nima.app.imanage.ui.component.TextInputDropDown
+import com.nima.app.imanage.ui.component.showRequiredFieldsToast
 import com.nima.app.imanage.util.ColorUtils
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
@@ -105,6 +108,14 @@ fun CreateInstallmentScreen(
     var startDate by remember { mutableStateOf(ShamsiDate.todayMillis()) }
     var colorIndex by remember { mutableIntStateOf(1) }
     var showStartDatePicker by remember { mutableStateOf(false) }
+    val showPeriodDaysField = periodType == InstallmentEntity.PERIOD_CUSTOM
+    var showValidationErrors by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val titleError = showValidationErrors && title.isBlank()
+    val amountError = showValidationErrors && NumberFormatUtils.parseToLong(amount.text) <= 0
+    val numberError = showValidationErrors && (numInstallments.text.toIntOrNull() ?: 0) <= 0
+    val periodDaysError = showValidationErrors && showPeriodDaysField &&
+            (periodDays.text.toIntOrNull() ?: 0) <= 0
 
     val periodTypeText = when (periodType) {
         InstallmentEntity.PERIOD_MONTHLY -> stringResource(R.string.period_monthly)
@@ -125,8 +136,6 @@ fun CreateInstallmentScreen(
             colorIndex = inst.colorIndex.coerceIn(0, ColorUtils.palettes.lastIndex)
         }
     }
-
-    val showPeriodDaysField = periodType == InstallmentEntity.PERIOD_CUSTOM
 
     val periodTypeItems = listOf(
         stringResource(R.string.period_monthly),
@@ -161,6 +170,10 @@ fun CreateInstallmentScreen(
             label = { Text(stringResource(R.string.installment_title_label)) },
             placeholder = { Text(stringResource(R.string.installment_title_hint)) },
             singleLine = true,
+            isError = titleError,
+            supportingText = if (titleError) {
+                { RequiredFieldError(visible = true) }
+            } else null,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -172,6 +185,10 @@ fun CreateInstallmentScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             label = { Text(stringResource(R.string.amount)) },
             singleLine = true,
+            isError = amountError,
+            supportingText = if (amountError) {
+                { RequiredFieldError(visible = true) }
+            } else null,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -185,6 +202,10 @@ fun CreateInstallmentScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             label = { Text(stringResource(R.string.number_of_installments)) },
             singleLine = true,
+            isError = numberError,
+            supportingText = if (numberError) {
+                { RequiredFieldError(visible = true) }
+            } else null,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -211,6 +232,10 @@ fun CreateInstallmentScreen(
                 label = { Text(stringResource(R.string.period_days)) },
                 placeholder = { Text(stringResource(R.string.period_days_hint)) },
                 singleLine = true,
+                isError = periodDaysError,
+                supportingText = if (periodDaysError) {
+                    { RequiredFieldError(visible = true) }
+                } else null,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -264,7 +289,14 @@ fun CreateInstallmentScreen(
                 } else {
                     30
                 }
-                if (title.isBlank() || num <= 0) return@Button
+                if (title.isBlank() || num <= 0 ||
+                    (periodType == InstallmentEntity.PERIOD_CUSTOM && period <= 0) ||
+                    NumberFormatUtils.parseToLong(amount.text) <= 0
+                ) {
+                    showValidationErrors = true
+                    showRequiredFieldsToast(context)
+                    return@Button
+                }
 
                 val installment = InstallmentEntity(
                     id = if (installmentId != -1) installmentId else 0,

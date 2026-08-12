@@ -82,6 +82,8 @@ import com.nima.app.imanage.presentation.viewmodel.PasswordItemInput
 import com.nima.app.imanage.presentation.viewmodel.PasswordItemViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
+import com.nima.app.imanage.ui.component.RequiredFieldError
+import com.nima.app.imanage.ui.component.showRequiredFieldsToast
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
@@ -595,6 +597,10 @@ private fun CreatePasswordItemSheet(
     var password by remember { mutableStateOf("") }
     var iconType by remember { mutableStateOf(PasswordIconType.DEFAULT.value) }
     var passwordVisible by remember { mutableStateOf(false) }
+    var showValidationErrors by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val titleError = showValidationErrors && title.isBlank()
+    val passwordError = showValidationErrors && editing == null && password.isBlank()
 
     LaunchedEffect(editing?.id) {
         val current = editing
@@ -641,6 +647,10 @@ private fun CreatePasswordItemSheet(
                 label = { Text(stringResource(R.string.password_title_label)) },
                 placeholder = { Text(stringResource(R.string.password_title_hint)) },
                 singleLine = true,
+                isError = titleError,
+                supportingText = if (titleError) {
+                    { RequiredFieldError(visible = true) }
+                } else null,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -679,6 +689,10 @@ private fun CreatePasswordItemSheet(
                         )
                     }
                 },
+                isError = passwordError,
+                supportingText = if (passwordError) {
+                    { RequiredFieldError(visible = true) }
+                } else null,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -744,11 +758,14 @@ private fun CreatePasswordItemSheet(
             Button(
                 onClick = {
                     val finalTitle = title.trim()
-                    if (finalTitle.isBlank()) return@Button
                     val current = editing
                     val keepExisting = current != null && password.isBlank()
                     val finalPassword = if (keepExisting) current?.encryptedPassword.orEmpty() else password
-                    if (finalPassword.isBlank()) return@Button
+                    if (finalTitle.isBlank() || finalPassword.isBlank()) {
+                        showValidationErrors = true
+                        showRequiredFieldsToast(context)
+                        return@Button
+                    }
                     val now = System.currentTimeMillis()
                     onSave(
                         PasswordItemInput(
@@ -763,7 +780,6 @@ private fun CreatePasswordItemSheet(
                         )
                     )
                 },
-                enabled = title.isNotBlank() && (password.isNotBlank() || editing != null),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,

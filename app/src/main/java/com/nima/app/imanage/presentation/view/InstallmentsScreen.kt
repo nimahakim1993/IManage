@@ -179,9 +179,12 @@ fun InstallmentCard(
 ) {
     val isDark = LocalIsDarkTheme.current
     val overdueColor = LocalAppColors.current.debt
-    val settledColor = if (isDark) Color(0xFF1565C0) else Color(0xFF1976D2)
-    val onTrackColor = if (isDark) Color(0xFF1565C0) else Color(0xFF1976D2)
-    val warningColor = if (isDark) Color(0xFFE65100) else Color(0xFFFB8C00)
+    val palette = ColorUtils.palettes.getOrElse(installment.colorIndex) {
+        ColorUtils.installmentPalette
+    }
+    val settledColor = palette.accent
+    val onTrackColor = palette.primary
+    val warningColor = palette.accent
 
     val today = ShamsiDate.todayMillis()
 
@@ -210,10 +213,6 @@ fun InstallmentCard(
         },
         animationSpec = tween(700)
     )
-
-    val palette = ColorUtils.palettes.getOrElse(installment.colorIndex) {
-        ColorUtils.installmentPalette
-    }
 
     val gradient = Brush.linearGradient(
         colors = listOf(

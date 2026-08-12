@@ -34,9 +34,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,6 +47,8 @@ import com.nima.app.imanage.R
 import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.TripListViewModel
+import com.nima.app.imanage.ui.component.RequiredFieldError
+import com.nima.app.imanage.ui.component.showRequiredFieldsToast
 import com.nima.app.imanage.ui.component.ShamsiDatePicker
 import com.nima.app.imanage.ui.component.TextInputDropDown
 import com.nima.app.imanage.ui.theme.vazirFontFamily
@@ -70,6 +74,11 @@ fun CreateTripScreen(
     var participantNames by remember { mutableStateOf(listOf("")) }
     var hostIndex by remember { mutableStateOf<Int?>(null) }
     var showStartDatePicker by remember { mutableStateOf(false) }
+    var showValidationErrors by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val validParticipantNames = participantNames.filter { it.isNotBlank() }
+    val tripNameError = showValidationErrors && tripName.isBlank()
+    val participantsError = showValidationErrors && validParticipantNames.isEmpty()
 
     LaunchedEffect(editTripId) {
         if (editTripId != null) {
@@ -100,6 +109,32 @@ fun CreateTripScreen(
     val toolbarTitle =
         stringResource(if (isEdit) R.string.trip_edit_title else R.string.trip_create_title)
 
+    val saveAction = rememberUpdatedState {
+        if (tripName.isBlank() || validParticipantNames.isEmpty()) {
+            showValidationErrors = true
+            showRequiredFieldsToast(context)
+        } else if (isEdit && editTripId != null) {
+            viewModel.updateTrip(
+                tripId = editTripId,
+                name = tripName,
+                startDate = startDate,
+                endDate = endDate,
+                participantNames = validParticipantNames,
+                hostIndex = hostIndex
+            )
+            navController.popBackStack()
+        } else {
+            viewModel.createTrip(
+                name = tripName,
+                startDate = startDate,
+                endDate = endDate,
+                participantNames = validParticipantNames,
+                hostIndex = hostIndex
+            )
+            navController.popBackStack()
+        }
+    }
+
     LaunchedEffect(Unit) {
         setToolbar(
             ToolbarConfig(
@@ -109,29 +144,7 @@ fun CreateTripScreen(
                     ToolbarAction(
                         icon = Icons.Default.Check,
                         contentDescription = "Save",
-                        onClick = {
-                            val validNames = participantNames.filter { it.isNotBlank() }
-                            if (tripName.isBlank() || validNames.isEmpty()) return@ToolbarAction
-                            if (isEdit && editTripId != null) {
-                                viewModel.updateTrip(
-                                    tripId = editTripId,
-                                    name = tripName,
-                                    startDate = startDate,
-                                    endDate = endDate,
-                                    participantNames = validNames,
-                                    hostIndex = hostIndex
-                                )
-                            } else {
-                                viewModel.createTrip(
-                                    name = tripName,
-                                    startDate = startDate,
-                                    endDate = endDate,
-                                    participantNames = validNames,
-                                    hostIndex = hostIndex
-                                )
-                            }
-                            navController.popBackStack()
-                        }
+                        onClick = { saveAction.value() }
                     )
                 )
             )
@@ -163,6 +176,10 @@ fun CreateTripScreen(
                 value = tripName,
                 onValueChange = { tripName = it },
                 label = { Text(stringResource(R.string.trip_name_label)) },
+                isError = tripNameError,
+                supportingText = if (tripNameError) {
+                    { RequiredFieldError(visible = true) }
+                } else null,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp)
             )
@@ -224,6 +241,11 @@ fun CreateTripScreen(
                     }
                 }
             }
+
+            RequiredFieldError(
+                visible = participantsError,
+                modifier = Modifier.padding(start = 16.dp)
+            )
 
             Button(
                 onClick = { participantNames = participantNames + "" },

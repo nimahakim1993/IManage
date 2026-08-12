@@ -30,6 +30,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.launch
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,6 +40,8 @@ import com.nima.app.imanage.data.db.entity.NoteEntity
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.NoteBoxViewModel
 import com.nima.app.imanage.presentation.viewmodel.NoteViewModel
+import com.nima.app.imanage.ui.component.RequiredFieldError
+import com.nima.app.imanage.ui.component.showRequiredFieldsToast
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import org.koin.androidx.compose.koinViewModel
 
@@ -74,6 +77,10 @@ fun CreateNoteScreen(
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
     var loaded by remember { mutableStateOf(false) }
+    var showValidationErrors by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val titleError = showValidationErrors && title.isBlank()
+    val contentError = showValidationErrors && content.isBlank()
 
     LaunchedEffect(selectedNote, isEdit) {
         if (isEdit && selectedNote != null && !loaded) {
@@ -96,7 +103,11 @@ fun CreateNoteScreen(
             label = { Text(stringResource(R.string.note_title_label)) },
             placeholder = { Text(stringResource(R.string.note_title_hint)) },
             modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            singleLine = true,
+            isError = titleError,
+            supportingText = if (titleError) {
+                { RequiredFieldError(visible = true) }
+            } else null
         )
 
         OutlinedTextField(
@@ -107,7 +118,11 @@ fun CreateNoteScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(280.dp),
-            maxLines = 20
+            maxLines = 20,
+            isError = contentError,
+            supportingText = if (contentError) {
+                { RequiredFieldError(visible = true) }
+            } else null
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -116,6 +131,11 @@ fun CreateNoteScreen(
 
         Button(
             onClick = {
+                if (title.isBlank() || content.isBlank()) {
+                    showValidationErrors = true
+                    showRequiredFieldsToast(context)
+                    return@Button
+                }
                 scope.launch {
                     val now = System.currentTimeMillis()
                     val note = NoteEntity(

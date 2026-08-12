@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +41,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavHostController
+import android.widget.Toast
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
@@ -83,6 +85,7 @@ fun TripExpenseFormScreen(
     var involvedIds by remember { mutableStateOf<Set<Int>>(emptySet()) }
     var splitType by remember { mutableStateOf(SplitType.EQUAL) }
     var showDatePicker by remember { mutableStateOf(false) }
+    var showValidationErrors by remember { mutableStateOf(false) }
 
     val isEdit = expenseId != null
     var editInitialized by remember { mutableStateOf(false) }
@@ -103,9 +106,51 @@ fun TripExpenseFormScreen(
     }
 
     LaunchedEffect(participants) {
-        if (!isEdit && participants.isNotEmpty() && involvedIds.isEmpty()) {
-            involvedIds = participants.map { it.id }.toSet()
-            if (payerId == 0) payerId = participants.first().id
+        if (!isEdit && participants.isNotEmpty() && payerId == 0) {
+            payerId = participants.first().id
+        }
+    }
+
+    val amountValue = NumberFormatUtils.parseToLong(amount.text).toDouble()
+    val hasValidationErrors = title.isBlank() ||
+            amountValue <= 0 ||
+            payerId == 0 ||
+            involvedIds.isEmpty()
+    val titleError = showValidationErrors && title.isBlank()
+    val amountError = showValidationErrors && amountValue <= 0
+    val payerError = showValidationErrors && payerId == 0
+    val involvedError = showValidationErrors && involvedIds.isEmpty()
+    val saveAction = rememberUpdatedState {
+        if (hasValidationErrors) {
+            showValidationErrors = true
+            Toast.makeText(
+                activity,
+                activity.getString(R.string.required_fields_toast),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else if (isEdit && expenseId != null) {
+            viewModel.updateExpense(
+                expenseId = expenseId,
+                title = title,
+                amount = amountValue,
+                date = date,
+                payerParticipantId = payerId,
+                description = description,
+                splitType = splitType,
+                involvedParticipantIds = involvedIds.toList()
+            )
+            navController.popBackStack()
+        } else {
+            viewModel.createExpense(
+                title = title,
+                amount = amountValue,
+                date = date,
+                payerParticipantId = payerId,
+                description = description,
+                splitType = splitType,
+                involvedParticipantIds = involvedIds.toList()
+            )
+            navController.popBackStack()
         }
     }
 
@@ -118,33 +163,7 @@ fun TripExpenseFormScreen(
                     ToolbarAction(
                         icon = Icons.Default.Check,
                         contentDescription = "Save",
-                        onClick = {
-                            val amountVal = NumberFormatUtils.parseToLong(amount.text).toDouble()
-                            if (title.isBlank() || involvedIds.isEmpty() || payerId == 0 || amountVal <= 0) return@ToolbarAction
-                            if (isEdit && expenseId != null) {
-                                viewModel.updateExpense(
-                                    expenseId = expenseId,
-                                    title = title,
-                                    amount = amountVal,
-                                    date = date,
-                                    payerParticipantId = payerId,
-                                    description = description,
-                                    splitType = splitType,
-                                    involvedParticipantIds = involvedIds.toList()
-                                )
-                            } else {
-                                viewModel.createExpense(
-                                    title = title,
-                                    amount = amountVal,
-                                    date = date,
-                                    payerParticipantId = payerId,
-                                    description = description,
-                                    splitType = splitType,
-                                    involvedParticipantIds = involvedIds.toList()
-                                )
-                            }
-                            navController.popBackStack()
-                        }
+                        onClick = { saveAction.value() }
                     )
                 )
             )
@@ -176,6 +195,10 @@ fun TripExpenseFormScreen(
                 value = title,
                 onValueChange = { title = it },
                 label = { Text(stringResource(R.string.expense_trip_title_label)) },
+                isError = titleError,
+                supportingText = if (titleError) {
+                    { Text(stringResource(R.string.required_field_error)) }
+                } else null,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp)
             )
@@ -185,6 +208,10 @@ fun TripExpenseFormScreen(
                 onValueChange = { amount = NumberFormatUtils.formatWithCursor(it) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 label = { Text(stringResource(R.string.expense_amount_label)) },
+                isError = amountError,
+                supportingText = if (amountError) {
+                    { Text(stringResource(R.string.required_field_error)) }
+                } else null,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp)
             )
@@ -204,13 +231,30 @@ fun TripExpenseFormScreen(
             }
 
             if (participants.isNotEmpty()) {
-                TextInputDropDown(
-                    label = stringResource(R.string.expense_payer_label),
-                    items = participants.map { it.name },
-                    selectedItem = participants.find { it.id == payerId }?.name ?: "",
-                    onItemSelected = { index, _ ->
-                        payerId = participants.getOrNull(index)?.id ?: 0
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    TextInputDropDown(
+                        label = stringResource(R.string.expense_payer_label),
+                        items = participants.map { it.name },
+                        selectedItem = participants.find { it.id == payerId }?.name ?: "",
+                        onItemSelected = { index, _ ->
+                            payerId = participants.getOrNull(index)?.id ?: 0
+                        }
+                    )
+                    if (payerError) {
+                        Text(
+                            text = stringResource(R.string.required_field_error),
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                        )
                     }
+                }
+            } else if (payerError) {
+                Text(
+                    text = stringResource(R.string.required_field_error),
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 16.dp)
                 )
             }
 
@@ -227,7 +271,9 @@ fun TripExpenseFormScreen(
                 text = stringResource(R.string.expense_involved_label),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
-                fontFamily = vazirFontFamily
+                fontFamily = vazirFontFamily,
+                color = if (involvedError) MaterialTheme.colorScheme.error
+                else MaterialTheme.colorScheme.onBackground
             )
 
             participants.forEach { participant ->
@@ -257,6 +303,15 @@ fun TripExpenseFormScreen(
                         fontFamily = vazirFontFamily
                     )
                 }
+            }
+
+            if (involvedError) {
+                Text(
+                    text = stringResource(R.string.expense_involved_required_error),
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))

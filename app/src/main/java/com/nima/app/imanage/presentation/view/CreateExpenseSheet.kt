@@ -30,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,7 +40,9 @@ import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.ExpenseCategoryEntity
 import com.nima.app.imanage.data.db.entity.ExpenseEntity
 import com.nima.app.imanage.ui.component.CategoryPicker
+import com.nima.app.imanage.ui.component.RequiredFieldError
 import com.nima.app.imanage.ui.component.ShamsiDatePicker
+import com.nima.app.imanage.ui.component.showRequiredFieldsToast
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
@@ -64,6 +67,10 @@ fun CreateExpenseSheet(
     var categoryId by remember { mutableStateOf<Int?>(null) }
     var createdAt by remember { mutableStateOf(ShamsiDate.todayMillis()) }
     var showDatePicker by remember { mutableStateOf(false) }
+    var showValidationErrors by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val titleError = showValidationErrors && title.isBlank()
+    val amountError = showValidationErrors && NumberFormatUtils.parseToLong(amount.text) <= 0
 
     LaunchedEffect(editing) {
         editing?.let { expense ->
@@ -112,6 +119,10 @@ fun CreateExpenseSheet(
                 label = { Text(stringResource(R.string.expense_title_label)) },
                 placeholder = { Text(stringResource(R.string.expense_title_hint)) },
                 singleLine = true,
+                isError = titleError,
+                supportingText = if (titleError) {
+                    { RequiredFieldError(visible = true) }
+                } else null,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -123,6 +134,10 @@ fun CreateExpenseSheet(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 label = { Text(stringResource(R.string.amount)) },
                 singleLine = true,
+                isError = amountError,
+                supportingText = if (amountError) {
+                    { RequiredFieldError(visible = true) }
+                } else null,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -140,7 +155,9 @@ fun CreateExpenseSheet(
 
             Spacer(modifier = Modifier.size(12.dp))
 
-            Box(modifier = Modifier.fillMaxWidth().clickable { showDatePicker = true }) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .clickable { showDatePicker = true }) {
                 OutlinedTextField(
                     value = ShamsiDate.format(createdAt),
                     onValueChange = {},
@@ -175,18 +192,22 @@ fun CreateExpenseSheet(
             Button(
                 onClick = {
                     val finalTitle = title.trim()
-                    if (finalTitle.isBlank()) return@Button
+                    val finalAmount = NumberFormatUtils.parseToLong(amount.text)
+                    if (finalTitle.isBlank() || finalAmount <= 0) {
+                        showValidationErrors = true
+                        showRequiredFieldsToast(context)
+                        return@Button
+                    }
                     val expense = ExpenseEntity(
                         id = editing?.id ?: 0,
                         title = finalTitle,
                         description = description.trim(),
-                        amount = NumberFormatUtils.parseToLong(amount.text),
+                        amount = finalAmount,
                         categoryId = categoryId,
                         createdAt = createdAt
                     )
                     onSave(expense)
                 },
-                enabled = title.isNotBlank(),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,

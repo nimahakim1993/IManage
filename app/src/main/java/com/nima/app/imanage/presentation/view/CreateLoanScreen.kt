@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -25,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -37,6 +40,8 @@ import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.LoanViewModel
 import com.nima.app.imanage.ui.component.ShamsiDatePicker
 import com.nima.app.imanage.ui.component.TextInputDropDown
+import com.nima.app.imanage.ui.component.RequiredFieldError
+import com.nima.app.imanage.ui.component.showRequiredFieldsToast
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
 import org.koin.androidx.compose.koinViewModel
@@ -76,6 +81,11 @@ fun CreateLoanScreen(
     var dateReceiveBack by remember { mutableStateOf(ShamsiDate.todayMillis()) }
     var showDateLoanPicker by remember { mutableStateOf(false) }
     var showDateReceiveBackPicker by remember { mutableStateOf(false) }
+    var showValidationErrors by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val typeError = showValidationErrors && type == selectText
+    val personNameError = showValidationErrors && personName.isBlank()
+    val priceError = showValidationErrors && NumberFormatUtils.parseToLong(price.text) <= 0
 
     val selectedLoan by viewModel.selectedLoan.collectAsState()
     LaunchedEffect(selectedLoan) {
@@ -117,19 +127,26 @@ fun CreateLoanScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(12.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TextInputDropDown(
-            label = stringResource(R.string.loan_type_label),
-            items = listOf(stringResource(R.string.debt), stringResource(R.string.receivable)),
-            selectedItem = type,
-            onItemSelected = { key, name ->
-                type = name
-                typeKey = key
-            }
-        )
+        Column(modifier = Modifier.fillMaxWidth()) {
+            TextInputDropDown(
+                label = stringResource(R.string.loan_type_label),
+                items = listOf(stringResource(R.string.debt), stringResource(R.string.receivable)),
+                selectedItem = type,
+                onItemSelected = { key, name ->
+                    type = name
+                    typeKey = key
+                }
+            )
+            RequiredFieldError(
+                visible = typeError,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.size(10.dp))
 
@@ -138,6 +155,10 @@ fun CreateLoanScreen(
             onValueChange = { personName = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             label = { Text(stringResource(R.string.person_name)) },
+            isError = personNameError,
+            supportingText = if (personNameError) {
+                { RequiredFieldError(visible = true) }
+            } else null,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -148,6 +169,10 @@ fun CreateLoanScreen(
             onValueChange = { price = NumberFormatUtils.formatWithCursor(it) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             label = { Text(stringResource(R.string.amount)) },
+            isError = priceError,
+            supportingText = if (priceError) {
+                { RequiredFieldError(visible = true) }
+            } else null,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -191,8 +216,6 @@ fun CreateLoanScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.weight(1f))
-
         Button(
             modifier = Modifier
                 .fillMaxWidth()
@@ -200,10 +223,16 @@ fun CreateLoanScreen(
                 .height(56.dp),
             shape = RoundedCornerShape(16.dp),
             onClick = {
+                val finalPrice = NumberFormatUtils.parseToLong(price.text)
+                if (type == selectText || personName.isBlank() || finalPrice <= 0) {
+                    showValidationErrors = true
+                    showRequiredFieldsToast(context)
+                    return@Button
+                }
                 val loan = LoanEntity(
                     id = if (loanId != -1) loanId else 0,
                     type = typeKey,
-                    price = NumberFormatUtils.parseToLong(price.text),
+                    price = finalPrice,
                     targetPersonName = personName,
                     description = description,
                     dateLoan = dateLoan,

@@ -348,6 +348,9 @@
     <string name="expense_payer_label">پرداخت‌کننده</string>
     <string name="expense_description_label">توضیحات</string>
     <string name="expense_involved_label">افراد مشارکت‌کننده در این هزینه</string>
+    <string name="required_field_error">این فیلد نمی‌تواند خالی باشد</string>
+    <string name="required_fields_toast">لطفاً تمام فیلدهای الزامی را تکمیل کنید</string>
+    <string name="expense_involved_required_error">افرادی را که در این هزینه شریک هستند انتخاب کنید</string>
     <string name="settlement_title">تسویه حساب</string>
     <string name="settlement_balance_header">وضعیت شرکت‌کنندگان</string>
     <string name="settlement_suggestions_header">تسویه‌های پیشنهادی</string>

@@ -347,6 +347,9 @@
     <string name="expense_payer_label">Paid By</string>
     <string name="expense_description_label">Description</string>
     <string name="expense_involved_label">Participants Involved in This Expense</string>
+    <string name="required_field_error">This field cannot be empty</string>
+    <string name="required_fields_toast">Please fill in all required fields</string>
+    <string name="expense_involved_required_error">Select who shared this expense</string>
     <string name="settlement_title">Settlement</string>
     <string name="settlement_balance_header">Participant Balances</string>
     <string name="settlement_suggestions_header">Suggested Settlements</string>

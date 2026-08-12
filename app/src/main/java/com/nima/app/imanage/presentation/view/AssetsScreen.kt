@@ -62,6 +62,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -77,6 +78,8 @@ import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.AssetViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
+import com.nima.app.imanage.ui.component.RequiredFieldError
+import com.nima.app.imanage.ui.component.showRequiredFieldsToast
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
@@ -549,6 +552,12 @@ private fun CreateAssetSheet(
     var unitCount by remember { mutableStateOf(TextFieldValue("")) }
     var unitName by remember { mutableStateOf("") }
     var pricePerUnit by remember { mutableStateOf(TextFieldValue("")) }
+    var showValidationErrors by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val nameError = showValidationErrors && name.isBlank()
+    val unitCountError =
+        showValidationErrors && (unitCount.text.trimEnd('.').toDoubleOrNull() ?: 0.0) <= 0.0
+    val priceError = showValidationErrors && NumberFormatUtils.parseToLong(pricePerUnit.text) <= 0
 
     val unitCountFocusRequester = remember { FocusRequester() }
     val pricePerUnitFocusRequester = remember { FocusRequester() }
@@ -591,6 +600,10 @@ private fun CreateAssetSheet(
                 label = { Text(stringResource(R.string.asset_name_label)) },
                 placeholder = { Text(stringResource(R.string.asset_name_hint)) },
                 singleLine = true,
+                isError = nameError,
+                supportingText = if (nameError) {
+                    { RequiredFieldError(visible = true) }
+                } else null,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions(onNext = { unitCountFocusRequester.requestFocus() }),
                 modifier = Modifier.fillMaxWidth()
@@ -680,6 +693,10 @@ private fun CreateAssetSheet(
                     label = { Text(stringResource(R.string.unit_count)) },
                     placeholder = { Text(stringResource(R.string.unit_count_hint)) },
                     singleLine = true,
+                    isError = unitCountError,
+                    supportingText = if (unitCountError) {
+                        { RequiredFieldError(visible = true) }
+                    } else null,
                     modifier = Modifier
                         .weight(1f)
                         .focusRequester(unitCountFocusRequester)
@@ -707,6 +724,10 @@ private fun CreateAssetSheet(
                 label = { Text(stringResource(R.string.price_per_unit) + " (" + stringResource(R.string.toman) + ")") },
                 placeholder = { Text(stringResource(R.string.price_per_unit_hint)) },
                 singleLine = true,
+                isError = priceError,
+                supportingText = if (priceError) {
+                    { RequiredFieldError(visible = true) }
+                } else null,
                 modifier = Modifier
                     .fillMaxWidth()
                     .focusRequester(pricePerUnitFocusRequester)
@@ -717,10 +738,14 @@ private fun CreateAssetSheet(
             Button(
                 onClick = {
                     val finalName = name.trim()
-                    if (finalName.isBlank()) return@Button
                     val cleanUnitCount = unitCount.text.trimEnd('.')
                     val unitCountVal = cleanUnitCount.toDoubleOrNull() ?: 0.0
                     val priceVal = NumberFormatUtils.parseToLong(pricePerUnit.text)
+                    if (finalName.isBlank() || unitCountVal <= 0.0 || priceVal <= 0) {
+                        showValidationErrors = true
+                        showRequiredFieldsToast(context)
+                        return@Button
+                    }
 
                     val now = System.currentTimeMillis()
                     val asset = AssetEntity(
@@ -735,7 +760,6 @@ private fun CreateAssetSheet(
                     )
                     onSave(asset)
                 },
-                enabled = name.isNotBlank() && pricePerUnit.text.isNotBlank(),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,

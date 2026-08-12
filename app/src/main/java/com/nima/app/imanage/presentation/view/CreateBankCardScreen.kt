@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -58,6 +59,8 @@ import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.BankCardViewModel
 import com.nima.app.imanage.ui.component.ColorPaletteGrid
+import com.nima.app.imanage.ui.component.RequiredFieldError
+import com.nima.app.imanage.ui.component.showRequiredFieldsToast
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.util.ColorUtils
 import com.nima.app.imanage.util.NumberFormatUtils
@@ -86,6 +89,13 @@ fun CreateBankCardScreen(
     var bankName by rememberSaveable { mutableStateOf("") }
     var shebaNumber by rememberSaveable { mutableStateOf("") }
     var accountNumber by rememberSaveable { mutableStateOf("") }
+    var showValidationErrors by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val bankNameError = showValidationErrors && bankName.isBlank()
+    val cardNumberError = showValidationErrors && cardNumber.isBlank()
+    val cvvError = showValidationErrors && cvv.isBlank()
+    val monthError = showValidationErrors && month.isBlank()
+    val yearError = showValidationErrors && year.isBlank()
 
     val colorSaver = Saver<Color, Long>(
         save = { it.value.toLong() },
@@ -164,6 +174,10 @@ fun CreateBankCardScreen(
             value = bankName,
             onValueChange = { bankName = it },
             label = { Text(stringResource(R.string.bank_name)) },
+            isError = bankNameError,
+            supportingText = if (bankNameError) {
+                { RequiredFieldError(visible = true) }
+            } else null,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -176,6 +190,10 @@ fun CreateBankCardScreen(
             },
             label = { Text(stringResource(R.string.card_number)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            isError = cardNumberError,
+            supportingText = if (cardNumberError) {
+                { RequiredFieldError(visible = true) }
+            } else null,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -187,6 +205,10 @@ fun CreateBankCardScreen(
             },
             label = { Text(stringResource(R.string.cvv2)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            isError = cvvError,
+            supportingText = if (cvvError) {
+                { RequiredFieldError(visible = true) }
+            } else null,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -206,6 +228,10 @@ fun CreateBankCardScreen(
                 },
                 label = { Text(stringResource(R.string.month)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                isError = monthError,
+                supportingText = if (monthError) {
+                    { RequiredFieldError(visible = true) }
+                } else null,
                 modifier = Modifier.weight(1f)
             )
 
@@ -217,6 +243,10 @@ fun CreateBankCardScreen(
             },
             label = { Text(stringResource(R.string.year)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            isError = yearError,
+            supportingText = if (yearError) {
+                { RequiredFieldError(visible = true) }
+            } else null,
             modifier = Modifier
                 .weight(1f)
                 .focusRequester(yearFocusRequester)
@@ -256,6 +286,13 @@ fun CreateBankCardScreen(
                 .height(56.dp),
             shape = RoundedCornerShape(16.dp),
             onClick = {
+                if (bankName.isBlank() || cardNumber.isBlank() || cvv.isBlank() ||
+                    month.isBlank() || year.isBlank()
+                ) {
+                    showValidationErrors = true
+                    showRequiredFieldsToast(context)
+                    return@Button
+                }
                 val newCard = BankCardEntity(
                     id = if (cardId != -1) cardId else 0,
                     cardNumber = cardNumber,

@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,6 +40,8 @@ import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.CarServiceViewModel
 import com.nima.app.imanage.ui.component.ShamsiDatePicker
 import com.nima.app.imanage.ui.component.TextInputDropDown
+import com.nima.app.imanage.ui.component.RequiredFieldError
+import com.nima.app.imanage.ui.component.showRequiredFieldsToast
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
 import org.koin.androidx.compose.koinViewModel
@@ -83,8 +86,8 @@ fun CreateCarServiceScreen(
         )
     }
 
-    var serviceTypeText by remember { mutableStateOf(serviceTypes[0]) }
-    var serviceTypeKey by remember { mutableIntStateOf(0) }
+    var serviceTypeText by remember { mutableStateOf("") }
+    var serviceTypeKey by remember { mutableIntStateOf(-1) }
     var serviceDate by remember { mutableStateOf(ShamsiDate.todayMillis()) }
     var serviceKilometer by remember { mutableStateOf(TextFieldValue("")) }
     var nextServiceDate by remember { mutableStateOf(ShamsiDate.todayMillis()) }
@@ -95,6 +98,10 @@ fun CreateCarServiceScreen(
     var description by remember { mutableStateOf("") }
     var showServiceDatePicker by remember { mutableStateOf(false) }
     var showNextServiceDatePicker by remember { mutableStateOf(false) }
+    var showValidationErrors by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val serviceTypeError = showValidationErrors && serviceTypeKey < 0
+    val amountError = showValidationErrors && NumberFormatUtils.parseToLong(amountPaid.text) <= 0
 
     val selectedService by viewModel.selectedService.collectAsState()
     LaunchedEffect(selectedService) {
@@ -146,15 +153,21 @@ fun CreateCarServiceScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TextInputDropDown(
-            label = stringResource(R.string.car_service_type_label),
-            items = serviceTypes,
-            selectedItem = serviceTypeText,
-            onItemSelected = { key, name ->
-                serviceTypeText = name
-                serviceTypeKey = key
-            }
-        )
+        Column(modifier = Modifier.fillMaxWidth()) {
+            TextInputDropDown(
+                label = stringResource(R.string.car_service_type_label),
+                items = serviceTypes,
+                selectedItem = serviceTypeText,
+                onItemSelected = { key, name ->
+                    serviceTypeText = name
+                    serviceTypeKey = key
+                }
+            )
+            RequiredFieldError(
+                visible = serviceTypeError,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.size(10.dp))
 
@@ -213,6 +226,10 @@ fun CreateCarServiceScreen(
             onValueChange = { amountPaid = NumberFormatUtils.formatWithCursor(it) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             label = { Text(stringResource(R.string.car_amount_paid_label)) },
+            isError = amountError,
+            supportingText = if (amountError) {
+                { RequiredFieldError(visible = true) }
+            } else null,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -256,6 +273,12 @@ fun CreateCarServiceScreen(
                 .height(56.dp),
             shape = RoundedCornerShape(16.dp),
             onClick = {
+                val finalAmount = NumberFormatUtils.parseToLong(amountPaid.text)
+                if (serviceTypeKey < 0 || finalAmount <= 0) {
+                    showValidationErrors = true
+                    showRequiredFieldsToast(context)
+                    return@Button
+                }
                 val service = CarServiceEntity(
                     id = if (serviceId != -1) serviceId else 0,
                     serviceType = serviceTypeKey,
@@ -264,7 +287,7 @@ fun CreateCarServiceScreen(
                     nextServiceDate = nextServiceDate,
                     nextServiceKilometer = NumberFormatUtils.parseToLong(nextServiceKilometer.text)
                         .toInt(),
-                    amountPaid = NumberFormatUtils.parseToLong(amountPaid.text),
+                    amountPaid = finalAmount,
                     productBrand = productBrand,
                     partName = partName,
                     description = description
