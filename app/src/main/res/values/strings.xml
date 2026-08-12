@@ -8,6 +8,8 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="select">Select</string>
+    <string name="required_field_error">This field cannot be empty</string>
+    <string name="required_fields_toast">Please fill in all required fields</string>
 
     <!-- CreateLoanScreen -->
     <string name="create_loan_title">Create Debt Receivable</string>
@@ -42,6 +44,10 @@
     <string name="add_account">Add Account</string>
     <string name="sheba_number">Sheba Number</string>
     <string name="account_number">Account Number</string>
+    <string name="scan_card">Scan Card</string>
+    <string name="scan_card_hint">Place the card inside the frame</string>
+    <string name="scan_card_detecting">Reading card number...</string>
+    <string name="scan_card_permission">Camera permission is required to scan a card</string>
     <string name="more_options">More options</string>
     <string name="copy">Copy</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
@@ -347,8 +353,6 @@
     <string name="expense_payer_label">Paid By</string>
     <string name="expense_description_label">Description</string>
     <string name="expense_involved_label">Participants Involved in This Expense</string>
-    <string name="required_field_error">This field cannot be empty</string>
-    <string name="required_fields_toast">Please fill in all required fields</string>
     <string name="expense_involved_required_error">Select who shared this expense</string>
     <string name="settlement_title">Settlement</string>
     <string name="settlement_balance_header">Participant Balances</string>

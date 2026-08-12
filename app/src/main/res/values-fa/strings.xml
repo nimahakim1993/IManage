@@ -8,6 +8,8 @@
     <string name="yes">بله</string>
     <string name="no">خیر</string>
     <string name="select">انتخاب کنید</string>
+    <string name="required_field_error">این فیلد نمی‌تواند خالی باشد</string>
+    <string name="required_fields_toast">لطفاً تمام فیلدهای الزامی را تکمیل کنید</string>
 
     <!-- CreateLoanScreen -->
     <string name="create_loan_title">ایجاد بدهی بستانکاری</string>
@@ -42,6 +44,10 @@
     <string name="add_account">افزودن حساب</string>
     <string name="sheba_number">شماره شبا</string>
     <string name="account_number">شماره حساب</string>
+    <string name="scan_card">اسکن کارت</string>
+    <string name="scan_card_hint">کارت را داخل کادر قرار دهید</string>
+    <string name="scan_card_detecting">شماره کارت در حال خواندن است…</string>
+    <string name="scan_card_permission">برای اسکن کارت، اجازه دسترسی به دوربین لازم است</string>
     <string name="more_options">گزینه‌های بیشتر</string>
     <string name="copy">کپی</string>
     <string name="copied_to_clipboard">در کلیپ‌بورد کپی شد</string>
@@ -348,8 +354,6 @@
     <string name="expense_payer_label">پرداخت‌کننده</string>
     <string name="expense_description_label">توضیحات</string>
     <string name="expense_involved_label">افراد مشارکت‌کننده در این هزینه</string>
-    <string name="required_field_error">این فیلد نمی‌تواند خالی باشد</string>
-    <string name="required_fields_toast">لطفاً تمام فیلدهای الزامی را تکمیل کنید</string>
     <string name="expense_involved_required_error">افرادی را که در این هزینه شریک هستند انتخاب کنید</string>
     <string name="settlement_title">تسویه حساب</string>
     <string name="settlement_balance_header">وضعیت شرکت‌کنندگان</string>
