@@ -876,7 +876,7 @@ private fun CategoryBreakdownCard(data: ReportData) {
 }
 
 @Composable
-private fun YearPickerDialog(
+internal fun YearPickerDialog(
     currentYear: Int,
     onConfirm: (Int) -> Unit,
     onDismiss: () -> Unit

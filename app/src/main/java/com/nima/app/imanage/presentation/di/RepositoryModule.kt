@@ -12,6 +12,8 @@ import com.nima.app.imanage.data.repository.InstallmentRepository
 import com.nima.app.imanage.data.repository.LoanRepository
 import com.nima.app.imanage.data.repository.NoteBoxRepository
 import com.nima.app.imanage.data.repository.NoteRepository
+import com.nima.app.imanage.data.repository.OfficeNoteRepository
+import com.nima.app.imanage.data.repository.OfficeReminderRepository
 import com.nima.app.imanage.data.repository.ParticipantRepository
 import com.nima.app.imanage.data.repository.PasswordItemRepository
 import com.nima.app.imanage.data.repository.SettlementRepository
@@ -25,6 +27,8 @@ val repositoryModule = module {
     single { LoanRepository(get()) }
     single { NoteBoxRepository(get()) }
     single { NoteRepository(get()) }
+    single { OfficeNoteRepository(get()) }
+    single { OfficeReminderRepository(get()) }
     single { ExpenseCategoryRepository(get()) }
     single { ExpenseRepository(get()) }
     single { IncomeSourceRepository(get()) }

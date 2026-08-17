@@ -151,6 +151,29 @@ class NotificationHelper(private val context: Context) {
         manager.notify(NOTIFICATION_ID, notification)
     }
 
+    fun showUserReminderNotification(title: String, description: String, notificationId: Int) {
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            notificationId,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.imanage_logo)
+            .setContentTitle(title)
+            .setContentText(description)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(description))
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.notify(notificationId, notification)
+    }
+
     private fun getCarServiceTypeName(serviceType: Int): String {
         return when (serviceType) {
             0 -> context.getString(R.string.car_type_oil_change)

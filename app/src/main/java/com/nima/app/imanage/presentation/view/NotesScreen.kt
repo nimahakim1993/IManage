@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EditOff
 import androidx.compose.material.icons.filled.NoteAlt
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -57,6 +58,7 @@ import com.nima.app.imanage.Screen
 import com.nima.app.imanage.data.db.entity.NoteBoxEntity
 import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
+import com.nima.app.imanage.data.repository.NoteRepository
 import com.nima.app.imanage.presentation.viewmodel.NoteBoxViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
@@ -64,7 +66,9 @@ import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.AppColorPalette
 import com.nima.app.imanage.util.ColorUtils
+
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
 fun NotesScreen(
@@ -249,8 +253,16 @@ private fun NoteBoxCard(
     editMode: Boolean,
     onClick: () -> Unit,
     onEdit: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    noteRepository: NoteRepository = koinInject()
 ) {
+    val noteCount by noteRepository.countByBox(box.id).collectAsState(initial = 0)
+    val countLabel = if (noteCount == 1) {
+        stringResource(R.string.note_count_one, noteCount)
+    } else {
+        stringResource(R.string.notes_count, noteCount)
+    }
+    val actionLabel = stringResource(R.string.show_notes_of_box_with_count, countLabel)
     val palette = remember(box.colorIndex) {
         ColorUtils.palettes.getOrElse(box.colorIndex) { ColorUtils.palettes.first() }
     }
@@ -351,6 +363,30 @@ private fun NoteBoxCard(
                             )
                         }
                     }
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClick = onClick)
+                        .padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Visibility,
+                        contentDescription = null,
+                        tint = Color.White.copy(alpha = 0.9f),
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.size(6.dp))
+                    Text(
+                        text = actionLabel,
+                        color = Color.White,
+                        fontFamily = vazirFontFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = scaledSp(13f)
+                    )
                 }
             }
         }

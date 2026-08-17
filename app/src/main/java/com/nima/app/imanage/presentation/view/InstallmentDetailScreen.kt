@@ -29,7 +29,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -333,9 +332,9 @@ private fun ItemCard(
 
     val baseColor by animateColorAsState(
         targetValue = when {
-            isSettled -> palette.accent
+            isSettled -> LocalAppColors.current.income
             isPastDue -> LocalAppColors.current.debt
-            else -> palette.primary
+            else -> palette.secondary
         },
         animationSpec = tween(500)
     )
@@ -346,9 +345,9 @@ private fun ItemCard(
     )
 
     val circleProgressColor = when {
-        isSettled -> palette.accent.copy(alpha = 0.6f)
-        isPastDue -> Color(0x66FFCDD2)
-        else -> palette.primary.copy(alpha = 0.4f)
+        isSettled -> LocalAppColors.current.income.copy(alpha = 0.7f)
+        isPastDue -> LocalAppColors.current.debt.copy(alpha = 0.7f)
+        else -> palette.secondary.copy(alpha = 0.45f)
     }
 
     val gradient = Brush.linearGradient(

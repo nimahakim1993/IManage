@@ -49,10 +49,10 @@ import com.nima.app.imanage.presentation.view.LoansScreen
 import com.nima.app.imanage.presentation.view.MainToolbar
 import com.nima.app.imanage.presentation.view.NoteBoxDetailScreen
 import com.nima.app.imanage.presentation.view.NotesScreen
-import com.nima.app.imanage.presentation.view.OfficeScreen
 import com.nima.app.imanage.presentation.view.PasswordItemsScreen
 import com.nima.app.imanage.presentation.view.ReportScreen
 import com.nima.app.imanage.presentation.view.SettingsScreen
+import com.nima.app.imanage.presentation.view.office.OfficeScreen
 import com.nima.app.imanage.presentation.view.tripsplit.CreateTripScreen
 import com.nima.app.imanage.presentation.view.tripsplit.TripDetailScreen
 import com.nima.app.imanage.presentation.view.tripsplit.TripExpenseFormScreen

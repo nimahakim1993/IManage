@@ -14,6 +14,8 @@ import com.nima.app.imanage.data.db.dao.InstallmentItemDao
 import com.nima.app.imanage.data.db.dao.LoanDao
 import com.nima.app.imanage.data.db.dao.NoteBoxDao
 import com.nima.app.imanage.data.db.dao.NoteDao
+import com.nima.app.imanage.data.db.dao.OfficeNoteDao
+import com.nima.app.imanage.data.db.dao.OfficeReminderDao
 import com.nima.app.imanage.data.db.dao.ParticipantDao
 import com.nima.app.imanage.data.db.dao.PasswordItemDao
 import com.nima.app.imanage.data.db.dao.SettlementDao
@@ -32,6 +34,8 @@ import com.nima.app.imanage.data.db.entity.InstallmentItemEntity
 import com.nima.app.imanage.data.db.entity.LoanEntity
 import com.nima.app.imanage.data.db.entity.NoteBoxEntity
 import com.nima.app.imanage.data.db.entity.NoteEntity
+import com.nima.app.imanage.data.db.entity.OfficeNoteEntity
+import com.nima.app.imanage.data.db.entity.OfficeReminderEntity
 import com.nima.app.imanage.data.db.entity.ParticipantEntity
 import com.nima.app.imanage.data.db.entity.PasswordItemEntity
 import com.nima.app.imanage.data.db.entity.SettlementEntity
@@ -46,6 +50,8 @@ import com.nima.app.imanage.data.db.entity.TripExpenseSplitEntity
         LoanEntity::class,
         NoteBoxEntity::class,
         NoteEntity::class,
+        OfficeNoteEntity::class,
+        OfficeReminderEntity::class,
         ExpenseCategoryEntity::class,
         ExpenseEntity::class,
         IncomeSourceEntity::class,
@@ -61,7 +67,7 @@ import com.nima.app.imanage.data.db.entity.TripExpenseSplitEntity
         SettlementEntity::class,
         CarServiceEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -69,6 +75,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun loanDao(): LoanDao
     abstract fun noteBoxDao(): NoteBoxDao
     abstract fun noteDao(): NoteDao
+    abstract fun officeNoteDao(): OfficeNoteDao
+    abstract fun officeReminderDao(): OfficeReminderDao
     abstract fun expenseCategoryDao(): ExpenseCategoryDao
     abstract fun expenseDao(): ExpenseDao
     abstract fun incomeSourceDao(): IncomeSourceDao
