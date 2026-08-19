@@ -37,5 +37,5 @@ val viewModelModule = module {
     viewModel { CarServiceViewModel(get()) }
     viewModel { ReportViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { OfficeViewModel(get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { SettingsViewModel(get()) }
+    viewModel { SettingsViewModel(get(), get()) }
 }

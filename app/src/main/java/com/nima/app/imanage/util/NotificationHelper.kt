@@ -5,12 +5,15 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.nima.app.imanage.MainActivity
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.CarServiceEntity
 import com.nima.app.imanage.data.db.entity.InstallmentItemEntity
 import com.nima.app.imanage.data.db.entity.LoanEntity
+import com.nima.app.imanage.data.db.entity.PendingPaymentEntity
 
 class NotificationHelper(private val context: Context) {
 
@@ -19,6 +22,7 @@ class NotificationHelper(private val context: Context) {
         const val GROUP_KEY = "daily_reminders_group"
         const val NOTIFICATION_ID = 1001
         const val EXTRA_NAVIGATE_TO = "navigate_to"
+        private const val PAYMENT_NOTIFICATION_BASE = 30_000
     }
 
     fun createChannel() {
@@ -172,6 +176,43 @@ class NotificationHelper(private val context: Context) {
 
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         manager.notify(notificationId, notification)
+    }
+
+    fun showPendingPaymentNotification(payment: PendingPaymentEntity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            androidx.core.content.ContextCompat.checkSelfPermission(
+                context,
+                android.Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) return
+
+        val localizedContext = LanguageManager.wrap(context)
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags =
+                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            putExtra(EXTRA_NAVIGATE_TO, "expenses")
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            PAYMENT_NOTIFICATION_BASE + payment.id,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.imanage_logo)
+            .setContentTitle(localizedContext.getString(R.string.sms_new_payment))
+            .setContentText(
+                localizedContext.getString(
+                    R.string.sms_payment_amount,
+                    NumberFormatUtils.format(payment.amount)
+                )
+            )
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.notify(PAYMENT_NOTIFICATION_BASE + payment.id, notification)
     }
 
     private fun getCarServiceTypeName(serviceType: Int): String {

@@ -18,6 +18,7 @@ import com.nima.app.imanage.data.db.dao.OfficeNoteDao
 import com.nima.app.imanage.data.db.dao.OfficeReminderDao
 import com.nima.app.imanage.data.db.dao.ParticipantDao
 import com.nima.app.imanage.data.db.dao.PasswordItemDao
+import com.nima.app.imanage.data.db.dao.PendingPaymentDao
 import com.nima.app.imanage.data.db.dao.SettlementDao
 import com.nima.app.imanage.data.db.dao.TripDao
 import com.nima.app.imanage.data.db.dao.TripExpenseDao
@@ -38,6 +39,7 @@ import com.nima.app.imanage.data.db.entity.OfficeNoteEntity
 import com.nima.app.imanage.data.db.entity.OfficeReminderEntity
 import com.nima.app.imanage.data.db.entity.ParticipantEntity
 import com.nima.app.imanage.data.db.entity.PasswordItemEntity
+import com.nima.app.imanage.data.db.entity.PendingPaymentEntity
 import com.nima.app.imanage.data.db.entity.SettlementEntity
 import com.nima.app.imanage.data.db.entity.TripEntity
 import com.nima.app.imanage.data.db.entity.TripExpenseEntity
@@ -65,9 +67,10 @@ import com.nima.app.imanage.data.db.entity.TripExpenseSplitEntity
         TripExpenseEntity::class,
         TripExpenseSplitEntity::class,
         SettlementEntity::class,
-        CarServiceEntity::class
+        CarServiceEntity::class,
+        PendingPaymentEntity::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -91,4 +94,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun tripExpenseSplitDao(): TripExpenseSplitDao
     abstract fun settlementDao(): SettlementDao
     abstract fun carServiceDao(): CarServiceDao
+    abstract fun pendingPaymentDao(): PendingPaymentDao
 }

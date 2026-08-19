@@ -21,8 +21,20 @@ object DatabaseMigrations {
         }
     }
 
+    private val MIGRATION_3_4 = object : Migration(3, 4) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL(
+                "CREATE TABLE IF NOT EXISTS pending_payments (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, sender TEXT NOT NULL, rawMessage TEXT NOT NULL, title TEXT NOT NULL, amount INTEGER NOT NULL, receivedAt INTEGER NOT NULL, messageHash TEXT NOT NULL, status TEXT NOT NULL)"
+            )
+            database.execSQL(
+                "CREATE UNIQUE INDEX IF NOT EXISTS index_pending_payments_messageHash ON pending_payments(messageHash)"
+            )
+        }
+    }
+
     val MIGRATIONS = arrayOf<Migration>(
         MIGRATION_1_2,
-        MIGRATION_2_3
+        MIGRATION_2_3,
+        MIGRATION_3_4
     )
 }

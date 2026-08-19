@@ -144,6 +144,21 @@
     <string name="success">موفق</string>
     <string name="error_title">خطا</string>
     <string name="ok">باشه</string>
+    <string name="sms_payments">ثبت خودکار هزینه از پیامک</string>
+    <string name="sms_payments_description">فرستنده‌های بانکی شناسایی‌شده از پیامک‌های دریافتی را انتخاب کنید. پیام‌ها فقط روی این دستگاه پردازش می‌شوند.</string>
+    <string name="select_sms_sender">انتخاب فرستنده‌های پیامک بانکی</string>
+    <string name="sms_sender_selection_hint">فقط فرستنده‌های انتخاب‌شده پردازش می‌شوند.</string>
+    <string name="no_sms_senders">هنوز فرستنده‌ای شناسایی نشده است. ابتدا یک پیامک بانکی دریافت کنید.</string>
+    <string name="manual_sms_sender">ورود دستی فرستنده (اختیاری)</string>
+    <string name="add_bank_sender_manually">افزودن دستی فرستنده بانک</string>
+    <string name="manual_sms_sender_description">اگر فرستنده بانک خود را در (فهرست انتخاب فرستنده بانک) پیدا نکردید، شماره یا شناسه آن را به‌ صورت دستی وارد کنید.</string>
+    <string name="scanning_sms_senders">در حال بررسی فرستنده‌های پیامک…</string>
+    <string name="sms_new_payment">پرداخت جدید</string>
+    <string name="sms_payment_amount">پرداخت کارت: %1$s</string>
+    <string name="sms_card_payment">پرداخت کارت</string>
+    <string name="sms_imported_from_sender">واردشده از پیامک فرستنده %1$s</string>
+    <string name="sms_permission_required">برای شناسایی پرداخت‌های بانکی، اجازه دسترسی به پیامک لازم است.</string>
+    <string name="grant_permission">اعطای اجازه پیامک</string>
 
     <!-- NotesScreen -->
     <string name="notes_title">یادداشت‌ها</string>

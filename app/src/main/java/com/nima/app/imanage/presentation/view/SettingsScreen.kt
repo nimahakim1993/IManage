@@ -1,7 +1,9 @@
 package com.nima.app.imanage.presentation.view
 
+import android.Manifest
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,20 +26,26 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.FormatSize
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -47,6 +56,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,6 +67,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
@@ -67,6 +78,7 @@ import com.nima.app.imanage.util.BiometricHelper
 import com.nima.app.imanage.util.LanguageManager
 import com.nima.app.imanage.util.SecurityManager
 import com.nima.app.imanage.util.ThemeManager
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 
@@ -78,12 +90,59 @@ fun SettingsScreen(
     val context = LocalContext.current
     val activity = context.findFragmentActivity()
     val viewModel: SettingsViewModel = koinViewModel()
+    val scope = rememberCoroutineScope()
 
     var currentLanguage by remember { mutableStateOf(LanguageManager.getLanguage(context)) }
     var currentTheme by remember { mutableStateOf(ThemeManager.getThemeMode(context)) }
     val backupState by viewModel.backupState.collectAsState()
     var showRestoreConfirmation by remember { mutableStateOf(false) }
     var pendingRestoreUri by remember { mutableStateOf<Uri?>(null) }
+    var smsSenders by remember { mutableStateOf(viewModel.smsSenders()) }
+    var observedSmsSenders by remember { mutableStateOf(viewModel.observedSmsSenders()) }
+    var showSmsSenderDialog by remember { mutableStateOf(false) }
+    var showManualSmsSenderDialog by remember { mutableStateOf(false) }
+    var isDiscoveringSmsSenders by remember { mutableStateOf(false) }
+    var smsReceivePermissionGranted by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.RECEIVE_SMS
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+    var smsReadPermissionGranted by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.READ_SMS
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+    val requestSmsPermissions = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { grants ->
+        smsReceivePermissionGranted = grants[Manifest.permission.RECEIVE_SMS] == true ||
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.RECEIVE_SMS
+                ) == PackageManager.PERMISSION_GRANTED
+        smsReadPermissionGranted = grants[Manifest.permission.READ_SMS] == true ||
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.READ_SMS
+                ) == PackageManager.PERMISSION_GRANTED
+        if (smsReadPermissionGranted) {
+            isDiscoveringSmsSenders = true
+            scope.launch {
+                try {
+                    observedSmsSenders = viewModel.discoverSmsSenders()
+                } finally {
+                    isDiscoveringSmsSenders = false
+                }
+                showSmsSenderDialog = true
+            }
+        }
+    }
 
     val settingsTitle = stringResource(R.string.settings_title)
 
@@ -140,6 +199,39 @@ fun SettingsScreen(
         )
 
         ModuleProtectionSection(context = context)
+
+        SmsPaymentSection(
+            permissionGranted = smsReceivePermissionGranted,
+            senders = smsSenders,
+            isDiscoveringSenders = isDiscoveringSmsSenders,
+            onSelectSender = {
+                if (!smsReadPermissionGranted) {
+                    requestSmsPermissions.launch(
+                        arrayOf(Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS)
+                    )
+                } else {
+                    isDiscoveringSmsSenders = true
+                    scope.launch {
+                        try {
+                            observedSmsSenders = viewModel.discoverSmsSenders()
+                        } finally {
+                            isDiscoveringSmsSenders = false
+                        }
+                        showSmsSenderDialog = true
+                    }
+                }
+            },
+            onRequestPermission = {
+                requestSmsPermissions.launch(
+                    arrayOf(Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS)
+                )
+            },
+            onAddManualSender = { showManualSmsSenderDialog = true },
+            onRemoveSender = { sender ->
+                viewModel.removeSmsSender(sender)
+                smsSenders = viewModel.smsSenders()
+            }
+        )
 
         BackupRestoreSection(
             backupState = backupState,
@@ -243,6 +335,219 @@ fun SettingsScreen(
             }
         )
     }
+
+    if (showSmsSenderDialog) {
+        SmsSenderSelectionDialog(
+            observedSenders = observedSmsSenders,
+            selectedSenders = smsSenders,
+            onDismiss = { showSmsSenderDialog = false },
+            onSave = { selected ->
+                smsSenders.filterNot { it in selected }.forEach(viewModel::removeSmsSender)
+                selected.filterNot { it in smsSenders }.forEach(viewModel::addSmsSender)
+                smsSenders = viewModel.smsSenders()
+                showSmsSenderDialog = false
+            }
+        )
+    }
+
+    if (showManualSmsSenderDialog) {
+        ManualSmsSenderDialog(
+            onDismiss = { showManualSmsSenderDialog = false },
+            onSave = { sender ->
+                viewModel.addSmsSender(sender)
+                smsSenders = viewModel.smsSenders()
+                showManualSmsSenderDialog = false
+            }
+        )
+    }
+}
+
+@Composable
+private fun SmsPaymentSection(
+    permissionGranted: Boolean,
+    senders: Set<String>,
+    isDiscoveringSenders: Boolean,
+    onSelectSender: () -> Unit,
+    onRequestPermission: () -> Unit,
+    onAddManualSender: () -> Unit,
+    onRemoveSender: (String) -> Unit
+) {
+    SettingsCard(
+        icon = Icons.Default.Message,
+        iconTint = Color(0xFF2E7D32),
+        title = stringResource(R.string.sms_payments),
+        description = stringResource(R.string.sms_payments_description)
+    ) {
+        if (!permissionGranted) {
+            Text(
+                text = stringResource(R.string.sms_permission_required),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+                fontFamily = vazirFontFamily
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(onClick = onRequestPermission, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.grant_permission), fontFamily = vazirFontFamily)
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedButton(
+            onClick = onSelectSender,
+            enabled = !isDiscoveringSenders,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(stringResource(R.string.select_sms_sender), fontFamily = vazirFontFamily)
+        }
+        if (isDiscoveringSenders) {
+            Spacer(modifier = Modifier.height(10.dp))
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(5.dp),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(R.string.scanning_sms_senders),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontFamily = vazirFontFamily
+            )
+        }
+        senders.forEach { sender ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(sender, fontFamily = vazirFontFamily)
+                TextButton(onClick = { onRemoveSender(sender) }) {
+                    Text(stringResource(R.string.delete), fontFamily = vazirFontFamily)
+                }
+            }
+        }
+        TextButton(
+            onClick = onAddManualSender,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(imageVector = Icons.Default.Add, contentDescription = null)
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(stringResource(R.string.add_bank_sender_manually), fontFamily = vazirFontFamily)
+        }
+    }
+}
+
+@Composable
+private fun SmsSenderSelectionDialog(
+    observedSenders: Set<String>,
+    selectedSenders: Set<String>,
+    onDismiss: () -> Unit,
+    onSave: (Set<String>) -> Unit
+) {
+    var selected by remember(selectedSenders) { mutableStateOf(selectedSenders) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.select_sms_sender)) },
+        text = {
+            if (observedSenders.isEmpty()) {
+                Text(stringResource(R.string.no_sms_senders))
+            } else {
+                Column {
+                    Column(
+                        modifier = Modifier
+                            .heightIn(max = 360.dp)
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        Text(
+                            text = stringResource(R.string.sms_sender_selection_hint),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        observedSenders.forEach { sender ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        selected =
+                                            if (sender in selected) selected - sender else selected + sender
+                                    },
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Checkbox(
+                                    checked = sender in selected,
+                                    onCheckedChange = { checked ->
+                                        selected =
+                                            if (checked) selected + sender else selected - sender
+                                    }
+                                )
+                                Text(sender, fontFamily = vazirFontFamily)
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onSave(selected) }) {
+                Text(stringResource(R.string.save))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
+}
+
+@Composable
+private fun ManualSmsSenderDialog(
+    onDismiss: () -> Unit,
+    onSave: (String) -> Unit
+) {
+    var sender by remember { mutableStateOf("") }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.add_bank_sender_manually)) },
+        text = {
+            Column {
+                Text(
+                    text = stringResource(R.string.manual_sms_sender_description),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                OutlinedTextField(
+                    value = sender,
+                    onValueChange = { sender = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    label = { Text(stringResource(R.string.manual_sms_sender)) },
+                    shape = RoundedCornerShape(14.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                    )
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { onSave(sender) },
+                enabled = sender.isNotBlank()
+            ) {
+                Text(stringResource(R.string.save))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
 }
 
 @Composable

@@ -129,7 +129,7 @@
     <string name="font_size_normal">Normal</string>
     <string name="font_size_large">Large</string>
 
-    <!-- Backup & Restore -->
+    <!-- Backup & Restore & Sms -->
     <string name="backup_restore">Backup &amp; Restore</string>
     <string name="backup_data">Backup Data</string>
     <string name="restore_data">Restore Data</string>
@@ -143,6 +143,21 @@
     <string name="success">Success</string>
     <string name="error_title">Error</string>
     <string name="ok">OK</string>
+    <string name="sms_payments">Automatic SMS expenses</string>
+    <string name="sms_payments_description">Select bank senders discovered from received SMS messages. Messages are processed only on this device.</string>
+    <string name="select_sms_sender">Select bank SMS senders</string>
+    <string name="sms_sender_selection_hint">Only selected senders will be processed.</string>
+    <string name="no_sms_senders">No SMS senders discovered yet. Receive a bank SMS first.</string>
+    <string name="manual_sms_sender">Enter sender manually (optional)</string>
+    <string name="add_bank_sender_manually">Add bank sender manually</string>
+    <string name="manual_sms_sender_description">If you cannot find your bank sender above, add its number or ID manually.</string>
+    <string name="scanning_sms_senders">Scanning SMS senders…</string>
+    <string name="sms_new_payment">New payment</string>
+    <string name="sms_payment_amount">Card payment: %1$s</string>
+    <string name="sms_card_payment">Card payment</string>
+    <string name="sms_imported_from_sender">Imported from SMS sender %1$s</string>
+    <string name="sms_permission_required">SMS permission is required to detect bank payments.</string>
+    <string name="grant_permission">Grant SMS permission</string>
 
     <!-- NotesScreen -->
     <string name="notes_title">Notes</string>

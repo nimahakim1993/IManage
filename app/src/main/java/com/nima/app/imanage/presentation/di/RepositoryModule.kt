@@ -16,6 +16,7 @@ import com.nima.app.imanage.data.repository.OfficeNoteRepository
 import com.nima.app.imanage.data.repository.OfficeReminderRepository
 import com.nima.app.imanage.data.repository.ParticipantRepository
 import com.nima.app.imanage.data.repository.PasswordItemRepository
+import com.nima.app.imanage.data.repository.PendingPaymentRepository
 import com.nima.app.imanage.data.repository.SettlementRepository
 import com.nima.app.imanage.data.repository.TripExpenseRepository
 import com.nima.app.imanage.data.repository.TripExpenseSplitRepository
@@ -43,4 +44,5 @@ val repositoryModule = module {
     single { TripExpenseSplitRepository(get()) }
     single { SettlementRepository(get()) }
     single { CarServiceRepository(get()) }
+    single { PendingPaymentRepository(get(), get(), get()) }
 }

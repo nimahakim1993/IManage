@@ -3,6 +3,7 @@ package com.nima.app.imanage
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -93,6 +94,12 @@ class MainActivity : FragmentActivity() {
             }
         }
     }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        recreate()
+    }
 }
 
 @Composable
@@ -138,6 +145,7 @@ fun Navigation(
     LaunchedEffect(navigateTo) {
         when (navigateTo) {
             "loans" -> navController.navigate(Screen.Loans.route)
+            "expenses" -> navController.navigate(Screen.Expenses.route)
             "car_services" -> navController.navigate(Screen.CarServices.route)
             "installments" -> navController.navigate(Screen.Installments.route)
         }

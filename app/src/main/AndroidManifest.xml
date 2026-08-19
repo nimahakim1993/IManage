@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
 
     <application
         android:name=".MyApp"
@@ -41,6 +43,17 @@
         </receiver>
         <receiver
             android:name=".receiver.ReminderReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".receiver.SmsPaymentReceiver"
+            android:exported="true"
+            android:permission="android.permission.BROADCAST_SMS">
+            <intent-filter android:priority="500">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".receiver.PendingPaymentActionReceiver"
             android:exported="false" />
     </application>
 

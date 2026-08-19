@@ -5,12 +5,18 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nima.app.imanage.util.BackupManager
+import com.nima.app.imanage.util.SmsPaymentSettings
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class SettingsViewModel(private val backupManager: BackupManager) : ViewModel() {
+class SettingsViewModel(
+    private val backupManager: BackupManager,
+    private val smsPaymentSettings: SmsPaymentSettings
+) : ViewModel() {
 
     sealed class BackupState {
         data object Idle : BackupState()
@@ -52,4 +58,16 @@ class SettingsViewModel(private val backupManager: BackupManager) : ViewModel() 
     fun resetState() {
         _backupState.value = BackupState.Idle
     }
+
+    fun smsSenders(): Set<String> = smsPaymentSettings.getSenders()
+
+    fun observedSmsSenders(): Set<String> = smsPaymentSettings.getObservedSenders()
+
+    suspend fun discoverSmsSenders(): Set<String> = withContext(Dispatchers.IO) {
+        smsPaymentSettings.discoverBankSenders()
+    }
+
+    fun addSmsSender(sender: String) = smsPaymentSettings.addSender(sender)
+
+    fun removeSmsSender(sender: String) = smsPaymentSettings.removeSender(sender)
 }
