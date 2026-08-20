@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">IManage</string>
+    <string name="app_update_title">بروزرسانی برنامه</string>
+    <string name="app_update_download">دریافت بروزرسانی</string>
+    <string name="app_update_download_from">دانلود از %s</string>
+    <string name="app_update_store">فروشگاه</string>
+    <string name="app_update_later">بعداً</string>
 
     <!-- General -->
     <string name="confirm">تایید</string>

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">IManage</string>
+    <string name="app_update_title">App update available</string>
+    <string name="app_update_download">Download update</string>
+    <string name="app_update_download_from">Download from %s</string>
+    <string name="app_update_store">store</string>
+    <string name="app_update_later">Later</string>
 
     <!-- General -->
     <string name="confirm">Confirm</string>

@@ -15,12 +15,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -28,6 +31,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.nima.app.imanage.data.model.ToolbarConfig
+import com.nima.app.imanage.presentation.view.AppUpdateSheet
 import com.nima.app.imanage.presentation.view.AssetsScreen
 import com.nima.app.imanage.presentation.view.BankCardsScreen
 import com.nima.app.imanage.presentation.view.CarServicesScreen
@@ -59,10 +63,12 @@ import com.nima.app.imanage.presentation.view.tripsplit.TripDetailScreen
 import com.nima.app.imanage.presentation.view.tripsplit.TripExpenseFormScreen
 import com.nima.app.imanage.presentation.view.tripsplit.TripListScreen
 import com.nima.app.imanage.presentation.view.tripsplit.TripSettlementScreen
+import com.nima.app.imanage.presentation.viewmodel.AppUpdateViewModel
 import com.nima.app.imanage.ui.theme.IManageTheme
 import com.nima.app.imanage.util.LanguageManager
 import com.nima.app.imanage.util.NotificationHelper
 import com.nima.app.imanage.util.ThemeManager
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : FragmentActivity() {
 
@@ -106,6 +112,16 @@ class MainActivity : FragmentActivity() {
 fun AppScaffold() {
     val navController = rememberNavController()
     val context = LocalContext.current
+    val updateViewModel: AppUpdateViewModel = koinViewModel()
+    val updateConfig by updateViewModel.update.collectAsStateWithLifecycle()
+    var showUpdate by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        updateViewModel.checkForUpdate()
+    }
+    LaunchedEffect(updateConfig) {
+        if (updateConfig != null) showUpdate = true
+    }
 
     val toolbarState = remember { mutableStateOf<ToolbarConfig?>(null) }
 
@@ -132,6 +148,22 @@ fun AppScaffold() {
             },
             navigateTo = navigateTo
         )
+    }
+
+    if (showUpdate) {
+        updateConfig?.let { config ->
+            AppUpdateSheet(
+                config = config,
+                onDismiss = {
+                    if (config.force_update) {
+                        (context as? Activity)?.finishAffinity()
+                    } else {
+                        updateViewModel.dismissOptionalUpdate(config.message_id)
+                        showUpdate = false
+                    }
+                }
+            )
+        }
     }
 }
 

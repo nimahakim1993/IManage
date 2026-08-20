@@ -1,5 +1,6 @@
 package com.nima.app.imanage.presentation.di
 
+import com.nima.app.imanage.data.repository.AppUpdateRepository
 import com.nima.app.imanage.data.repository.AssetRepository
 import com.nima.app.imanage.data.repository.BankCardRepository
 import com.nima.app.imanage.data.repository.CarServiceRepository
@@ -24,6 +25,7 @@ import com.nima.app.imanage.data.repository.TripRepository
 import org.koin.dsl.module
 
 val repositoryModule = module {
+    single { AppUpdateRepository() }
     single { BankCardRepository(get()) }
     single { LoanRepository(get()) }
     single { NoteBoxRepository(get()) }
