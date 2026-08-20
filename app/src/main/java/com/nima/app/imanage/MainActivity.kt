@@ -31,6 +31,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.nima.app.imanage.data.model.ToolbarConfig
+import com.nima.app.imanage.presentation.view.AppNotificationSheet
 import com.nima.app.imanage.presentation.view.AppUpdateSheet
 import com.nima.app.imanage.presentation.view.AssetsScreen
 import com.nima.app.imanage.presentation.view.BankCardsScreen
@@ -63,6 +64,7 @@ import com.nima.app.imanage.presentation.view.tripsplit.TripDetailScreen
 import com.nima.app.imanage.presentation.view.tripsplit.TripExpenseFormScreen
 import com.nima.app.imanage.presentation.view.tripsplit.TripListScreen
 import com.nima.app.imanage.presentation.view.tripsplit.TripSettlementScreen
+import com.nima.app.imanage.presentation.viewmodel.AppNotificationViewModel
 import com.nima.app.imanage.presentation.viewmodel.AppUpdateViewModel
 import com.nima.app.imanage.ui.theme.IManageTheme
 import com.nima.app.imanage.util.LanguageManager
@@ -114,13 +116,20 @@ fun AppScaffold() {
     val context = LocalContext.current
     val updateViewModel: AppUpdateViewModel = koinViewModel()
     val updateConfig by updateViewModel.update.collectAsStateWithLifecycle()
+    val notificationViewModel: AppNotificationViewModel = koinViewModel()
+    val notificationData by notificationViewModel.notifications.collectAsStateWithLifecycle()
     var showUpdate by remember { mutableStateOf(false) }
+    var showNotifications by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         updateViewModel.checkForUpdate()
+        notificationViewModel.checkForNotifications()
     }
     LaunchedEffect(updateConfig) {
         if (updateConfig != null) showUpdate = true
+    }
+    LaunchedEffect(notificationData) {
+        if (notificationData != null) showNotifications = true
     }
 
     val toolbarState = remember { mutableStateOf<ToolbarConfig?>(null) }
@@ -161,6 +170,18 @@ fun AppScaffold() {
                         updateViewModel.dismissOptionalUpdate(config.message_id)
                         showUpdate = false
                     }
+                }
+            )
+        }
+    }
+
+    if (!showUpdate && showNotifications) {
+        notificationData?.let { data ->
+            AppNotificationSheet(
+                data = data,
+                onDismiss = {
+                    notificationViewModel.markAsSeen(data.message_id)
+                    showNotifications = false
                 }
             )
         }

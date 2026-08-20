@@ -1,5 +1,6 @@
 package com.nima.app.imanage.presentation.di
 
+import com.nima.app.imanage.presentation.viewmodel.AppNotificationViewModel
 import com.nima.app.imanage.presentation.viewmodel.AppUpdateViewModel
 import com.nima.app.imanage.presentation.viewmodel.AssetViewModel
 import com.nima.app.imanage.presentation.viewmodel.BankCardViewModel
@@ -23,6 +24,7 @@ import org.koin.dsl.module
 
 val viewModelModule = module {
     viewModel { AppUpdateViewModel(get(), get()) }
+    viewModel { AppNotificationViewModel(get(), get()) }
     viewModel { BankCardViewModel(get()) }
     viewModel { LoanViewModel(get()) }
     viewModel { NoteBoxViewModel(get()) }

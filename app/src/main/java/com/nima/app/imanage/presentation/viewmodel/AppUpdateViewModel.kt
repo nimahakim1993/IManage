@@ -53,6 +53,6 @@ class AppUpdateViewModel(
 
     private companion object {
         const val PREFERENCES_NAME = "app_update_preferences"
-        const val DISMISSED_MESSAGE_ID = "dismissed_message_id"
+        const val DISMISSED_MESSAGE_ID = "updater_message_id"
     }
 }
