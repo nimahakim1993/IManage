@@ -26,12 +26,13 @@ class NotificationHelper(private val context: Context) {
     }
 
     fun createChannel() {
+        val localizedContext = LanguageManager.wrap(context)
         val channel = NotificationChannel(
             CHANNEL_ID,
-            context.getString(R.string.notif_channel_name),
+            localizedContext.getString(R.string.notif_channel_name),
             NotificationManager.IMPORTANCE_DEFAULT
         ).apply {
-            description = context.getString(R.string.notif_channel_desc)
+            description = localizedContext.getString(R.string.notif_channel_desc)
             setShowBadge(true)
         }
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -45,24 +46,25 @@ class NotificationHelper(private val context: Context) {
         serviceDateCarServices: List<CarServiceEntity>,
         nextServiceCarServices: List<CarServiceEntity>
     ) {
+        val localizedContext = LanguageManager.wrap(context)
         val count = dueLoans.size + settlementLoans.size + installmentItems.size +
                 serviceDateCarServices.size + nextServiceCarServices.size
         if (count == 0) return
 
         val inboxStyle = NotificationCompat.InboxStyle()
-            .setBigContentTitle(context.getString(R.string.notif_title_reminders))
+            .setBigContentTitle(localizedContext.getString(R.string.notif_title_reminders))
 
         var targetScreen: String? = null
 
         dueLoans.forEach { loan ->
             val (label, screen) = if (loan.type == LoanEntity.TYPE_DEBT) {
-                context.getString(R.string.notif_label_debt_due) to "loans"
+                localizedContext.getString(R.string.notif_label_debt_due) to "loans"
             } else {
-                context.getString(R.string.notif_label_receivable_due) to "loans"
+                localizedContext.getString(R.string.notif_label_receivable_due) to "loans"
             }
             if (targetScreen == null) targetScreen = screen
             inboxStyle.addLine(
-                context.getString(
+                localizedContext.getString(
                     R.string.notif_line_amount,
                     label,
                     loan.targetPersonName,
@@ -73,13 +75,13 @@ class NotificationHelper(private val context: Context) {
 
         settlementLoans.forEach { loan ->
             val (label, screen) = if (loan.type == LoanEntity.TYPE_DEBT) {
-                context.getString(R.string.notif_label_debt_settlement) to "loans"
+                localizedContext.getString(R.string.notif_label_debt_settlement) to "loans"
             } else {
-                context.getString(R.string.notif_label_receivable_settlement) to "loans"
+                localizedContext.getString(R.string.notif_label_receivable_settlement) to "loans"
             }
             if (targetScreen == null) targetScreen = screen
             inboxStyle.addLine(
-                context.getString(
+                localizedContext.getString(
                     R.string.notif_line_amount,
                     label,
                     loan.targetPersonName,
@@ -91,9 +93,9 @@ class NotificationHelper(private val context: Context) {
         installmentItems.forEach { (item, title) ->
             if (targetScreen == null) targetScreen = "installments"
             inboxStyle.addLine(
-                context.getString(
+                localizedContext.getString(
                     R.string.notif_line_amount,
-                    context.getString(R.string.notif_label_installment),
+                    localizedContext.getString(R.string.notif_label_installment),
                     title,
                     NumberFormatUtils.format(item.amount)
                 )
@@ -102,11 +104,11 @@ class NotificationHelper(private val context: Context) {
 
         serviceDateCarServices.forEach { service ->
             if (targetScreen == null) targetScreen = "car_services"
-            val typeName = getCarServiceTypeName(service.serviceType)
+            val typeName = getCarServiceTypeName(service.serviceType, localizedContext)
             inboxStyle.addLine(
-                context.getString(
+                localizedContext.getString(
                     R.string.notif_line_amount,
-                    context.getString(R.string.notif_label_car_service),
+                    localizedContext.getString(R.string.notif_label_car_service),
                     typeName,
                     NumberFormatUtils.format(service.amountPaid)
                 )
@@ -115,11 +117,11 @@ class NotificationHelper(private val context: Context) {
 
         nextServiceCarServices.forEach { service ->
             if (targetScreen == null) targetScreen = "car_services"
-            val typeName = getCarServiceTypeName(service.serviceType)
+            val typeName = getCarServiceTypeName(service.serviceType, localizedContext)
             inboxStyle.addLine(
-                context.getString(
+                localizedContext.getString(
                     R.string.notif_line_no_amount,
-                    context.getString(R.string.notif_label_car_next_service),
+                    localizedContext.getString(R.string.notif_label_car_next_service),
                     typeName
                 )
             )
@@ -136,13 +138,13 @@ class NotificationHelper(private val context: Context) {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val summaryText = context.resources.getQuantityString(
+        val summaryText = localizedContext.resources.getQuantityString(
             R.plurals.notif_summary, count, count
         )
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.imanage_logo)
-            .setContentTitle(context.getString(R.string.notif_title_reminders))
+            .setContentTitle(localizedContext.getString(R.string.notif_title_reminders))
             .setContentText(summaryText)
             .setStyle(inboxStyle)
             .setContentIntent(pendingIntent)
@@ -215,19 +217,19 @@ class NotificationHelper(private val context: Context) {
         manager.notify(PAYMENT_NOTIFICATION_BASE + payment.id, notification)
     }
 
-    private fun getCarServiceTypeName(serviceType: Int): String {
+    private fun getCarServiceTypeName(serviceType: Int, localizedContext: Context): String {
         return when (serviceType) {
-            0 -> context.getString(R.string.car_type_oil_change)
-            1 -> context.getString(R.string.car_type_tire_change)
-            2 -> context.getString(R.string.car_type_brake_pad)
-            3 -> context.getString(R.string.car_type_belt)
-            4 -> context.getString(R.string.car_type_lamp)
-            5 -> context.getString(R.string.car_type_battery)
-            6 -> context.getString(R.string.car_type_engine)
-            7 -> context.getString(R.string.car_type_general)
-            8 -> context.getString(R.string.car_type_insurance)
-            9 -> context.getString(R.string.car_type_other)
-            else -> context.getString(R.string.car_type_other)
+            0 -> localizedContext.getString(R.string.car_type_oil_change)
+            1 -> localizedContext.getString(R.string.car_type_tire_change)
+            2 -> localizedContext.getString(R.string.car_type_brake_pad)
+            3 -> localizedContext.getString(R.string.car_type_belt)
+            4 -> localizedContext.getString(R.string.car_type_lamp)
+            5 -> localizedContext.getString(R.string.car_type_battery)
+            6 -> localizedContext.getString(R.string.car_type_engine)
+            7 -> localizedContext.getString(R.string.car_type_general)
+            8 -> localizedContext.getString(R.string.car_type_insurance)
+            9 -> localizedContext.getString(R.string.car_type_other)
+            else -> localizedContext.getString(R.string.car_type_other)
         }
     }
 }
