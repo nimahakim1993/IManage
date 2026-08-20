@@ -164,6 +164,7 @@ fun CreateInstallmentScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = title,
             onValueChange = { title = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -180,6 +181,7 @@ fun CreateInstallmentScreen(
         Spacer(modifier = Modifier.size(10.dp))
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = amount,
             onValueChange = { amount = NumberFormatUtils.formatWithCursor(it) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -195,6 +197,7 @@ fun CreateInstallmentScreen(
         Spacer(modifier = Modifier.size(10.dp))
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = numInstallments,
             onValueChange = { newValue ->
                 numInstallments = digitsOnlyWithCursor(newValue)
@@ -224,6 +227,7 @@ fun CreateInstallmentScreen(
             Spacer(modifier = Modifier.size(10.dp))
 
             OutlinedTextField(
+                shape = RoundedCornerShape(12.dp),
                 value = periodDays,
                 onValueChange = { newValue ->
                     periodDays = digitsOnlyWithCursor(newValue)
@@ -243,6 +247,7 @@ fun CreateInstallmentScreen(
         Spacer(modifier = Modifier.size(10.dp))
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = description,
             onValueChange = { description = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -256,6 +261,7 @@ fun CreateInstallmentScreen(
             .fillMaxWidth()
             .clickable { showStartDatePicker = true }) {
             OutlinedTextField(
+                shape = RoundedCornerShape(12.dp),
                 value = ShamsiDate.format(startDate),
                 onValueChange = {},
                 readOnly = true,

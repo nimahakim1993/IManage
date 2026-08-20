@@ -231,6 +231,7 @@ private fun CategoryEditDialog(
         text = {
             Column {
                 OutlinedTextField(
+                    shape = RoundedCornerShape(12.dp),
                     value = title,
                     onValueChange = {
                         title = it

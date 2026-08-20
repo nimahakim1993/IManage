@@ -95,6 +95,7 @@ fun CreateNoteBoxScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = title,
             onValueChange = { title = it },
             label = { Text(stringResource(R.string.note_box_title_label)) },
@@ -108,6 +109,7 @@ fun CreateNoteBoxScreen(
         )
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = description,
             onValueChange = { description = it },
             label = { Text(stringResource(R.string.note_box_description_label)) },

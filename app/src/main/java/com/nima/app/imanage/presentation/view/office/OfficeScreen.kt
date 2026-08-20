@@ -572,7 +572,7 @@ internal fun NoteSheet(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.office_note_text)) },
                 minLines = 3,
-                shape = RoundedCornerShape(14.dp)
+                shape = RoundedCornerShape(12.dp)
             )
             Button(
                 onClick = { onSave(initialNote, selectedDate, text.trim()) },
@@ -675,7 +675,7 @@ internal fun ReminderSheet(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.office_reminder_text)) },
                 singleLine = true,
-                shape = RoundedCornerShape(14.dp)
+                shape = RoundedCornerShape(12.dp)
             )
             if (showPastError) {
                 Text(

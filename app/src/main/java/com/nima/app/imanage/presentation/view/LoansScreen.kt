@@ -557,6 +557,7 @@ private fun FilterDialog(
             text = {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     OutlinedTextField(
+                        shape = RoundedCornerShape(12.dp),
                         value = searchQuery,
                         onValueChange = onSearchQueryChange,
                         label = { Text(stringResource(R.string.search_hint)) },

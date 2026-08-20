@@ -615,6 +615,7 @@ private fun FilterDialog(
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())) {
                     OutlinedTextField(
+                        shape = RoundedCornerShape(12.dp),
                         value = filterYear,
                         onValueChange = onFilterYearChange,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),

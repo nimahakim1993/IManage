@@ -647,6 +647,7 @@ private fun CreatePasswordItemSheet(
             Spacer(modifier = Modifier.size(16.dp))
 
             OutlinedTextField(
+                shape = RoundedCornerShape(12.dp),
                 value = title,
                 onValueChange = { title = it },
                 label = { Text(stringResource(R.string.password_title_label)) },
@@ -663,6 +664,7 @@ private fun CreatePasswordItemSheet(
             Spacer(modifier = Modifier.size(12.dp))
 
             OutlinedTextField(
+                shape = RoundedCornerShape(12.dp),
                 value = username,
                 onValueChange = { username = it },
                 label = { Text(stringResource(R.string.password_username_label)) },
@@ -675,6 +677,7 @@ private fun CreatePasswordItemSheet(
             Spacer(modifier = Modifier.size(12.dp))
 
             OutlinedTextField(
+                shape = RoundedCornerShape(12.dp),
                 value = password,
                 onValueChange = { password = it },
                 label = { Text(stringResource(R.string.password_field_label)) },

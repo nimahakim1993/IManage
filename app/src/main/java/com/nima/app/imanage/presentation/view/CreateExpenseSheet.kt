@@ -114,6 +114,7 @@ fun CreateExpenseSheet(
             Spacer(modifier = Modifier.size(16.dp))
 
             OutlinedTextField(
+                shape = RoundedCornerShape(12.dp),
                 value = title,
                 onValueChange = { title = it },
                 label = { Text(stringResource(R.string.expense_title_label)) },
@@ -129,6 +130,7 @@ fun CreateExpenseSheet(
             Spacer(modifier = Modifier.size(12.dp))
 
             OutlinedTextField(
+                shape = RoundedCornerShape(12.dp),
                 value = amount,
                 onValueChange = { amount = NumberFormatUtils.formatWithCursor(it) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -159,6 +161,7 @@ fun CreateExpenseSheet(
                 .fillMaxWidth()
                 .clickable { showDatePicker = true }) {
                 OutlinedTextField(
+                    shape = RoundedCornerShape(12.dp),
                     value = ShamsiDate.format(createdAt),
                     onValueChange = {},
                     readOnly = true,
@@ -178,6 +181,7 @@ fun CreateExpenseSheet(
             Spacer(modifier = Modifier.size(12.dp))
 
             OutlinedTextField(
+                shape = RoundedCornerShape(12.dp),
                 value = description,
                 onValueChange = { description = it },
                 label = { Text(stringResource(R.string.description)) },

@@ -192,6 +192,7 @@ fun CreateBankCardScreen(
         )
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = bankName,
             onValueChange = { bankName = it },
             label = { Text(stringResource(R.string.bank_name)) },
@@ -203,6 +204,7 @@ fun CreateBankCardScreen(
         )
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = NumberFormatUtils.toLocalizedDigits(cardNumber),
             onValueChange = {
                 val normalized = it.normalizeDigits()
@@ -219,6 +221,7 @@ fun CreateBankCardScreen(
         )
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = NumberFormatUtils.toLocalizedDigits(cvv),
             onValueChange = {
                 val normalized = it.normalizeDigits()
@@ -239,6 +242,7 @@ fun CreateBankCardScreen(
         ) {
 
             OutlinedTextField(
+                shape = RoundedCornerShape(12.dp),
                 value = NumberFormatUtils.toLocalizedDigits(month),
                 onValueChange = {
                     val normalized = it.normalizeDigits()
@@ -257,6 +261,7 @@ fun CreateBankCardScreen(
             )
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = NumberFormatUtils.toLocalizedDigits(year),
             onValueChange = {
                 val normalized = it.normalizeDigits()
@@ -275,6 +280,7 @@ fun CreateBankCardScreen(
     }
 
     OutlinedTextField(
+        shape = RoundedCornerShape(12.dp),
         value = NumberFormatUtils.toLocalizedDigits(shebaNumber),
         onValueChange = { shebaNumber = it.normalizeDigits().uppercase() },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -284,6 +290,7 @@ fun CreateBankCardScreen(
     )
 
     OutlinedTextField(
+        shape = RoundedCornerShape(12.dp),
         value = NumberFormatUtils.toLocalizedDigits(accountNumber),
         onValueChange = {
             val normalized = it.normalizeDigits()

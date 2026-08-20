@@ -61,8 +61,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -595,6 +595,7 @@ private fun CreateAssetSheet(
             Spacer(modifier = Modifier.size(16.dp))
 
             OutlinedTextField(
+                shape = RoundedCornerShape(12.dp),
                 value = name,
                 onValueChange = { name = it },
                 label = { Text(stringResource(R.string.asset_name_label)) },
@@ -673,6 +674,7 @@ private fun CreateAssetSheet(
                 verticalAlignment = Alignment.Top
             ) {
                 OutlinedTextField(
+                    shape = RoundedCornerShape(12.dp),
                     value = unitCount,
                     onValueChange = { newValue ->
                         val filtered = newValue.text.filter { c ->
@@ -703,6 +705,7 @@ private fun CreateAssetSheet(
                 )
                 Spacer(modifier = Modifier.size(8.dp))
                 OutlinedTextField(
+                    shape = RoundedCornerShape(12.dp),
                     value = unitName,
                     onValueChange = { unitName = it },
                     label = { Text(stringResource(R.string.unit_name_label)) },
@@ -717,6 +720,7 @@ private fun CreateAssetSheet(
             Spacer(modifier = Modifier.size(12.dp))
 
             OutlinedTextField(
+                shape = RoundedCornerShape(12.dp),
                 value = pricePerUnit,
                 onValueChange = { pricePerUnit = NumberFormatUtils.formatWithCursor(it) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),

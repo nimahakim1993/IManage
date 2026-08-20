@@ -38,9 +38,9 @@ import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.LoanEntity
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.LoanViewModel
+import com.nima.app.imanage.ui.component.RequiredFieldError
 import com.nima.app.imanage.ui.component.ShamsiDatePicker
 import com.nima.app.imanage.ui.component.TextInputDropDown
-import com.nima.app.imanage.ui.component.RequiredFieldError
 import com.nima.app.imanage.ui.component.showRequiredFieldsToast
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
@@ -151,6 +151,7 @@ fun CreateLoanScreen(
         Spacer(modifier = Modifier.size(10.dp))
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = personName,
             onValueChange = { personName = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -165,6 +166,7 @@ fun CreateLoanScreen(
         Spacer(modifier = Modifier.size(10.dp))
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = price,
             onValueChange = { price = NumberFormatUtils.formatWithCursor(it) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -182,6 +184,7 @@ fun CreateLoanScreen(
             .fillMaxWidth()
             .clickable { showDateLoanPicker = true }) {
             OutlinedTextField(
+                shape = RoundedCornerShape(12.dp),
                 value = ShamsiDate.format(dateLoan),
                 onValueChange = {},
                 readOnly = true,
@@ -197,6 +200,7 @@ fun CreateLoanScreen(
             .fillMaxWidth()
             .clickable { showDateReceiveBackPicker = true }) {
             OutlinedTextField(
+                shape = RoundedCornerShape(12.dp),
                 value = ShamsiDate.format(dateReceiveBack),
                 onValueChange = {},
                 readOnly = true,
@@ -209,6 +213,7 @@ fun CreateLoanScreen(
         Spacer(modifier = Modifier.size(10.dp))
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = description,
             onValueChange = { description = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),

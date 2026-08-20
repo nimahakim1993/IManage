@@ -38,9 +38,9 @@ import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.CarServiceEntity
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.CarServiceViewModel
+import com.nima.app.imanage.ui.component.RequiredFieldError
 import com.nima.app.imanage.ui.component.ShamsiDatePicker
 import com.nima.app.imanage.ui.component.TextInputDropDown
-import com.nima.app.imanage.ui.component.RequiredFieldError
 import com.nima.app.imanage.ui.component.showRequiredFieldsToast
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
@@ -175,6 +175,7 @@ fun CreateCarServiceScreen(
             .fillMaxWidth()
             .clickable { showServiceDatePicker = true }) {
             OutlinedTextField(
+                shape = RoundedCornerShape(12.dp),
                 value = ShamsiDate.format(serviceDate),
                 onValueChange = {},
                 readOnly = true,
@@ -187,6 +188,7 @@ fun CreateCarServiceScreen(
         Spacer(modifier = Modifier.size(10.dp))
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = serviceKilometer,
             onValueChange = { serviceKilometer = NumberFormatUtils.formatWithCursor(it) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -200,6 +202,7 @@ fun CreateCarServiceScreen(
             .fillMaxWidth()
             .clickable { showNextServiceDatePicker = true }) {
             OutlinedTextField(
+                shape = RoundedCornerShape(12.dp),
                 value = ShamsiDate.format(nextServiceDate),
                 onValueChange = {},
                 readOnly = true,
@@ -212,6 +215,7 @@ fun CreateCarServiceScreen(
         Spacer(modifier = Modifier.size(10.dp))
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = nextServiceKilometer,
             onValueChange = { nextServiceKilometer = NumberFormatUtils.formatWithCursor(it) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -222,6 +226,7 @@ fun CreateCarServiceScreen(
         Spacer(modifier = Modifier.size(10.dp))
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = amountPaid,
             onValueChange = { amountPaid = NumberFormatUtils.formatWithCursor(it) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -236,6 +241,7 @@ fun CreateCarServiceScreen(
         Spacer(modifier = Modifier.size(10.dp))
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = productBrand,
             onValueChange = { productBrand = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -246,6 +252,7 @@ fun CreateCarServiceScreen(
         Spacer(modifier = Modifier.size(10.dp))
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = partName,
             onValueChange = { partName = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -256,6 +263,7 @@ fun CreateCarServiceScreen(
         Spacer(modifier = Modifier.size(10.dp))
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = description,
             onValueChange = { description = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),

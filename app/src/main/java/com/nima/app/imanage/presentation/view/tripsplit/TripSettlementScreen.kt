@@ -416,14 +416,14 @@ private fun SettlementRecordDialog(
                     onValueChange = { amountText = it },
                     label = { Text(stringResource(R.string.amount)) },
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(10.dp)
+                    shape = RoundedCornerShape(12.dp)
                 )
                 OutlinedTextField(
                     value = note,
                     onValueChange = { note = it },
                     label = { Text(stringResource(R.string.settlement_note_label)) },
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(10.dp)
+                    shape = RoundedCornerShape(12.dp)
                 )
             }
         },

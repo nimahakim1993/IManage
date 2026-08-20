@@ -28,7 +28,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import kotlinx.coroutines.launch
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -43,6 +42,7 @@ import com.nima.app.imanage.presentation.viewmodel.NoteViewModel
 import com.nima.app.imanage.ui.component.RequiredFieldError
 import com.nima.app.imanage.ui.component.showRequiredFieldsToast
 import com.nima.app.imanage.ui.theme.vazirFontFamily
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -98,6 +98,7 @@ fun CreateNoteScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = title,
             onValueChange = { title = it },
             label = { Text(stringResource(R.string.note_title_label)) },
@@ -111,6 +112,7 @@ fun CreateNoteScreen(
         )
 
         OutlinedTextField(
+            shape = RoundedCornerShape(12.dp),
             value = content,
             onValueChange = { content = it },
             label = { Text(stringResource(R.string.note_content_label)) },
