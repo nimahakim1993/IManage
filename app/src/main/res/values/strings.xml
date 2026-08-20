@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">IManage</string>
-    <string name="app_update_title">App update available</string>
-    <string name="app_update_download">Download update</string>
-    <string name="app_update_download_from">Download from %s</string>
-    <string name="app_update_store">store</string>
-    <string name="app_notifications_title">Notifications</string>
-    <string name="app_notifications_close">Close</string>
-    <string name="app_update_later">Later</string>
 
     <!-- General -->
     <string name="confirm">Confirm</string>
@@ -17,6 +10,15 @@
     <string name="select">Select</string>
     <string name="required_field_error">This field cannot be empty</string>
     <string name="required_fields_toast">Please fill in all required fields</string>
+
+    <!-- InAppNotification -->
+    <string name="app_update_title">App update available</string>
+    <string name="app_update_download">Download update</string>
+    <string name="app_update_download_from">Download from %s</string>
+    <string name="app_update_store">store</string>
+    <string name="app_notifications_title">Notifications</string>
+    <string name="app_notifications_close">Close</string>
+    <string name="app_update_later">Later</string>
 
     <!-- CreateLoanScreen -->
     <string name="create_loan_title">Create Debt Receivable</string>
@@ -109,6 +111,7 @@
 
     <!-- FinancialScreen -->
     <string name="financial_ledger">Financial Ledger</string>
+    <string name="checks">Checks</string>
     <string name="salary">Salary</string>
     <string name="expense">Expense</string>
     <string name="loan">Loan</string>
@@ -252,6 +255,45 @@
     <string name="empty_sources">No sources yet</string>
     <string name="empty_sources_hint">Tap + to create your first source</string>
     <string name="filter_by_source">Filter by source</string>
+
+    <!-- ChecksScreen -->
+    <string name="create_check_title">New Check</string>
+    <string name="edit_check_title">Edit Check</string>
+    <string name="check_type">Check type</string>
+    <string name="check_received">Received</string>
+    <string name="check_payable">Payable</string>
+    <string name="check_amount">Amount</string>
+    <string name="check_state">Status</string>
+    <string name="check_state_in_progress">In progress</string>
+    <string name="check_state_in_bank">Held by bank</string>
+    <string name="check_state_collected">Collected</string>
+    <string name="check_state_returned">Returned</string>
+    <string name="check_state_bounced">Bounced</string>
+    <string name="check_number">Check number</string>
+    <string name="check_number_value">Check number: %s</string>
+    <string name="check_due_date">Due date</string>
+    <string name="check_due_date_value">Due date: %s</string>
+    <string name="check_counterparty">Check counterparty</string>
+    <string name="check_counterparty_hint">Select or enter a counterparty</string>
+    <string name="check_no_counterparties">No counterparties available. Add one from management.</string>
+    <string name="check_manage_counterparties">Manage counterparties</string>
+    <string name="add_new_check_counterparty">Add new counterparty</string>
+    <string name="empty_check_counterparties">No counterparties yet</string>
+    <string name="empty_check_counterparties_hint">Add a counterparty to select it for checks</string>
+    <string name="duplicate_check_counterparty">This counterparty already exists</string>
+    <string name="check_description_hint">Optional description</string>
+    <string name="empty_checks">No checks yet</string>
+    <string name="empty_checks_hint">Tap + to add your first check</string>
+    <string name="empty_checks_filtered">No matching checks</string>
+    <string name="check_filter">Filter checks</string>
+    <string name="check_filter_all">All</string>
+    <string name="check_filter_type">Type</string>
+    <string name="check_filter_counterparty">Counterparty</string>
+    <string name="check_clear_filters">Clear filters</string>
+    <string name="check_due_notification_title">Check due today</string>
+    <string name="check_due_notification_text">Check %1$s for %2$s is due today.</string>
+    <string name="notif_label_check_due">Check due</string>
+    <string name="office_type_check">Check</string>
 
     <!-- Shamsi Date Picker -->
     <string name="select_date">Select Date</string>

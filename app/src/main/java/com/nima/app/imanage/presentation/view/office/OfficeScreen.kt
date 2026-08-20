@@ -1220,7 +1220,7 @@ private fun ManagementNoteRow(
                     Icons.Default.Edit,
                     contentDescription = stringResource(R.string.edit),
                     tint = Color.Black,
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             }
             IconButton(onClick = onDelete, modifier = Modifier.size(32.dp)) {
@@ -1228,7 +1228,7 @@ private fun ManagementNoteRow(
                     Icons.Default.Delete,
                     contentDescription = stringResource(R.string.delete),
                     tint = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }
@@ -1276,7 +1276,7 @@ private fun ManagementReminderRow(
                     Icons.Default.Edit,
                     contentDescription = stringResource(R.string.edit),
                     tint = Color.Black,
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             }
             IconButton(onClick = onDelete, modifier = Modifier.size(32.dp)) {
@@ -1284,7 +1284,7 @@ private fun ManagementReminderRow(
                     Icons.Default.Delete,
                     contentDescription = stringResource(R.string.delete),
                     tint = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }
@@ -1563,6 +1563,7 @@ private fun EventCard(event: OfficeEvent) {
                         EventType.TRIP -> stringResource(R.string.office_type_trip)
                         EventType.CAR_SERVICE -> stringResource(R.string.office_type_car_service)
                         EventType.INSTALLMENT -> stringResource(R.string.office_type_installment)
+                        EventType.CHECK -> stringResource(R.string.office_type_check)
                     },
                     style = MaterialTheme.typography.bodySmall,
                     fontFamily = vazirFontFamily,

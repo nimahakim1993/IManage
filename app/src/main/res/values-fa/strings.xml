@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">IManage</string>
+
+    <!-- InAppNotification -->
     <string name="app_update_title">بروزرسانی برنامه</string>
     <string name="app_update_download">دریافت بروزرسانی</string>
     <string name="app_update_download_from">دانلود از %s</string>
@@ -109,6 +111,7 @@
 
     <!-- FinancialScreen -->
     <string name="financial_ledger">دفتر مالی</string>
+    <string name="checks">چک‌ها</string>
     <string name="salary">حقوق</string>
     <string name="expense">هزینه</string>
     <string name="loan">وام</string>
@@ -253,6 +256,45 @@
     <string name="empty_sources">هنوز منبعی ندارید</string>
     <string name="empty_sources_hint">برای ایجاد اولین منبع روی + بزنید</string>
     <string name="filter_by_source">فیلتر بر اساس منبع</string>
+
+    <!-- ChecksScreen -->
+    <string name="create_check_title">چک جدید</string>
+    <string name="edit_check_title">ویرایش چک</string>
+    <string name="check_type">نوع چک</string>
+    <string name="check_received">دریافتی</string>
+    <string name="check_payable">پرداختی</string>
+    <string name="check_amount">مبلغ</string>
+    <string name="check_state">وضعیت</string>
+    <string name="check_state_in_progress">در جریان</string>
+    <string name="check_state_in_bank">خوابیده در بانک</string>
+    <string name="check_state_collected">وصول شده</string>
+    <string name="check_state_returned">مسترد شده</string>
+    <string name="check_state_bounced">برگشت خورده</string>
+    <string name="check_number">شماره چک</string>
+    <string name="check_number_value">شماره چک: %s</string>
+    <string name="check_due_date">تاریخ سررسید</string>
+    <string name="check_due_date_value">تاریخ سررسید: %s</string>
+    <string name="check_counterparty">طرف حساب چک</string>
+    <string name="check_counterparty_hint">طرف حساب را انتخاب یا وارد کنید</string>
+    <string name="check_no_counterparties">طرف حسابی وجود ندارد؛ ابتدا از بخش مدیریت اضافه کنید.</string>
+    <string name="check_manage_counterparties">مدیریت طرف حساب‌ها</string>
+    <string name="add_new_check_counterparty">افزودن طرف حساب جدید</string>
+    <string name="empty_check_counterparties">هنوز طرف حسابی ثبت نشده است</string>
+    <string name="empty_check_counterparties_hint">برای انتخاب در چک‌ها یک طرف حساب اضافه کنید</string>
+    <string name="duplicate_check_counterparty">این طرف حساب قبلاً ثبت شده است</string>
+    <string name="check_description_hint">توضیحات اختیاری</string>
+    <string name="empty_checks">هنوز چکی ثبت نشده است</string>
+    <string name="empty_checks_hint">برای افزودن اولین چک روی + بزنید</string>
+    <string name="empty_checks_filtered">چکی مطابق فیلتر پیدا نشد</string>
+    <string name="check_filter">فیلتر چک‌ها</string>
+    <string name="check_filter_all">همه</string>
+    <string name="check_filter_type">نوع</string>
+    <string name="check_filter_counterparty">طرف حساب</string>
+    <string name="check_clear_filters">پاک کردن فیلترها</string>
+    <string name="check_due_notification_title">سررسید چک امروز است</string>
+    <string name="check_due_notification_text">چک %1$s به مبلغ %2$s امروز سررسید می‌شود.</string>
+    <string name="notif_label_check_due">سررسید چک</string>
+    <string name="office_type_check">چک</string>
 
     <!-- Shamsi Date Picker -->
     <string name="select_date">انتخاب تاریخ</string>

@@ -32,9 +32,35 @@ object DatabaseMigrations {
         }
     }
 
+    private val MIGRATION_4_5 = object : Migration(4, 5) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL(
+                "CREATE TABLE IF NOT EXISTS checks (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, type TEXT NOT NULL, amount INTEGER NOT NULL, state TEXT NOT NULL, checkNumber TEXT NOT NULL, dueDate INTEGER NOT NULL, counterparty TEXT NOT NULL, description TEXT NOT NULL, createdAt INTEGER NOT NULL)"
+            )
+        }
+    }
+
+    private val MIGRATION_5_6 = object : Migration(5, 6) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL(
+                "CREATE TABLE IF NOT EXISTS check_counterparties (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title TEXT NOT NULL, createdAt INTEGER NOT NULL)"
+            )
+        }
+    }
+
+    private val MIGRATION_6_7 = object : Migration(6, 7) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("ALTER TABLE checks ADD COLUMN settled INTEGER NOT NULL DEFAULT 0")
+            database.execSQL("ALTER TABLE checks ADD COLUMN settledAt INTEGER NOT NULL DEFAULT 0")
+        }
+    }
+
     val MIGRATIONS = arrayOf<Migration>(
         MIGRATION_1_2,
         MIGRATION_2_3,
-        MIGRATION_3_4
+        MIGRATION_3_4,
+        MIGRATION_4_5,
+        MIGRATION_5_6,
+        MIGRATION_6_7
     )
 }

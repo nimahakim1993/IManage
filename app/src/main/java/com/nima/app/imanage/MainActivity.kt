@@ -36,6 +36,8 @@ import com.nima.app.imanage.presentation.view.AppUpdateSheet
 import com.nima.app.imanage.presentation.view.AssetsScreen
 import com.nima.app.imanage.presentation.view.BankCardsScreen
 import com.nima.app.imanage.presentation.view.CarServicesScreen
+import com.nima.app.imanage.presentation.view.CheckCounterpartiesScreen
+import com.nima.app.imanage.presentation.view.ChecksScreen
 import com.nima.app.imanage.presentation.view.CreateBankCardScreen
 import com.nima.app.imanage.presentation.view.CreateCarServiceScreen
 import com.nima.app.imanage.presentation.view.CreateInstallmentScreen
@@ -201,6 +203,7 @@ fun Navigation(
             "expenses" -> navController.navigate(Screen.Expenses.route)
             "car_services" -> navController.navigate(Screen.CarServices.route)
             "installments" -> navController.navigate(Screen.Installments.route)
+            "checks" -> navController.navigate(Screen.Checks.route)
         }
     }
 
@@ -291,6 +294,8 @@ fun Navigation(
         composable(Screen.Incomes.route) { IncomesScreen(setToolbar, navController) }
         composable(Screen.IncomeSources.route) { IncomeSourcesScreen(setToolbar, navController) }
         composable(Screen.Installments.route) { InstallmentsScreen(setToolbar, navController) }
+        composable(Screen.Checks.route) { ChecksScreen(setToolbar, navController) }
+        composable(Screen.CheckCounterparties.route) { CheckCounterpartiesScreen(setToolbar) }
         composable(
             route = Screen.CreateInstallment.route,
             arguments = listOf(

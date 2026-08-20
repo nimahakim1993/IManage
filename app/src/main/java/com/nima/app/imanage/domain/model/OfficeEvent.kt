@@ -22,5 +22,6 @@ enum class EventType {
     LOAN,
     TRIP,
     CAR_SERVICE,
-    INSTALLMENT
+    INSTALLMENT,
+    CHECK
 }

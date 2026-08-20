@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.nima.app.imanage.data.db.dao.CarServiceDao
+import com.nima.app.imanage.data.db.dao.CheckDao
 import com.nima.app.imanage.data.db.dao.InstallmentDao
 import com.nima.app.imanage.data.db.dao.InstallmentItemDao
 import com.nima.app.imanage.data.db.dao.LoanDao
@@ -22,6 +23,7 @@ class NotificationWorker(
         val itemDao: InstallmentItemDao = koin.get()
         val carDao: CarServiceDao = koin.get()
         val installmentDao: InstallmentDao = koin.get()
+        val checkDao: CheckDao = koin.get()
         val notifHelper: NotificationHelper = koin.get()
 
         val todayStart = ShamsiDate.todayMillis()
@@ -32,6 +34,7 @@ class NotificationWorker(
         val items = itemDao.getUnsettledDueBetween(todayStart, todayEnd)
         val serviceDateCarServices = carDao.getServiceDateBetween(todayStart, todayEnd)
         val nextServiceCarServices = carDao.getNextServiceDueBetween(todayStart, todayEnd)
+        val dueChecks = checkDao.getDueBetween(todayStart, todayEnd)
 
         val installmentTitles = items.mapNotNull { item ->
             val installment = installmentDao.getById(item.installmentId)
@@ -43,7 +46,8 @@ class NotificationWorker(
             settlementLoans = settlementLoans,
             installmentItems = installmentTitles,
             serviceDateCarServices = serviceDateCarServices,
-            nextServiceCarServices = nextServiceCarServices
+            nextServiceCarServices = nextServiceCarServices,
+            dueChecks = dueChecks
         )
 
         return Result.success()

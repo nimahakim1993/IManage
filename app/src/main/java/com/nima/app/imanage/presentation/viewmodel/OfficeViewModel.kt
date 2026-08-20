@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.MoneyOff
 import androidx.compose.material.icons.filled.Payment
+import androidx.compose.material.icons.filled.ReceiptLong
 import androidx.compose.material.icons.filled.TrendingDown
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.ui.graphics.Color
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nima.app.imanage.data.db.entity.LoanEntity
 import com.nima.app.imanage.data.repository.CarServiceRepository
+import com.nima.app.imanage.data.repository.CheckRepository
 import com.nima.app.imanage.data.repository.ExpenseRepository
 import com.nima.app.imanage.data.repository.IncomeRepository
 import com.nima.app.imanage.data.repository.InstallmentItemRepository
@@ -34,7 +36,8 @@ class OfficeViewModel(
     private val tripRepository: TripRepository,
     private val carServiceRepository: CarServiceRepository,
     private val installmentItemRepository: InstallmentItemRepository,
-    private val installmentRepository: InstallmentRepository
+    private val installmentRepository: InstallmentRepository,
+    private val checkRepository: CheckRepository
 ) : ViewModel() {
 
     private val expenses = expenseRepository.getAll()
@@ -58,8 +61,11 @@ class OfficeViewModel(
     private val installments = installmentRepository.getAll()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    private val checks = checkRepository.getAll()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
     val allEvents: StateFlow<List<OfficeEvent>> = combine(
-        expenses, incomes, loans, trips, carServices, installmentItems, installments
+        expenses, incomes, loans, trips, carServices, installmentItems, installments, checks
     ) { values ->
         val expList = values[0] as List<com.nima.app.imanage.data.db.entity.ExpenseEntity>
         val incList = values[1] as List<com.nima.app.imanage.data.db.entity.IncomeEntity>
@@ -69,6 +75,7 @@ class OfficeViewModel(
         val instList = values[5] as List<com.nima.app.imanage.data.db.entity.InstallmentItemEntity>
         val instMap = (values[6] as List<com.nima.app.imanage.data.db.entity.InstallmentEntity>)
             .associateBy { it.id }
+        val checkList = values[7] as List<com.nima.app.imanage.data.db.entity.CheckEntity>
 
         buildList {
             expList.forEach { exp ->
@@ -184,6 +191,22 @@ class OfficeViewModel(
                         icon = Icons.Default.AccountBalanceWallet,
                         color = Color(0xFF009688),
                         date = inst.dueDate
+                    )
+                )
+            }
+
+            checkList.forEach { check ->
+                val isReceived =
+                    check.type == com.nima.app.imanage.data.db.entity.CheckEntity.TYPE_RECEIVED
+                add(
+                    OfficeEvent(
+                        id = "check_${check.id}",
+                        title = check.counterparty,
+                        amount = check.amount,
+                        type = EventType.CHECK,
+                        icon = Icons.Default.ReceiptLong,
+                        color = if (isReceived) Color(0xFF4CAF50) else Color(0xFFF44336),
+                        date = check.dueDate
                     )
                 )
             }

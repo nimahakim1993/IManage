@@ -1,5 +1,6 @@
 package com.nima.app.imanage.util
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -11,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import com.nima.app.imanage.MainActivity
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.CarServiceEntity
+import com.nima.app.imanage.data.db.entity.CheckEntity
 import com.nima.app.imanage.data.db.entity.InstallmentItemEntity
 import com.nima.app.imanage.data.db.entity.LoanEntity
 import com.nima.app.imanage.data.db.entity.PendingPaymentEntity
@@ -39,16 +41,19 @@ class NotificationHelper(private val context: Context) {
         manager.createNotificationChannel(channel)
     }
 
+    @SuppressLint("SuspiciousIndentation")
     fun showReminderNotification(
         dueLoans: List<LoanEntity>,
         settlementLoans: List<LoanEntity>,
         installmentItems: List<Pair<InstallmentItemEntity, String>>,
         serviceDateCarServices: List<CarServiceEntity>,
-        nextServiceCarServices: List<CarServiceEntity>
+        nextServiceCarServices: List<CarServiceEntity>,
+        dueChecks: List<CheckEntity>
     ) {
         val localizedContext = LanguageManager.wrap(context)
         val count = dueLoans.size + settlementLoans.size + installmentItems.size +
                 serviceDateCarServices.size + nextServiceCarServices.size
+        +dueChecks.size
         if (count == 0) return
 
         val inboxStyle = NotificationCompat.InboxStyle()
@@ -123,6 +128,18 @@ class NotificationHelper(private val context: Context) {
                     R.string.notif_line_no_amount,
                     localizedContext.getString(R.string.notif_label_car_next_service),
                     typeName
+                )
+            )
+        }
+
+        dueChecks.forEach { check ->
+            if (targetScreen == null) targetScreen = "checks"
+            inboxStyle.addLine(
+                localizedContext.getString(
+                    R.string.notif_line_amount,
+                    localizedContext.getString(R.string.notif_label_check_due),
+                    check.counterparty,
+                    NumberFormatUtils.format(check.amount)
                 )
             )
         }
@@ -231,5 +248,6 @@ class NotificationHelper(private val context: Context) {
             9 -> localizedContext.getString(R.string.car_type_other)
             else -> localizedContext.getString(R.string.car_type_other)
         }
+
     }
 }
