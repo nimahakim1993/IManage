@@ -58,7 +58,7 @@ import com.nima.app.imanage.Screen
 import com.nima.app.imanage.data.db.entity.LoanEntity
 import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
-import com.nima.app.imanage.presentation.viewmodel.BankCardViewModel
+import com.nima.app.imanage.presentation.viewmodel.CheckViewModel
 import com.nima.app.imanage.presentation.viewmodel.ExpenseViewModel
 import com.nima.app.imanage.presentation.viewmodel.IncomeViewModel
 import com.nima.app.imanage.presentation.viewmodel.InstallmentViewModel
@@ -79,7 +79,7 @@ fun HomeScreen(
     setToolbar: (ToolbarConfig) -> Unit,
     navController: NavHostController,
     loanViewModel: LoanViewModel = koinViewModel(),
-    bankCardViewModel: BankCardViewModel = koinViewModel(),
+    checkViewModel: CheckViewModel = koinViewModel(),
     settingsViewModel: SettingsViewModel = koinViewModel(),
     expenseViewModel: ExpenseViewModel = koinViewModel(),
     incomeViewModel: IncomeViewModel = koinViewModel(),
@@ -131,7 +131,7 @@ fun HomeScreen(
     }
 
     val loans by loanViewModel.loans.collectAsState()
-    val cards by bankCardViewModel.cards.collectAsState()
+    val checks by checkViewModel.checks.collectAsState()
     val expenses by expenseViewModel.expenses.collectAsState()
     val incomes by incomeViewModel.incomes.collectAsState()
     val installments by installmentViewModel.installments.collectAsState()
@@ -164,8 +164,8 @@ fun HomeScreen(
             when (page) {
                 0 -> ReportCard(
                     title = stringResource(R.string.home_report_title),
-                    topRightLabel = stringResource(R.string.home_bank_accounts),
-                    topRightValue = cards.size.toLong(),
+                    topRightLabel = stringResource(R.string.check),
+                    topRightValue = checks.size.toLong(),
                     netBalance = netBalance,
                     leftTileLabel = stringResource(R.string.total_debt),
                     leftTileValue = totalDebt,
