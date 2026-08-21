@@ -177,7 +177,8 @@ fun ShamsiMonthYearPicker(
                                     shape = RoundedCornerShape(12.dp)
                                 )
                                 .clickable {
-                                    selectedMonth = if (selectedMonth == month) null else month
+                                    selectedMonth =
+                                        if (allowYearOnly && selectedMonth == month) null else month
                                 }
                                 .padding(horizontal = 12.dp, vertical = 10.dp)
                         ) {
