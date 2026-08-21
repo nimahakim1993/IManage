@@ -111,7 +111,7 @@
 
     <!-- FinancialScreen -->
     <string name="financial_ledger">دفتر مالی</string>
-    <string name="checks">چک‌ها</string>
+    <string name="check">چک‌</string>
     <string name="salary">حقوق</string>
     <string name="expense">هزینه</string>
     <string name="loan">وام</string>

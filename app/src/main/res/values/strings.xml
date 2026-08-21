@@ -111,7 +111,7 @@
 
     <!-- FinancialScreen -->
     <string name="financial_ledger">Financial Ledger</string>
-    <string name="checks">Checks</string>
+    <string name="check">Check</string>
     <string name="salary">Salary</string>
     <string name="expense">Expense</string>
     <string name="loan">Loan</string>

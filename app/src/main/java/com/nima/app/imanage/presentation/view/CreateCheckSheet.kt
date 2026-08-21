@@ -143,6 +143,7 @@ fun CreateCheckSheet(
                 onValueChange = { checkNumber = it },
                 label = { Text(stringResource(R.string.check_number)) },
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 isError = numberError,
                 supportingText = if (numberError) {
                     { RequiredFieldError(visible = true) }

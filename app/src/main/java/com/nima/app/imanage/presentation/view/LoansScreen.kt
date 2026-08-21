@@ -258,44 +258,62 @@ private fun TotalsCard(
     totalDebt: Long,
     totalReceivable: Long
 ) {
-    val debtColor = LocalAppColors.current.debt
-    val incomeColor = LocalAppColors.current.income
+    val primary = MaterialTheme.colorScheme.primary
+    val secondary = MaterialTheme.colorScheme.secondary
+
+    val gradient = Brush.linearGradient(
+        colors = listOf(primary, secondary.copy(alpha = 0.85f)),
+        start = Offset(0f, 0f),
+        end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+    )
 
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(6.dp)
     ) {
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceAround
+                .background(gradient)
+                .padding(20.dp)
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = stringResource(R.string.total_debt),
-                    style = MaterialTheme.typography.labelMedium
-                )
-                Spacer(modifier = Modifier.size(4.dp))
-                Text(
-                    text = NumberFormatUtils.format(totalDebt),
-                    color = debtColor,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = stringResource(R.string.total_receivable),
-                    style = MaterialTheme.typography.labelMedium
-                )
-                Spacer(modifier = Modifier.size(4.dp))
-                Text(
-                    text = NumberFormatUtils.format(totalReceivable),
-                    color = incomeColor,
-                    fontWeight = FontWeight.Bold
-                )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = stringResource(R.string.total_debt),
+                        color = Color.White.copy(alpha = 0.85f),
+                        style = MaterialTheme.typography.labelMedium,
+                        fontFamily = vazirFontFamily
+                    )
+                    Spacer(modifier = Modifier.size(4.dp))
+                    Text(
+                        text = NumberFormatUtils.format(totalDebt),
+                        color = Color.White,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = scaledSp(20f),
+                        fontFamily = vazirFontFamily
+                    )
+                }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = stringResource(R.string.total_receivable),
+                        color = Color.White.copy(alpha = 0.85f),
+                        style = MaterialTheme.typography.labelMedium,
+                        fontFamily = vazirFontFamily
+                    )
+                    Spacer(modifier = Modifier.size(4.dp))
+                    Text(
+                        text = NumberFormatUtils.format(totalReceivable),
+                        color = Color.White,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = scaledSp(20f),
+                        fontFamily = vazirFontFamily
+                    )
+                }
             }
         }
     }

@@ -82,7 +82,7 @@ fun FinancialScreen(
             onClick = { navController.navigate(Screen.Installments.route) }
         ),
         FinancialEntry(
-            title = stringResource(R.string.checks),
+            title = stringResource(R.string.check),
             icon = Icons.Default.ReceiptLong,
             color = Color(0xFF5E35B1),
             onClick = { navController.navigate(Screen.Checks.route) }

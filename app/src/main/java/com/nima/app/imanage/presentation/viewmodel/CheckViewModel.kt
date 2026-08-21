@@ -29,15 +29,8 @@ class CheckViewModel(
         viewModelScope.launch { repository.delete(check) }
     }
 
-    fun toggleSettled(check: CheckEntity) {
-        viewModelScope.launch {
-            repository.update(
-                check.copy(
-                    settled = !check.settled,
-                    settledAt = if (!check.settled) System.currentTimeMillis() else 0
-                )
-            )
-        }
+    fun updateState(check: CheckEntity, state: String) {
+        viewModelScope.launch { repository.update(check.copy(state = state)) }
     }
 
     fun addCounterparty(title: String) {
