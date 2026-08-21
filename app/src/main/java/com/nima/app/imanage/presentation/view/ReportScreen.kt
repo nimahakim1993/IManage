@@ -191,7 +191,7 @@ fun ReportScreen(
             initialMonth = selectedMonthYear?.first,
             initialYear = selectedMonthYear?.second,
             onConfirm = { month, year ->
-                viewModel.setMonthYear(month, year)
+                if (month != null) viewModel.setMonthYear(month, year)
                 showMonthYearPicker = false
             },
             onDismiss = { showMonthYearPicker = false }

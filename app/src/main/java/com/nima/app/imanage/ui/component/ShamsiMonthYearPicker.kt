@@ -27,6 +27,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,19 +47,22 @@ import com.nima.app.imanage.util.ShamsiDate
 fun ShamsiMonthYearPicker(
     initialMonth: Int?,
     initialYear: Int?,
-    onConfirm: (month: Int, year: Int) -> Unit,
-    onDismiss: () -> Unit
+    onConfirm: (month: Int?, year: Int) -> Unit,
+    onDismiss: () -> Unit,
+    allowYearOnly: Boolean = false
 ) {
     val today = ShamsiDate.today()
     val currentYear = today.first
 
-    var selectedMonth by remember { mutableIntStateOf(initialMonth ?: today.second) }
+    var selectedMonth by remember {
+        mutableStateOf<Int?>(if (allowYearOnly) initialMonth else (initialMonth ?: today.second))
+    }
     var selectedYear by remember { mutableIntStateOf(initialYear ?: currentYear) }
-    var displayYear by remember { mutableIntStateOf(selectedYear) }
 
-    val monthName = ShamsiDate.getMonthName(selectedMonth)
     val yearText = ShamsiDate.toPersianDigits(selectedYear.toString())
-    val selectedLabel = "$monthName $yearText"
+    val selectedLabel = selectedMonth?.let { month ->
+        "${ShamsiDate.getMonthName(month)} $yearText"
+    } ?: yearText
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -115,7 +119,10 @@ fun ShamsiMonthYearPicker(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = {
-                        if (displayYear < currentYear + 5) displayYear++
+                        if (selectedYear < currentYear + 5) {
+                            selectedYear++
+                            if (allowYearOnly) selectedMonth = null
+                        }
                     }) {
                         Icon(
                             Icons.Default.ChevronRight,
@@ -124,14 +131,17 @@ fun ShamsiMonthYearPicker(
                         )
                     }
                     Text(
-                        text = ShamsiDate.toPersianDigits(displayYear.toString()),
+                        text = yearText,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         fontFamily = vazirFontFamily,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                     IconButton(onClick = {
-                        if (displayYear > currentYear - 80) displayYear--
+                        if (selectedYear > currentYear - 80) {
+                            selectedYear--
+                            if (allowYearOnly) selectedMonth = null
+                        }
                     }) {
                         Icon(
                             Icons.Default.ChevronLeft,
@@ -149,8 +159,8 @@ fun ShamsiMonthYearPicker(
                 ) {
                     ShamsiDate.MONTH_NAMES.forEachIndexed { index, name ->
                         val month = index + 1
-                        val isSelected = month == selectedMonth && displayYear == selectedYear
-                        val isCurrent = month == today.second && displayYear == currentYear
+                        val isSelected = month == selectedMonth
+                        val isCurrent = month == today.second && selectedYear == currentYear
                         Box(
                             modifier = Modifier
                                 .padding(4.dp)
@@ -167,8 +177,7 @@ fun ShamsiMonthYearPicker(
                                     shape = RoundedCornerShape(12.dp)
                                 )
                                 .clickable {
-                                    selectedMonth = month
-                                    selectedYear = displayYear
+                                    selectedMonth = if (selectedMonth == month) null else month
                                 }
                                 .padding(horizontal = 12.dp, vertical = 10.dp)
                         ) {
@@ -187,9 +196,7 @@ fun ShamsiMonthYearPicker(
             }
         },
         confirmButton = {
-            TextButton(onClick = {
-                onConfirm(selectedMonth, selectedYear)
-            }) {
+            TextButton(onClick = { onConfirm(selectedMonth, selectedYear) }) {
                 Text(
                     text = stringResource(R.string.confirm),
                     fontFamily = vazirFontFamily,

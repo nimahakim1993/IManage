@@ -104,7 +104,7 @@ fun ChecksScreen(
     var selectedStates by remember { mutableStateOf(emptySet<String>()) }
     var selectedCounterparty by rememberSaveable { mutableStateOf<String?>(null) }
     var checkNumberQuery by rememberSaveable { mutableStateOf("") }
-    var selectedMonthYear by rememberSaveable { mutableStateOf<Pair<Int, Int>?>(null) }
+    var selectedMonthYear by rememberSaveable { mutableStateOf<Pair<Int?, Int>?>(null) }
     var showMonthYearPicker by rememberSaveable { mutableStateOf(false) }
 
     val title = stringResource(R.string.check)
@@ -140,7 +140,7 @@ fun ChecksScreen(
     val filtered = checks.filter { check ->
         val dateMatch = selectedMonthYear?.let { (month, year) ->
             val (jy, jm, _) = ShamsiDate.fromMillis(check.dueDate)
-            jy == year && jm == month
+            if (month == null) jy == year else (jy == year && jm == month)
         } ?: true
         (selectedType == null || check.type == selectedType) &&
                 (selectedStates.isEmpty() || check.state in selectedStates) &&
@@ -260,10 +260,11 @@ fun ChecksScreen(
             initialMonth = selectedMonthYear?.first,
             initialYear = selectedMonthYear?.second,
             onConfirm = { month, year ->
-                selectedMonthYear = Pair(month, year)
+                selectedMonthYear = month to year
                 showMonthYearPicker = false
             },
-            onDismiss = { showMonthYearPicker = false }
+            onDismiss = { showMonthYearPicker = false },
+            allowYearOnly = true
         )
     }
 }
@@ -275,7 +276,7 @@ private fun ChecksTotalsCard(
     totalPayable: Long,
     receivedCount: Int,
     payableCount: Int,
-    selectedMonthYear: Pair<Int, Int>?,
+    selectedMonthYear: Pair<Int?, Int>?,
     onDateFilterClick: () -> Unit,
     onClearDateFilter: () -> Unit
 ) {
@@ -289,7 +290,11 @@ private fun ChecksTotalsCard(
     )
 
     val dateFilterLabel = selectedMonthYear?.let { (month, year) ->
-        "${ShamsiDate.getMonthName(month)} ${ShamsiDate.toPersianDigits(year.toString())}"
+        if (month != null) {
+            "${ShamsiDate.getMonthName(month)} ${ShamsiDate.toPersianDigits(year.toString())}"
+        } else {
+            ShamsiDate.toPersianDigits(year.toString())
+        }
     } ?: stringResource(R.string.no_filter)
 
     Card(

@@ -104,7 +104,7 @@ fun ExpensesScreen(
         mutableStateOf<Set<Int>>(emptySet())
     }
     var showUncategorized by rememberSaveable { mutableStateOf(true) }
-    var selectedMonthYear by rememberSaveable { mutableStateOf<Pair<Int, Int>?>(null) }
+    var selectedMonthYear by rememberSaveable { mutableStateOf<Pair<Int?, Int>?>(null) }
     var showMonthYearPicker by rememberSaveable { mutableStateOf(false) }
     val expenseListState = rememberLazyListState()
     var pendingScrollToTop by remember { mutableStateOf(false) }
@@ -188,7 +188,7 @@ fun ExpensesScreen(
             }
             val dateMatch = selectedMonthYear?.let { (month, year) ->
                 val (jy, jm, _) = ShamsiDate.fromMillis(expense.createdAt)
-                jy == year && jm == month
+                if (month == null) jy == year else (jy == year && jm == month)
             } ?: true
             categoryMatch && queryMatch && dateMatch
         }
@@ -318,10 +318,11 @@ fun ExpensesScreen(
             initialMonth = selectedMonthYear?.first,
             initialYear = selectedMonthYear?.second,
             onConfirm = { month, year ->
-                selectedMonthYear = Pair(month, year)
+                selectedMonthYear = month to year
                 showMonthYearPicker = false
             },
-            onDismiss = { showMonthYearPicker = false }
+            onDismiss = { showMonthYearPicker = false },
+            allowYearOnly = true
         )
     }
 }
@@ -331,7 +332,7 @@ private fun TotalsCard(
     modifier: Modifier = Modifier,
     total: Long,
     count: Int,
-    selectedMonthYear: Pair<Int, Int>?,
+    selectedMonthYear: Pair<Int?, Int>?,
     onDateFilterClick: () -> Unit,
     onClearDateFilter: () -> Unit
 ) {
@@ -345,7 +346,11 @@ private fun TotalsCard(
     )
 
     val dateFilterLabel = selectedMonthYear?.let { (month, year) ->
-        "${ShamsiDate.getMonthName(month)} ${ShamsiDate.toPersianDigits(year.toString())}"
+        if (month != null) {
+            "${ShamsiDate.getMonthName(month)} ${ShamsiDate.toPersianDigits(year.toString())}"
+        } else {
+            ShamsiDate.toPersianDigits(year.toString())
+        }
     } ?: stringResource(R.string.no_filter)
 
     Card(

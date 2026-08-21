@@ -824,7 +824,7 @@ internal fun ReminderManagementSheet(
             initialMonth = selectedMonthYear?.first,
             initialYear = selectedMonthYear?.second,
             onConfirm = { month, year ->
-                selectedMonthYear = month to year
+                if (month != null) selectedMonthYear = month to year
                 showMonthYearPicker = false
             },
             onDismiss = { showMonthYearPicker = false }
@@ -1003,7 +1003,7 @@ internal fun NoteManagementSheet(
             initialMonth = selectedMonthYear?.first,
             initialYear = selectedMonthYear?.second,
             onConfirm = { month, year ->
-                selectedMonthYear = month to year
+                if (month != null) selectedMonthYear = month to year
                 showMonthYearPicker = false
             },
             onDismiss = { showMonthYearPicker = false }
