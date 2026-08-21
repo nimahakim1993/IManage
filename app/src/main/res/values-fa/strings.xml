@@ -8,7 +8,7 @@
     <string name="app_update_download_from">دانلود از %s</string>
     <string name="app_update_store">فروشگاه</string>
     <string name="app_notifications_title">اطلاعیه‌ها</string>
-    <string name="app_notifications_close">بستن</string>
+    <string name="app_notifications_seen">دیدم</string>
     <string name="app_update_later">بعداً</string>
 
     <!-- General -->

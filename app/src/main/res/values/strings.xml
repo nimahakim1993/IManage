@@ -17,7 +17,7 @@
     <string name="app_update_download_from">Download from %s</string>
     <string name="app_update_store">store</string>
     <string name="app_notifications_title">Notifications</string>
-    <string name="app_notifications_close">Close</string>
+    <string name="app_notifications_seen">Seen</string>
     <string name="app_update_later">Later</string>
 
     <!-- CreateLoanScreen -->
