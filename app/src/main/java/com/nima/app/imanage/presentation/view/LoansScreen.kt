@@ -376,7 +376,9 @@ fun LoanItem(
     )
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onEdit),
         shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.cardElevation(10.dp)
     ) {

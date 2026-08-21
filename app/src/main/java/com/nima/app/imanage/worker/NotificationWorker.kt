@@ -17,14 +17,32 @@ class NotificationWorker(
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
 
+    companion object {
+        const val KEY_MODE = "mode"
+        const val MODE_DUE_TODAY = "due_today"
+        const val MODE_DAY_BEFORE = "day_before"
+    }
+
     override suspend fun doWork(): Result {
         val koin = GlobalContext.get()
+        val checkDao: CheckDao = koin.get()
+        val notifHelper: NotificationHelper = koin.get()
+
+        val mode = inputData.getString(KEY_MODE) ?: MODE_DUE_TODAY
+
+        if (mode == MODE_DAY_BEFORE) {
+            val todayStart = ShamsiDate.todayMillis()
+            val tomorrowStart = todayStart + 86_400_000L
+            val tomorrowEnd = tomorrowStart + 86_400_000L
+            val dueChecks = checkDao.getDueBetween(tomorrowStart, tomorrowEnd)
+            notifHelper.showCheckDayBeforeNotification(dueChecks)
+            return Result.success()
+        }
+
         val loanDao: LoanDao = koin.get()
         val itemDao: InstallmentItemDao = koin.get()
         val carDao: CarServiceDao = koin.get()
         val installmentDao: InstallmentDao = koin.get()
-        val checkDao: CheckDao = koin.get()
-        val notifHelper: NotificationHelper = koin.get()
 
         val todayStart = ShamsiDate.todayMillis()
         val todayEnd = todayStart + 86_400_000L

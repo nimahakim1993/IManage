@@ -108,6 +108,7 @@
     <string name="home_cashflow_title">Cash Flow Report</string>
     <string name="home_net_balance">Net Balance</string>
     <string name="home_bank_accounts">Bank Accounts</string>
+    <string name="home_checks_in_progress">Checks in progress</string>
 
     <!-- FinancialScreen -->
     <string name="financial_ledger">Financial Ledger</string>
@@ -292,6 +293,12 @@
     <string name="check_clear_filters">Clear filters</string>
     <string name="check_due_notification_title">Check due today</string>
     <string name="check_due_notification_text">Check %1$s for %2$s is due today.</string>
+    <string name="check_due_tomorrow_notification_title">Check due tomorrow</string>
+    <string name="check_due_tomorrow_notification_text">Check %1$s for %2$s is due tomorrow.</string>
+    <plurals name="check_due_tomorrow_summary">
+        <item quantity="one">%d check due tomorrow</item>
+        <item quantity="other">%d checks due tomorrow</item>
+    </plurals>
     <string name="notif_label_check_due">Check due</string>
     <string name="office_type_check">Check</string>
 
@@ -575,7 +582,7 @@
     <string name="help_title">Module Guide</string>
 
     <string name="help_financial_short">Manage expenses, incomes, loans &amp; installments</string>
-    <string name="help_financial_long">Track all your financial activities in one place. Record daily expenses and incomes, manage debts and receivables with settlement tracking, and set up installment plans with automatic due date calculation. Filter and search through your financial history effortlessly.</string>
+    <string name="help_financial_long">Track all your financial activities in one place. Record daily expenses and incomes, manage debts and receivables with settlement tracking, manage checks with state tracking, and set up installment plans with automatic due date calculation. Set bank sender IDs to automatically record expenses from SMS. Filter and search through your financial history effortlessly.</string>
 
     <string name="help_bank_cards_short">Store and manage your bank cards securely</string>
     <string name="help_bank_cards_long">Keep all your bank card details organized and accessible. Store card numbers, CVV, expiry dates, Sheba and account numbers. Cards are displayed in a customizable order with visibility toggles for sensitive information. Copy details to clipboard with one tap.</string>
@@ -599,6 +606,6 @@
     <string name="help_car_long">Keep a detailed record of all vehicle maintenance. Log oil changes, tire changes, brake pad replacements and more. Track service dates, kilometer readings, costs, product brands and part names. Set next service reminders with date and kilometer targets to never miss maintenance.</string>
 
     <string name="help_office_short">Calendar view of all your financial events</string>
-    <string name="help_office_long">View all your financial activities in a unified calendar interface. See expenses, incomes, loans, trips, car services and installments on their respective dates. Get a bird\'s-eye view of your month with event indicators on each day. Tap any day to see detailed events and navigate to related modules.</string>
+    <string name="help_office_long">View all your financial activities in a unified calendar interface. See expenses, incomes, loans, trips, car services and installments on their respective dates. Set reminders and notes for any date to stay organized. Get a bird\'s-eye view of your month with event indicators on each day. Tap any day to see detailed events and navigate to related modules.</string>
 
 </resources>

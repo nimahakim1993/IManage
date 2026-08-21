@@ -23,6 +23,7 @@ class NotificationHelper(private val context: Context) {
         const val CHANNEL_ID = "daily_reminders"
         const val GROUP_KEY = "daily_reminders_group"
         const val NOTIFICATION_ID = 1001
+        const val NOTIFICATION_ID_DAY_BEFORE = 1002
         const val EXTRA_NAVIGATE_TO = "navigate_to"
         private const val PAYMENT_NOTIFICATION_BASE = 30_000
     }
@@ -172,6 +173,56 @@ class NotificationHelper(private val context: Context) {
 
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         manager.notify(NOTIFICATION_ID, notification)
+    }
+
+    fun showCheckDayBeforeNotification(checks: List<CheckEntity>) {
+        if (checks.isEmpty()) return
+
+        val localizedContext = LanguageManager.wrap(context)
+
+        val inboxStyle = NotificationCompat.InboxStyle()
+            .setBigContentTitle(
+                localizedContext.getString(R.string.check_due_tomorrow_notification_title)
+            )
+
+        checks.forEach { check ->
+            inboxStyle.addLine(
+                localizedContext.getString(
+                    R.string.check_due_tomorrow_notification_text,
+                    check.counterparty,
+                    NumberFormatUtils.format(check.amount)
+                )
+            )
+        }
+
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra(EXTRA_NAVIGATE_TO, "checks")
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            NOTIFICATION_ID_DAY_BEFORE,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val summaryText = localizedContext.resources.getQuantityString(
+            R.plurals.check_due_tomorrow_summary, checks.size, checks.size
+        )
+
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.imanage_logo)
+            .setContentTitle(
+                localizedContext.getString(R.string.check_due_tomorrow_notification_title)
+            )
+            .setContentText(summaryText)
+            .setStyle(inboxStyle)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.notify(NOTIFICATION_ID_DAY_BEFORE, notification)
     }
 
     fun showUserReminderNotification(title: String, description: String, notificationId: Int) {

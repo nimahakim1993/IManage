@@ -55,6 +55,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
+import com.nima.app.imanage.data.db.entity.CheckEntity
 import com.nima.app.imanage.data.db.entity.LoanEntity
 import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
@@ -136,6 +137,10 @@ fun HomeScreen(
     val incomes by incomeViewModel.incomes.collectAsState()
     val installments by installmentViewModel.installments.collectAsState()
 
+    val inProgressChecksCount = remember(checks) {
+        checks.count { it.state == CheckEntity.STATE_IN_PROGRESS }
+    }
+
     val totalDebt = remember(loans) {
         loans.filter { it.type == LoanEntity.TYPE_DEBT && !it.settled }.sumOf { it.price }
     }
@@ -164,8 +169,8 @@ fun HomeScreen(
             when (page) {
                 0 -> ReportCard(
                     title = stringResource(R.string.home_report_title),
-                    topRightLabel = stringResource(R.string.check),
-                    topRightValue = checks.size.toLong(),
+                    topRightLabel = stringResource(R.string.home_checks_in_progress),
+                    topRightValue = inProgressChecksCount.toLong(),
                     netBalance = netBalance,
                     leftTileLabel = stringResource(R.string.total_debt),
                     leftTileValue = totalDebt,
@@ -249,9 +254,7 @@ private fun ReportCard(
     val isDark = LocalIsDarkTheme.current
     val primary = MaterialTheme.colorScheme.primary
     val secondaryColor =
-        if (isDark) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f) else MaterialTheme.colorScheme.onErrorContainer.copy(
-            alpha = 0.85f
-        )
+        if (isDark) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f) else MaterialTheme.colorScheme.secondary
     val onPrimary = MaterialTheme.colorScheme.onPrimary
 
     val debtColor = LocalAppColors.current.debt
