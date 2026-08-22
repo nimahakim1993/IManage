@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -28,7 +30,6 @@ import androidx.compose.material.icons.filled.EditOff
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Tune
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -37,6 +38,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -59,6 +61,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
@@ -603,81 +606,107 @@ private fun FilterDialog(
     onClear: () -> Unit,
 ) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        AlertDialog(
-            onDismissRequest = onDismiss,
-            title = { Text(stringResource(R.string.filter)) },
-            text = {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    OutlinedTextField(
-                        shape = RoundedCornerShape(12.dp),
-                        value = searchQuery,
-                        onValueChange = onSearchQueryChange,
-                        label = { Text(stringResource(R.string.search_hint)) },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.size(12.dp))
-                    Text(
-                        text = stringResource(R.string.filter_by_category),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Spacer(modifier = Modifier.size(6.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
+        Dialog(onDismissRequest = onDismiss) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 20.dp)) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    shape = RoundedCornerShape(24.dp),
+                    color = MaterialTheme.colorScheme.surface
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 20.dp, vertical = 16.dp)
                     ) {
-                        Checkbox(
-                            checked = showUncategorized,
-                            onCheckedChange = onShowUncategorizedChange
-                        )
-                        Icon(
-                            imageVector = Icons.Default.Category,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp),
-                            tint = MaterialTheme.colorScheme.outline
-                        )
-                        Spacer(modifier = Modifier.size(4.dp))
                         Text(
-                            text = stringResource(R.string.no_category),
-                            modifier = Modifier.padding(start = 4.dp)
+                            text = stringResource(R.string.filter),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = vazirFontFamily
                         )
-                    }
-                    categories.forEach { category ->
-                        val palette =
-                            ColorUtils.palettes.getOrElse(category.colorIndex) { ColorUtils.palettes.first() }
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
+                        Spacer(modifier = Modifier.size(12.dp))
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                                .verticalScroll(rememberScrollState())
                         ) {
-                            Checkbox(
-                                checked = category.id in selectedCategoryFilters,
-                                onCheckedChange = { onCategoryToggle(category.id) }
+                            OutlinedTextField(
+                                shape = RoundedCornerShape(12.dp),
+                                value = searchQuery,
+                                onValueChange = onSearchQueryChange,
+                                label = { Text(stringResource(R.string.search_hint)) },
+                                modifier = Modifier.fillMaxWidth()
                             )
-                            Box(
-                                modifier = Modifier
-                                    .size(14.dp)
-                                    .clip(CircleShape)
-                                    .background(palette.primary)
+                            Spacer(modifier = Modifier.size(12.dp))
+                            Text(
+                                text = stringResource(R.string.filter_by_category),
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.SemiBold
                             )
                             Spacer(modifier = Modifier.size(6.dp))
-                            Text(
-                                text = category.title,
-                                modifier = Modifier.padding(start = 4.dp)
-                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Checkbox(
+                                    checked = showUncategorized,
+                                    onCheckedChange = onShowUncategorizedChange
+                                )
+                                Icon(
+                                    imageVector = Icons.Default.Category,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    tint = MaterialTheme.colorScheme.outline
+                                )
+                                Spacer(modifier = Modifier.size(4.dp))
+                                Text(
+                                    text = stringResource(R.string.no_category),
+                                    modifier = Modifier.padding(start = 4.dp)
+                                )
+                            }
+                            categories.forEach { category ->
+                                val palette =
+                                    ColorUtils.palettes.getOrElse(category.colorIndex) { ColorUtils.palettes.first() }
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Checkbox(
+                                        checked = category.id in selectedCategoryFilters,
+                                        onCheckedChange = { onCategoryToggle(category.id) }
+                                    )
+                                    Box(
+                                        modifier = Modifier
+                                            .size(14.dp)
+                                            .clip(CircleShape)
+                                            .background(palette.primary)
+                                    )
+                                    Spacer(modifier = Modifier.size(6.dp))
+                                    Text(
+                                        text = category.title,
+                                        modifier = Modifier.padding(start = 4.dp)
+                                    )
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            TextButton(onClick = onClear) {
+                                Text(stringResource(R.string.clear))
+                            }
+                            TextButton(onClick = onDismiss) {
+                                Text(stringResource(R.string.confirm))
+                            }
                         }
                     }
                 }
-            },
-            confirmButton = {
-                TextButton(onClick = onDismiss) {
-                    Text(stringResource(R.string.confirm))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = onClear) {
-                    Text(stringResource(R.string.clear))
-                }
             }
-        )
+        }
     }
 }

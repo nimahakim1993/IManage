@@ -146,7 +146,9 @@ class NotificationHelper(private val context: Context) {
         }
 
         val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_SINGLE_TOP
             targetScreen?.let { putExtra(EXTRA_NAVIGATE_TO, it) }
         }
         val pendingIntent = PendingIntent.getActivity(
@@ -196,7 +198,9 @@ class NotificationHelper(private val context: Context) {
         }
 
         val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_SINGLE_TOP
             putExtra(EXTRA_NAVIGATE_TO, "checks")
         }
         val pendingIntent = PendingIntent.getActivity(

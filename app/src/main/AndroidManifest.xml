@@ -45,6 +45,9 @@
             android:name=".receiver.ReminderReceiver"
             android:exported="false" />
         <receiver
+            android:name=".receiver.EventNotificationReceiver"
+            android:exported="false" />
+        <receiver
             android:name=".receiver.SmsPaymentReceiver"
             android:exported="true"
             android:permission="android.permission.BROADCAST_SMS">
