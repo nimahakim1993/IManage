@@ -53,10 +53,6 @@
     <string name="add_account">Add Account</string>
     <string name="sheba_number">Sheba Number</string>
     <string name="account_number">Account Number</string>
-    <string name="scan_card">Scan Card</string>
-    <string name="scan_card_hint">Place the card inside the frame</string>
-    <string name="scan_card_detecting">Reading card number...</string>
-    <string name="scan_card_permission">Camera permission is required to scan a card</string>
     <string name="more_options">More options</string>
     <string name="copy">Copy</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>

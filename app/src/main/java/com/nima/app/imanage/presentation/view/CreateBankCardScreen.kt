@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -90,7 +89,6 @@ fun CreateBankCardScreen(
     var bankName by rememberSaveable { mutableStateOf("") }
     var shebaNumber by rememberSaveable { mutableStateOf("") }
     var accountNumber by rememberSaveable { mutableStateOf("") }
-    var showCardScanner by remember { mutableStateOf(false) }
     var showValidationErrors by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val bankNameError = showValidationErrors && bankName.isBlank()
@@ -126,18 +124,12 @@ fun CreateBankCardScreen(
     }
 
     val resetDesc = stringResource(R.string.reset)
-    val scanDesc = stringResource(R.string.scan_card)
 
     LaunchedEffect(Unit) {
         setToolbar(
             ToolbarConfig(
                 title = "",
                 actions = listOf(
-                    ToolbarAction(
-                        icon = Icons.Default.CameraAlt,
-                        contentDescription = scanDesc,
-                        onClick = { showCardScanner = true }
-                    ),
                     ToolbarAction(
                         icon = Icons.Outlined.SettingsBackupRestore,
                         contentDescription = resetDesc,
@@ -153,16 +145,6 @@ fun CreateBankCardScreen(
                     )
                 )
             )
-        )
-    }
-
-    if (showCardScanner) {
-        CardScannerDialog(
-            onDismiss = { showCardScanner = false },
-            onResult = { result ->
-                cardNumber = result.cardNumber
-                showCardScanner = false
-            }
         )
     }
 

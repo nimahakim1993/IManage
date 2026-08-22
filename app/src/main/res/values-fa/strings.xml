@@ -53,10 +53,6 @@
     <string name="add_account">افزودن حساب</string>
     <string name="sheba_number">شماره شبا</string>
     <string name="account_number">شماره حساب</string>
-    <string name="scan_card">اسکن کارت</string>
-    <string name="scan_card_hint">کارت را داخل کادر قرار دهید</string>
-    <string name="scan_card_detecting">شماره کارت در حال خواندن است…</string>
-    <string name="scan_card_permission">برای اسکن کارت، اجازه دسترسی به دوربین لازم است</string>
     <string name="more_options">گزینه‌های بیشتر</string>
     <string name="copy">کپی</string>
     <string name="copied_to_clipboard">در کلیپ‌بورد کپی شد</string>
