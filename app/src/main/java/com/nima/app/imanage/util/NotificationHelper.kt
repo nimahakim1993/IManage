@@ -74,7 +74,7 @@ class NotificationHelper(private val context: Context) {
                     R.string.notif_line_amount,
                     label,
                     loan.targetPersonName,
-                    NumberFormatUtils.format(loan.price)
+                    NumberFormatUtils.formatForNotification(loan.price)
                 )
             )
         }
@@ -91,7 +91,7 @@ class NotificationHelper(private val context: Context) {
                     R.string.notif_line_amount,
                     label,
                     loan.targetPersonName,
-                    NumberFormatUtils.format(loan.price)
+                    NumberFormatUtils.formatForNotification(loan.price)
                 )
             )
         }
@@ -103,7 +103,7 @@ class NotificationHelper(private val context: Context) {
                     R.string.notif_line_amount,
                     localizedContext.getString(R.string.notif_label_installment),
                     title,
-                    NumberFormatUtils.format(item.amount)
+                    NumberFormatUtils.formatForNotification(item.amount)
                 )
             )
         }
@@ -116,7 +116,7 @@ class NotificationHelper(private val context: Context) {
                     R.string.notif_line_amount,
                     localizedContext.getString(R.string.notif_label_car_service),
                     typeName,
-                    NumberFormatUtils.format(service.amountPaid)
+                    NumberFormatUtils.formatForNotification(service.amountPaid)
                 )
             )
         }
@@ -140,7 +140,7 @@ class NotificationHelper(private val context: Context) {
                     R.string.notif_line_amount,
                     localizedContext.getString(R.string.notif_label_check_due),
                     check.counterparty,
-                    NumberFormatUtils.format(check.amount)
+                    NumberFormatUtils.formatForNotification(check.amount)
                 )
             )
         }
@@ -192,7 +192,7 @@ class NotificationHelper(private val context: Context) {
                 localizedContext.getString(
                     R.string.check_due_tomorrow_notification_text,
                     check.counterparty,
-                    NumberFormatUtils.format(check.amount)
+                    NumberFormatUtils.formatForNotification(check.amount)
                 )
             )
         }
@@ -278,7 +278,7 @@ class NotificationHelper(private val context: Context) {
             .setContentText(
                 localizedContext.getString(
                     R.string.sms_payment_amount,
-                    NumberFormatUtils.format(payment.amount)
+                    NumberFormatUtils.formatForNotification(payment.amount)
                 )
             )
             .setContentIntent(pendingIntent)

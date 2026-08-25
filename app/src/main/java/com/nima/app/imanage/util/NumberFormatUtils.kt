@@ -44,6 +44,11 @@ object NumberFormatUtils {
 
     fun format(value: Int): String = format(value.toLong())
 
+    /** Uses a regular comma because some notification fonts render ٬ above the digits. */
+    fun formatForNotification(value: Long): String = format(value).replace('\u066C', ',')
+
+    fun formatForNotification(value: Int): String = formatForNotification(value.toLong())
+
     fun applySeparator(input: String): String {
         if (input.isEmpty()) return ""
         val asLong = parseToLong(input)

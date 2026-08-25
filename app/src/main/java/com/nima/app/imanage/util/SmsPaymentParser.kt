@@ -8,6 +8,7 @@ object SmsPaymentParser {
     private val paymentWords = listOf("پرداخت", "خرید", "برداشت", "purchase", "payment", "debit")
     private val incomingWords = listOf("واریز", "دریافت", "وصول", "deposit", "credit")
     private val refundWords = listOf("برگشت", "بازگشت", "refund", "reversal")
+    private val verificationCodeMarkers = listOf("رمز پویا", "رمزپویا")
     private val amountRegex = Regex(
         "(?:مبلغ|amount|مبلغ خرید|خرید)\\s*[:：]?\\s*([۰-۹٠-٩\\d][۰-۹٠-٩\\d,،. ]*)",
         RegexOption.IGNORE_CASE
@@ -21,6 +22,13 @@ object SmsPaymentParser {
     fun parse(text: String): ParsedPayment? {
         val normalized = normalizeDigits(text)
         val lower = normalized.lowercase()
+
+        // Verification-code messages can contain "خرید" and "مبلغ", but are not payments.
+        if (verificationCodeMarkers.any(normalized::contains)) return null
+
+        // Only bank messages containing the account-balance line are payment messages.
+        if (!isLikelyBankMessage(normalized)) return null
+
         if (refundWords.any(lower::contains) || incomingWords.any(lower::contains)) return null
         val debitAmountText = debitLineRegex.find(normalized)?.groupValues?.get(1)
         if (debitAmountText == null && paymentWords.none(lower::contains)) return null
