@@ -407,6 +407,23 @@ fun LoanItem(
                             fontFamily = vazirFontFamily,
                             modifier = Modifier.weight(1f, fill = false)
                         )
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color.White.copy(alpha = 0.22f))
+                                .padding(horizontal = 8.dp, vertical = 3.dp)
+                        ) {
+                            Text(
+                                text = stringResource(
+                                    if (loan.type == LoanEntity.TYPE_DEBT) R.string.debt else R.string.receivable
+                                ),
+                                color = Color.White,
+                                fontSize = scaledSp(10f),
+                                fontFamily = vazirFontFamily,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
                         AnimatedVisibility(
                             visible = loan.settled,
                             enter = scaleIn(

@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.nima.app.imanage.BuildConfig
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.BankCardEntity
 import com.nima.app.imanage.data.model.ToolbarAction
@@ -153,27 +154,38 @@ fun CreateBankCardScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .imePadding()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        AtmCardPreview(
-            editMode = false,
-            showSensitive = true,
-            cardNumber = cardNumber,
-            cvv = cvv,
-            month = month,
-            year = year,
-            bankName = bankName,
-            color = cardColor,
-            onEdit = {},
-            onDelete = {}
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            AtmCardPreview(
+                editMode = false,
+                showSensitive = true,
+                cardNumber = cardNumber,
+                cvv = cvv,
+                month = month,
+                year = year,
+                bankName = bankName,
+                color = cardColor,
+                onEdit = {},
+                onDelete = {}
+            )
+        }
 
-        OutlinedTextField(
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            OutlinedTextField(
             shape = RoundedCornerShape(12.dp),
             value = bankName,
             onValueChange = { bankName = it },
@@ -202,64 +214,67 @@ fun CreateBankCardScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        OutlinedTextField(
-            shape = RoundedCornerShape(12.dp),
-            value = NumberFormatUtils.toLocalizedDigits(cvv),
-            onValueChange = {
-                val normalized = it.normalizeDigits()
-                if (normalized.length <= 4 && normalized.all(Char::isDigit)) cvv = normalized
-            },
-            label = { Text(stringResource(R.string.cvv2)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            isError = cvvError,
-            supportingText = if (cvvError) {
-                { RequiredFieldError(visible = true) }
-            } else null,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-
+        if (!BuildConfig.HIDE_CARD_SENSITIVE) {
             OutlinedTextField(
                 shape = RoundedCornerShape(12.dp),
-                value = NumberFormatUtils.toLocalizedDigits(month),
+                value = NumberFormatUtils.toLocalizedDigits(cvv),
                 onValueChange = {
                     val normalized = it.normalizeDigits()
-                    if (normalized.length <= 2 && normalized.all(Char::isDigit)) {
-                        month = normalized
-                        if (normalized.length == 2) yearFocusRequester.requestFocus()
-                    }
+                    if (normalized.length <= 4 && normalized.all(Char::isDigit)) cvv = normalized
                 },
-                label = { Text(stringResource(R.string.month)) },
+                label = { Text(stringResource(R.string.cvv2)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                isError = monthError,
-                supportingText = if (monthError) {
+                isError = cvvError,
+                supportingText = if (cvvError) {
                     { RequiredFieldError(visible = true) }
                 } else null,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.fillMaxWidth()
             )
 
-        OutlinedTextField(
-            shape = RoundedCornerShape(12.dp),
-            value = NumberFormatUtils.toLocalizedDigits(year),
-            onValueChange = {
-                val normalized = it.normalizeDigits()
-                if (normalized.length <= 2 && normalized.all(Char::isDigit)) year = normalized
-            },
-            label = { Text(stringResource(R.string.year)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            isError = yearError,
-            supportingText = if (yearError) {
-                { RequiredFieldError(visible = true) }
-            } else null,
-            modifier = Modifier
-                .weight(1f)
-                .focusRequester(yearFocusRequester)
-        )
-    }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+
+                OutlinedTextField(
+                    shape = RoundedCornerShape(12.dp),
+                    value = NumberFormatUtils.toLocalizedDigits(month),
+                    onValueChange = {
+                        val normalized = it.normalizeDigits()
+                        if (normalized.length <= 2 && normalized.all(Char::isDigit)) {
+                            month = normalized
+                            if (normalized.length == 2) yearFocusRequester.requestFocus()
+                        }
+                    },
+                    label = { Text(stringResource(R.string.month)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    isError = monthError,
+                    supportingText = if (monthError) {
+                        { RequiredFieldError(visible = true) }
+                    } else null,
+                    modifier = Modifier.weight(1f)
+                )
+
+                OutlinedTextField(
+                    shape = RoundedCornerShape(12.dp),
+                    value = NumberFormatUtils.toLocalizedDigits(year),
+                    onValueChange = {
+                        val normalized = it.normalizeDigits()
+                        if (normalized.length <= 2 && normalized.all(Char::isDigit)) year =
+                            normalized
+                    },
+                    label = { Text(stringResource(R.string.year)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    isError = yearError,
+                    supportingText = if (yearError) {
+                        { RequiredFieldError(visible = true) }
+                    } else null,
+                    modifier = Modifier
+                        .weight(1f)
+                        .focusRequester(yearFocusRequester)
+                )
+            }
+        }
 
     OutlinedTextField(
         shape = RoundedCornerShape(12.dp),
@@ -296,9 +311,9 @@ fun CreateBankCardScreen(
                 .height(56.dp),
             shape = RoundedCornerShape(16.dp),
             onClick = {
-                if (bankName.isBlank() || cardNumber.isBlank() || cvv.isBlank() ||
-                    month.isBlank() || year.isBlank()
-                ) {
+                val sensitiveValid = BuildConfig.HIDE_CARD_SENSITIVE ||
+                    (!cvv.isBlank() && !month.isBlank() && !year.isBlank())
+                if (bankName.isBlank() || cardNumber.isBlank() || !sensitiveValid) {
                     showValidationErrors = true
                     showRequiredFieldsToast(context)
                     return@Button
@@ -319,6 +334,7 @@ fun CreateBankCardScreen(
             }
         ) {
             Text(text = stringResource(R.string.confirm))
+        }
         }
     }
 }
@@ -357,7 +373,7 @@ fun AtmCardPreview(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
@@ -415,25 +431,27 @@ fun AtmCardPreview(
             }
 
             Column {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                        Text(
-                            text = if (!showSensitive) {
-                                stringResource(R.string.cvv_masked)
-                            } else {
-                                if (cvv.isBlank()) stringResource(R.string.cvv_format, stringResource(R.string.not_set)) else NumberFormatUtils.toLocalizedDigits(stringResource(R.string.cvv_format, cvv))
-                            },
-                            fontSize = scaledSp(14f),
-                            color = Color.White
-                        )
-                        Text(
-                            text = NumberFormatUtils.toLocalizedDigits(expiry).ifEmpty { stringResource(R.string.yy_mm_placeholder) },
-                            fontSize = scaledSp(14f),
-                            color = Color.White
-                        )
+                if (!BuildConfig.HIDE_CARD_SENSITIVE) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                            Text(
+                                text = if (!showSensitive) {
+                                    stringResource(R.string.cvv_masked)
+                                } else {
+                                    if (cvv.isBlank()) stringResource(R.string.cvv_format, stringResource(R.string.not_set)) else NumberFormatUtils.toLocalizedDigits(stringResource(R.string.cvv_format, cvv))
+                                },
+                                fontSize = scaledSp(14f),
+                                color = Color.White
+                            )
+                            Text(
+                                text = NumberFormatUtils.toLocalizedDigits(expiry).ifEmpty { stringResource(R.string.yy_mm_placeholder) },
+                                fontSize = scaledSp(14f),
+                                color = Color.White
+                            )
+                        }
                     }
                 }
 

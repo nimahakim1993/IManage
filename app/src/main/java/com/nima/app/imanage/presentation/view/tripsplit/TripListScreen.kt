@@ -92,7 +92,9 @@ fun TripListScreen(
                 EmptyState(
                     icon = Icons.Default.Groups,
                     title = stringResource(R.string.trip_empty_title),
-                    hint = stringResource(R.string.trip_empty_hint)
+                    hint = stringResource(R.string.trip_empty_hint),
+                    actionLabel = stringResource(R.string.add),
+                    onAction = { navController.navigate(Screen.CreateTrip.createRoute()) }
                 )
             }
         } else {

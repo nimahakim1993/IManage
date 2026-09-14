@@ -14,10 +14,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
@@ -65,7 +67,7 @@ fun CreateExpenseSheet(
     var description by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf(TextFieldValue("")) }
     var categoryId by remember { mutableStateOf<Int?>(null) }
-    var createdAt by remember { mutableStateOf(ShamsiDate.todayMillis()) }
+    var createdAt by remember { mutableStateOf(System.currentTimeMillis()) }
     var showDatePicker by remember { mutableStateOf(false) }
     var showValidationErrors by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -124,6 +126,17 @@ fun CreateExpenseSheet(
                 supportingText = if (titleError) {
                     { RequiredFieldError(visible = true) }
                 } else null,
+                trailingIcon = {
+                    if (title.isNotEmpty()) {
+                        IconButton(onClick = { title = "" }) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = stringResource(R.string.clear),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -188,6 +201,17 @@ fun CreateExpenseSheet(
                 placeholder = { Text(stringResource(R.string.description_optional_hint)) },
                 minLines = 2,
                 maxLines = 4,
+                trailingIcon = {
+                    if (description.isNotEmpty()) {
+                        IconButton(onClick = { description = "" }) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = stringResource(R.string.clear),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                },
                 modifier = Modifier.fillMaxWidth()
             )
 

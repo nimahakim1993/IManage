@@ -18,6 +18,20 @@ android {
         versionName = "1.2.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("boolean", "HIDE_CARD_SENSITIVE", "false")
+    }
+
+    flavorDimensions += "market"
+
+    productFlavors {
+        create("cafebazaar") {
+            dimension = "market"
+            buildConfigField("boolean", "HIDE_CARD_SENSITIVE", "true")
+        }
+        create("myket") {
+            dimension = "market"
+        }
     }
 
     buildTypes {
@@ -40,13 +54,14 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     applicationVariants.configureEach {
         outputs.configureEach {
             val suffix = if (buildType.name == "debug") "_debug" else ""
             (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                "imanage_v${versionName}${suffix}.apk"
+                "imanage_${productFlavors.joinToString("_") { it.name }}_v${versionName}${suffix}.apk"
         }
     }
 }

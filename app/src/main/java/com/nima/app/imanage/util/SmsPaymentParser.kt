@@ -5,7 +5,7 @@ import java.security.MessageDigest
 data class ParsedPayment(val title: String, val amount: Long)
 
 object SmsPaymentParser {
-    private val paymentWords = listOf("پرداخت", "خرید", "برداشت", "purchase", "payment", "debit")
+    private val paymentWords = listOf("پرداخت", "خرید", "برداشت", "پايا", "پایا", "انتقال", "purchase", "payment", "debit")
     private val incomingWords = listOf("واریز", "دریافت", "وصول", "deposit", "credit")
     private val refundWords = listOf("برگشت", "بازگشت", "refund", "reversal")
     private val verificationCodeMarkers = listOf("رمز پویا", "رمزپویا")
@@ -14,10 +14,12 @@ object SmsPaymentParser {
         RegexOption.IGNORE_CASE
     )
     private val transactionAmountRegex =
-        Regex("(?:برداشت|خرید|پرداخت)\\s*[:：]?\\s*([0-9][0-9,،.]*)", RegexOption.IGNORE_CASE)
+        Regex("(?:برداشت|خرید|پرداخت|پايا|پایا)\\s*[:：]?\\s*([0-9][0-9,،.]*)", RegexOption.IGNORE_CASE)
     private val balanceRegex =
-        Regex("(?:مانده|موجودی|موجودي)[\\s:：]{1,3}[0-9]", RegexOption.IGNORE_CASE)
-    private val debitLineRegex = Regex("(?m)^\\s*-\\s*([0-9][0-9,،.]*)\\s*$")
+        Regex("(?:مانده|موجودی|موجودي)[\\s:：]{0,3}[0-9]", RegexOption.IGNORE_CASE)
+    private val debitLineRegex = Regex(
+        "(?m)^\\s*(?=.*[،,-])\\s*-?\\s*([0-9][0-9,،]*)\\s*-?\\s*$"
+    )
 
     fun parse(text: String): ParsedPayment? {
         val normalized = normalizeDigits(text)

@@ -28,7 +28,7 @@
     <string name="person_name">نام شخص</string>
     <string name="amount">مبلغ</string>
     <string name="payment_date">تاریخ پرداخت</string>
-    <string name="receive_date">تاریخ دریافت</string>
+    <string name="receive_date">موعد تسویه</string>
     <string name="description">توضیحات</string>
 
     <!-- CreateBankCardScreen -->
@@ -79,7 +79,7 @@
     <string name="clear">پاک کردن</string>
     <string name="description_prefix">توضیحات : %s</string>
     <string name="payment_date_prefix">تاریخ پرداخت : %s</string>
-    <string name="receive_date_prefix">تاریخ دریافت : %s</string>
+    <string name="receive_date_prefix">موعد تسویه : %s</string>
     <string name="total_debt">مجموع بدهی</string>
     <string name="total_receivable">مجموع بستانکاری</string>
     <string name="settled">تسویه شده</string>
@@ -303,7 +303,7 @@
     <string name="select_date">انتخاب تاریخ</string>
     <string name="select_month_year">انتخاب ماه / سال</string>
     <string name="select_payment_date">انتخاب تاریخ پرداخت</string>
-    <string name="select_receive_date">انتخاب تاریخ دریافت</string>
+    <string name="select_receive_date">انتخاب موعد تسویه</string>
     <string name="shamsi_day">روز</string>
     <string name="shamsi_month">ماه</string>
     <string name="shamsi_year">سال</string>
