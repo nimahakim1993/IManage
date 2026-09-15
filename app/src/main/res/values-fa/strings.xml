@@ -48,9 +48,9 @@
     <string name="yy_mm_placeholder">YY/MM</string>
 
     <!-- BankCardsScreen -->
-    <string name="bank_account">حساب بانکی</string>
+    <string name="bank_account">کارت بانکی</string>
     <string name="visibility">قابلیت مشاهده</string>
-    <string name="add_account">افزودن حساب</string>
+    <string name="add_account">افزودن کارت</string>
     <string name="sheba_number">شماره شبا</string>
     <string name="account_number">شماره حساب</string>
     <string name="more_options">گزینه‌های بیشتر</string>
@@ -58,8 +58,8 @@
     <string name="copied_to_clipboard">در کلیپ‌بورد کپی شد</string>
     <string name="drag">برای جابجایی بکشید</string>
     <string name="not_set">تنظیم نشده</string>
-    <string name="empty_bank_cards">هنوز حساب بانکی ندارید</string>
-    <string name="empty_bank_cards_hint">برای افزودن اولین حساب روی + بزنید</string>
+    <string name="empty_bank_cards">هنوز کارت بانکی ندارید</string>
+    <string name="empty_bank_cards_hint">برای افزودن اولین کارت روی + بزنید</string>
 
     <!-- Empty state -->
     <string name="empty_loans">هنوز بدهی یا بستانکاری ندارید</string>
@@ -97,13 +97,13 @@
     <string name="shared_trip">دونگ سفر</string>
     <string name="note">یادداشت</string>
     <string name="assets">دارایی</string>
-    <string name="bank_account_home">حساب بانکی</string>
+    <string name="bank_account_home">کارت بانکی</string>
     <string name="report">گزارش</string>
     <string name="car_services">سرویس خودرو</string>
     <string name="home_report_title">گزارش مالی</string>
     <string name="home_cashflow_title">گزارش جریان نقدی</string>
     <string name="home_net_balance">تراز خالص</string>
-    <string name="home_bank_accounts">حساب‌های بانکی</string>
+    <string name="home_bank_accounts">کارت‌های بانکی</string>
     <string name="home_checks_in_progress">چک‌های در جریان</string>
 
     <!-- FinancialScreen -->
@@ -148,6 +148,11 @@
     <string name="restore_success">بازیابی با موفقیت انجام شد</string>
     <string name="backup_failed">پشتیبان‌گیری ناموفق بود</string>
     <string name="restore_failed">بازیابی ناموفق بود</string>
+    <string name="backup_invalid_file">فایل پشتیبان نامعتبر است</string>
+    <string name="backup_unsupported_version">نسخه پشتیبان پشتیبانی نمی‌شود: %1$s</string>
+    <string name="backup_could_not_open_output">باز کردن خروجی ممکن نیست</string>
+    <string name="backup_could_not_open_input">باز کردن ورودی ممکن نیست</string>
+    <string name="backup_empty_content">داده پشتیبان خالی است</string>
     <string name="success">موفق</string>
     <string name="error_title">خطا</string>
     <string name="ok">باشه</string>
@@ -379,6 +384,7 @@
     <string name="password_toggle_visibility">تغییر نمایش</string>
     <string name="username_copied">نام کاربری کپی شد</string>
     <string name="password_copied">رمز کپی شد</string>
+    <string name="password_decrypt_failed">رمزگشایی این رمز ممکن نیست</string>
     <string name="biometric_reveal_title">احراز هویت لازم است</string>
     <string name="biometric_reveal_subtitle">برای مشاهده این رمز اثر انگشت خود را تأیید کنید</string>
     <string name="device_credential_reveal_subtitle">برای مشاهده این رمز، پین/الگوی/رمز دستگاه را وارد کنید</string>

@@ -280,6 +280,10 @@ private fun requestReveal(
     onDecrypted: ((String) -> Unit)? = null
 ) {
     val plain = viewModel.decryptPassword(item.encryptedPassword)
+    if (plain.isBlank() && item.encryptedPassword.isNotBlank()) {
+        Toast.makeText(context, context.getString(R.string.password_decrypt_failed), Toast.LENGTH_SHORT).show()
+        return
+    }
     if (authType == AuthType.NONE) {
         // No lock screen set on this device — reveal directly without authentication
         revealedPasswords[item.id] = plain

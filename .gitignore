@@ -9,4 +9,6 @@
 .externalNativeBuild
 .cxx
 .kotlin
+/app/cafebazaar
+/app/myket
 local.properties

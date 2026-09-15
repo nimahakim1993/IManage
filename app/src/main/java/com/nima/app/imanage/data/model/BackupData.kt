@@ -3,6 +3,8 @@ package com.nima.app.imanage.data.model
 import com.nima.app.imanage.data.db.entity.AssetEntity
 import com.nima.app.imanage.data.db.entity.BankCardEntity
 import com.nima.app.imanage.data.db.entity.CarServiceEntity
+import com.nima.app.imanage.data.db.entity.CheckCounterpartyEntity
+import com.nima.app.imanage.data.db.entity.CheckEntity
 import com.nima.app.imanage.data.db.entity.ExpenseCategoryEntity
 import com.nima.app.imanage.data.db.entity.ExpenseEntity
 import com.nima.app.imanage.data.db.entity.IncomeEntity
@@ -12,7 +14,10 @@ import com.nima.app.imanage.data.db.entity.InstallmentItemEntity
 import com.nima.app.imanage.data.db.entity.LoanEntity
 import com.nima.app.imanage.data.db.entity.NoteBoxEntity
 import com.nima.app.imanage.data.db.entity.NoteEntity
+import com.nima.app.imanage.data.db.entity.OfficeNoteEntity
+import com.nima.app.imanage.data.db.entity.OfficeReminderEntity
 import com.nima.app.imanage.data.db.entity.ParticipantEntity
+import com.nima.app.imanage.data.db.entity.PendingPaymentEntity
 import com.nima.app.imanage.data.db.entity.SettlementEntity
 import com.nima.app.imanage.data.db.entity.TripEntity
 import com.nima.app.imanage.data.db.entity.TripExpenseEntity
@@ -41,7 +46,12 @@ data class BackupData(
     val tripExpenses: List<TripExpenseEntity> = emptyList(),
     val tripExpenseSplits: List<TripExpenseSplitEntity> = emptyList(),
     val settlements: List<SettlementEntity> = emptyList(),
-    val carServices: List<CarServiceEntity> = emptyList()
+    val carServices: List<CarServiceEntity> = emptyList(),
+    val officeNotes: List<OfficeNoteEntity> = emptyList(),
+    val officeReminders: List<OfficeReminderEntity> = emptyList(),
+    val pendingPayments: List<PendingPaymentEntity> = emptyList(),
+    val checks: List<CheckEntity> = emptyList(),
+    val checkCounterparties: List<CheckCounterpartyEntity> = emptyList()
 )
 
 data class BackupSettings(

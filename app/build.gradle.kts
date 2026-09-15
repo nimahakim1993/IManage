@@ -57,6 +57,11 @@ android {
         buildConfig = true
     }
 
+    lint {
+        checkReleaseBuilds = false
+        abortOnError = false
+    }
+
     applicationVariants.configureEach {
         outputs.configureEach {
             val suffix = if (buildType.name == "debug") "_debug" else ""

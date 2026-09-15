@@ -37,7 +37,7 @@ class SettingsViewModel(
                     _backupState.value = BackupState.Success(isRestore = false)
                 }
                 .onFailure { e ->
-                    _backupState.value = BackupState.Error(e.message ?: "")
+                    _backupState.value = BackupState.Error(e.message ?: e.toString())
                 }
         }
     }
@@ -50,7 +50,7 @@ class SettingsViewModel(
                     _backupState.value = BackupState.Success(isRestore = true)
                 }
                 .onFailure { e ->
-                    _backupState.value = BackupState.Error(e.message ?: "")
+                    _backupState.value = BackupState.Error(e.message ?: e.toString())
                 }
         }
     }

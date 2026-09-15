@@ -147,6 +147,11 @@
     <string name="restore_success">Restore completed successfully</string>
     <string name="backup_failed">Backup failed</string>
     <string name="restore_failed">Restore failed</string>
+    <string name="backup_invalid_file">Invalid backup file</string>
+    <string name="backup_unsupported_version">Unsupported backup version: %1$s</string>
+    <string name="backup_could_not_open_output">Could not open output stream</string>
+    <string name="backup_could_not_open_input">Could not open input stream</string>
+    <string name="backup_empty_content">Backup data serialized to empty content</string>
     <string name="success">Success</string>
     <string name="error_title">Error</string>
     <string name="ok">OK</string>
@@ -378,6 +383,7 @@
     <string name="password_toggle_visibility">Toggle visibility</string>
     <string name="username_copied">Username copied</string>
     <string name="password_copied">Password copied</string>
+    <string name="password_decrypt_failed">Unable to decrypt this password</string>
     <string name="biometric_reveal_title">Authentication required</string>
     <string name="biometric_reveal_subtitle">Verify your fingerprint to view this password</string>
     <string name="device_credential_reveal_subtitle">Enter your device PIN/pattern/password to view this password</string>

@@ -49,5 +49,9 @@ class PasswordItemViewModel(private val repository: PasswordItemRepository) : Vi
     }
 
     fun decryptPassword(stored: String): String =
-        CryptoUtils.decrypt(stored)
+        try {
+            CryptoUtils.decrypt(stored)
+        } catch (e: Exception) {
+            ""
+        }
 }

@@ -21,6 +21,9 @@ interface PendingPaymentDao {
     @Query("SELECT * FROM pending_payments WHERE status = 'PENDING' ORDER BY receivedAt DESC")
     fun getPending(): Flow<List<PendingPaymentEntity>>
 
+    @Query("SELECT * FROM pending_payments ORDER BY receivedAt DESC")
+    fun getAll(): Flow<List<PendingPaymentEntity>>
+
     @Query("UPDATE pending_payments SET status = :status WHERE id = :id")
     suspend fun updateStatus(id: Int, status: String)
 }

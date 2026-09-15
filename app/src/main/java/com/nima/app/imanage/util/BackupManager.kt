@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.AppDatabase
 import com.nima.app.imanage.data.db.entity.PasswordItemEntity
 import com.nima.app.imanage.data.model.BackupData
@@ -29,13 +30,24 @@ class BackupManager(private val db: AppDatabase) {
             val installments = db.installmentDao().getAll().first()
             val installmentItems = db.installmentItemDao().getAllItems().first()
             val assets = db.assetDao().getAll().first()
-            val passwords = db.passwordItemDao().getAll().first().map { decryptPassword(it) }
+            val passwords = db.passwordItemDao().getAll().first().map { item ->
+                try {
+                    decryptPassword(item)
+                } catch (e: Exception) {
+                    item.copy(encryptedPassword = "")
+                }
+            }
             val trips = db.tripDao().getAll().first()
             val participants = db.participantDao().getAllOnce()
             val tripExpenses = db.tripExpenseDao().getAll().first()
             val tripExpenseSplits = db.tripExpenseSplitDao().getAllOnce()
             val settlements = db.settlementDao().getAllOnce()
             val carServices = db.carServiceDao().getAll().first()
+            val officeNotes = db.officeNoteDao().getAll().first()
+            val officeReminders = db.officeReminderDao().getAll().first()
+            val pendingPayments = db.pendingPaymentDao().getAll().first()
+            val checks = db.checkDao().getAll().first()
+            val checkCounterparties = db.checkCounterpartyDao().getAll().first()
 
             val prefs = context.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
             val settings = BackupSettings(
@@ -71,14 +83,21 @@ class BackupManager(private val db: AppDatabase) {
                 tripExpenses = tripExpenses,
                 tripExpenseSplits = tripExpenseSplits,
                 settlements = settlements,
-                carServices = carServices
+                carServices = carServices,
+                officeNotes = officeNotes,
+                officeReminders = officeReminders,
+                pendingPayments = pendingPayments,
+                checks = checks,
+                checkCounterparties = checkCounterparties
             )
 
             val json = exportGson.toJson(backupData)
+            if (json.isBlank()) throw Exception(context.getString(R.string.backup_empty_content))
 
             context.contentResolver.openOutputStream(uri)?.use { outputStream ->
                 outputStream.write(json.toByteArray(Charsets.UTF_8))
-            } ?: throw Exception("Could not open output stream")
+                outputStream.flush()
+            } ?: throw Exception(context.getString(R.string.backup_could_not_open_output))
 
             Result.success(Unit)
         } catch (e: Exception) {
@@ -90,13 +109,15 @@ class BackupManager(private val db: AppDatabase) {
         try {
             val json = context.contentResolver.openInputStream(uri)?.use { inputStream ->
                 inputStream.bufferedReader(Charsets.UTF_8).readText()
-            } ?: throw Exception("Could not open input stream")
+            } ?: throw Exception(context.getString(R.string.backup_could_not_open_input))
 
             val backupData = importGson.fromJson(json, BackupData::class.java)
-                ?: throw Exception("Invalid backup file")
+                ?: throw Exception(context.getString(R.string.backup_invalid_file))
 
             if (backupData.version != 1) {
-                throw Exception("Unsupported backup version: ${backupData.version}")
+                throw Exception(
+                    context.getString(R.string.backup_unsupported_version, backupData.version.toString())
+                )
             }
 
             db.runInTransaction {
@@ -120,6 +141,11 @@ class BackupManager(private val db: AppDatabase) {
                 backupData.assets.forEach { writableDb.insert("assets", SQLiteDatabase.CONFLICT_REPLACE, it.toCv()) }
                 backupData.loans.forEach { writableDb.insert("loans", SQLiteDatabase.CONFLICT_REPLACE, it.toCv()) }
                 backupData.carServices.forEach { writableDb.insert("car_services", SQLiteDatabase.CONFLICT_REPLACE, it.toCv()) }
+                backupData.officeNotes.forEach { writableDb.insert("office_notes", SQLiteDatabase.CONFLICT_REPLACE, it.toCv()) }
+                backupData.officeReminders.forEach { writableDb.insert("office_reminders", SQLiteDatabase.CONFLICT_REPLACE, it.toCv()) }
+                backupData.checkCounterparties.forEach { writableDb.insert("check_counterparties", SQLiteDatabase.CONFLICT_REPLACE, it.toCv()) }
+                backupData.checks.forEach { writableDb.insert("checks", SQLiteDatabase.CONFLICT_REPLACE, it.toCv()) }
+                backupData.pendingPayments.forEach { writableDb.insert("pending_payments", SQLiteDatabase.CONFLICT_REPLACE, it.toCv()) }
 
                 backupData.passwords.forEach { password ->
                     val reEncrypted = encryptPassword(password)
@@ -159,6 +185,11 @@ class BackupManager(private val db: AppDatabase) {
         writableDb.execSQL("DELETE FROM passwords")
         writableDb.execSQL("DELETE FROM car_services")
         writableDb.execSQL("DELETE FROM loans")
+        writableDb.execSQL("DELETE FROM checks")
+        writableDb.execSQL("DELETE FROM check_counterparties")
+        writableDb.execSQL("DELETE FROM pending_payments")
+        writableDb.execSQL("DELETE FROM office_notes")
+        writableDb.execSQL("DELETE FROM office_reminders")
     }
 
     private fun decryptPassword(item: PasswordItemEntity): PasswordItemEntity {

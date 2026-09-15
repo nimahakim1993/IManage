@@ -8,6 +8,10 @@
 # Gson model classes (parsed/serialized via reflection)
 -keep class com.nima.app.imanage.data.model.** { *; }
 
+# Room entities serialized via Gson reflection for backup/restore
+# (field names must match the DB column names)
+-keep class com.nima.app.imanage.data.db.entity.** { *; }
+
 # WorkManager worker (instantiated via reflection)
 -keep class com.nima.app.imanage.worker.** { *; }
 
