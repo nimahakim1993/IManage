@@ -3,6 +3,7 @@ package com.nima.app.imanage.presentation.view
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,6 +27,7 @@ import com.nima.app.imanage.ui.theme.scaledSp
 fun MainToolbar(
     config: ToolbarConfig,
     onBackClick: () -> Unit,
+    onDrawerOpen: () -> Unit = {},
 ) {
     TopAppBar(
         title = {
@@ -38,13 +40,24 @@ fun MainToolbar(
             )
         },
         navigationIcon = {
-            if (config.showBack) {
-                IconButton(onClick = { onBackClick() }) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.back_icon),
-                        tint = Color.White
-                    )
+            when {
+                config.showDrawer -> {
+                    IconButton(onClick = onDrawerOpen) {
+                        Icon(
+                            Icons.Filled.Menu,
+                            contentDescription = stringResource(R.string.menu_icon),
+                            tint = Color.White
+                        )
+                    }
+                }
+                config.showBack -> {
+                    IconButton(onClick = { onBackClick() }) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back_icon),
+                            tint = Color.White
+                        )
+                    }
                 }
             }
         },

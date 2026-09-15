@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">IManage</string>
+    <string name="app_version">Version 1.2.3</string>
+    <string name="app_slogan">Your Personal Life Assistant</string>
 
     <!-- General -->
     <string name="confirm">Confirm</string>
@@ -117,6 +119,7 @@
 
     <!-- MainToolbar -->
     <string name="back_icon">Back</string>
+    <string name="menu_icon">Menu</string>
 
     <!-- Dialog -->
     <string name="delete_title">Delete</string>
@@ -570,8 +573,9 @@
 
     <!-- About -->
     <string name="about">About</string>
+    <string name="about_us_title">About Us</string>
     <string name="about_title">About IManage</string>
-    <string name="about_description">IManage is your all-in-one personal financial and task management app. Track expenses, incomes, debts, receivables, bank cards, trips, car services, passwords and much more — all in one place.</string>
+    <string name="about_description">In today\'s fast-paced world, managing personal finances has become increasingly complex. Between tracking daily expenses, monitoring loans and debts, organizing bank cards, planning shared trips, maintaining vehicle service records, and securing important passwords, it\'s easy to feel overwhelmed.\n\nIManage was born from a simple need: to have one powerful tool that handles all these tasks seamlessly. We realized that juggling multiple apps or relying on scattered notes and memory was inefficient and error-prone.\n\nWith IManage, you can track every financial transaction, never miss a payment deadline, keep your sensitive information secure, and gain clear insights into your financial health — all from a single, beautifully designed app. It\'s not just an app; it\'s your personal financial assistant that helps you stay organized, save time, and make better decisions about your money.</string>
     <string name="about_developer">Nima Hakimelahi</string>
     <string name="about_telegram">nimahakim93</string>
     <string name="about_contact">Contact &amp; Feedback</string>
@@ -609,5 +613,18 @@
 
     <string name="help_office_short">Calendar view of all your financial events</string>
     <string name="help_office_long">View all your financial activities in a unified calendar interface. See expenses, incomes, loans, trips, car services and installments on their respective dates. Set reminders and notes for any date to stay organized. Get a bird\'s-eye view of your month with event indicators on each day. Tap any day to see detailed events and navigate to related modules.</string>
+
+    <!-- Questions & Suggestions -->
+    <string name="questions_title">Questions &amp; Suggestions</string>
+    <string name="questions_description">We value your feedback! If you have any questions, suggestions, or ideas to improve IManage, we\'d love to hear from you. Your input helps us make the app better for everyone.</string>
+    <string name="questions_contact_title">Get in Touch</string>
+    <string name="questions_telegram_label">Telegram</string>
+
+    <!-- Rate App -->
+    <string name="rate_app_title">Rate the App</string>
+    <string name="rate_app_description">If you enjoy using IManage, please take a moment to rate it. Your support helps us continue improving the app and reach more users. Thank you!</string>
+    <string name="rate_app_button">Rate Now</string>
+    <string name="rate_app_button_cafebazaar">Rate in CafeBazaar</string>
+    <string name="rate_app_button_myket">Rate in Myket</string>
 
 </resources>

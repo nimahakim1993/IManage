@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.pm.PackageManager
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -27,7 +26,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.FormatSize
 import androidx.compose.material.icons.filled.Language
@@ -52,7 +50,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -80,7 +77,6 @@ import com.nima.app.imanage.util.SecurityManager
 import com.nima.app.imanage.util.ThemeManager
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDate
 
 @Composable
 fun SettingsScreen(
@@ -94,9 +90,6 @@ fun SettingsScreen(
 
     var currentLanguage by remember { mutableStateOf(LanguageManager.getLanguage(context)) }
     var currentTheme by remember { mutableStateOf(ThemeManager.getThemeMode(context)) }
-    val backupState by viewModel.backupState.collectAsState()
-    var showRestoreConfirmation by remember { mutableStateOf(false) }
-    var pendingRestoreUri by remember { mutableStateOf<Uri?>(null) }
     var smsSenders by remember { mutableStateOf(viewModel.smsSenders()) }
     var observedSmsSenders by remember { mutableStateOf(viewModel.observedSmsSenders()) }
     var showSmsSenderDialog by remember { mutableStateOf(false) }
@@ -145,21 +138,6 @@ fun SettingsScreen(
     }
 
     val settingsTitle = stringResource(R.string.settings_title)
-
-    val createBackupFile = rememberLauncherForActivityResult(
-        ActivityResultContracts.CreateDocument("application/json")
-    ) { uri ->
-        uri?.let { viewModel.export(context, it) }
-    }
-
-    val openRestoreFile = rememberLauncherForActivityResult(
-        ActivityResultContracts.OpenDocument()
-    ) { uri ->
-        uri?.let {
-            pendingRestoreUri = it
-            showRestoreConfirmation = true
-        }
-    }
 
     LaunchedEffect(Unit) {
         setToolbar(
@@ -230,108 +208,6 @@ fun SettingsScreen(
             onRemoveSender = { sender ->
                 viewModel.removeSmsSender(sender)
                 smsSenders = viewModel.smsSenders()
-            }
-        )
-
-        BackupRestoreSection(
-            backupState = backupState,
-            onBackup = {
-                val filename = "imanage_backup_${LocalDate.now()}.json"
-                createBackupFile.launch(filename)
-            },
-            onRestore = {
-                openRestoreFile.launch(arrayOf("application/json"))
-            }
-        )
-    }
-
-    if (showRestoreConfirmation && pendingRestoreUri != null) {
-        AlertDialog(
-            onDismissRequest = { showRestoreConfirmation = false },
-            title = { Text(stringResource(R.string.restore_data)) },
-            text = { Text(stringResource(R.string.restore_confirmation_message)) },
-            confirmButton = {
-                TextButton(onClick = {
-                    showRestoreConfirmation = false
-                    pendingRestoreUri?.let { uri ->
-                        viewModel.import(context, uri)
-                    }
-                    pendingRestoreUri = null
-                }) {
-                    Text(stringResource(R.string.confirm))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = {
-                    showRestoreConfirmation = false
-                    pendingRestoreUri = null
-                }) {
-                    Text(stringResource(R.string.cancel))
-                }
-            }
-        )
-    }
-
-    val state = backupState
-    if (state is SettingsViewModel.BackupState.Exporting || state is SettingsViewModel.BackupState.Importing) {
-        AlertDialog(
-            onDismissRequest = {},
-            title = {
-                Text(
-                    if (state is SettingsViewModel.BackupState.Exporting)
-                        stringResource(R.string.backup_in_progress)
-                    else
-                        stringResource(R.string.restore_in_progress)
-                )
-            },
-            confirmButton = {},
-            dismissButton = {}
-        )
-    }
-
-    if (state is SettingsViewModel.BackupState.Error) {
-        AlertDialog(
-            onDismissRequest = { viewModel.resetState() },
-            title = { Text(stringResource(R.string.error_title)) },
-            text = {
-                Text(state.message.ifBlank {
-                    stringResource(R.string.backup_failed)
-                })
-            },
-            confirmButton = {
-                TextButton(onClick = { viewModel.resetState() }) {
-                    Text(stringResource(R.string.ok))
-                }
-            }
-        )
-    }
-
-    if (state is SettingsViewModel.BackupState.Success) {
-        AlertDialog(
-            onDismissRequest = {
-                viewModel.resetState()
-                if (state.isRestore) {
-                    activity?.recreate()
-                }
-            },
-            title = { Text(stringResource(R.string.success)) },
-            text = {
-                Text(
-                    if (state.isRestore)
-                        stringResource(R.string.restore_success)
-                    else
-                        stringResource(R.string.backup_success)
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = {
-                    viewModel.resetState()
-                    if (state.isRestore) {
-                        activity?.recreate()
-                    }
-                }) {
-                    Text(stringResource(R.string.ok))
-                }
             }
         )
     }
@@ -861,46 +737,6 @@ private fun ModuleProtectionSection(context: Context) {
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun BackupRestoreSection(
-    backupState: SettingsViewModel.BackupState,
-    onBackup: () -> Unit,
-    onRestore: () -> Unit
-) {
-    val isBusy = backupState is SettingsViewModel.BackupState.Exporting ||
-            backupState is SettingsViewModel.BackupState.Importing
-
-    SettingsCard(
-        icon = Icons.Default.Backup,
-        iconTint = MaterialTheme.colorScheme.secondary,
-        title = stringResource(R.string.backup_restore)
-    ) {
-        Button(
-            onClick = onBackup,
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !isBusy,
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Text(
-                stringResource(R.string.backup_data),
-                fontFamily = vazirFontFamily
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedButton(
-            onClick = onRestore,
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !isBusy,
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Text(
-                stringResource(R.string.restore_data),
-                fontFamily = vazirFontFamily
-            )
         }
     }
 }

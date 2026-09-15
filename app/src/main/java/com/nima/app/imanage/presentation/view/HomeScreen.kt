@@ -2,8 +2,6 @@ package com.nima.app.imanage.presentation.view
 
 import android.content.Context
 import android.content.ContextWrapper
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +24,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.outlined.ContactSupport
+import androidx.compose.material.icons.outlined.QuestionAnswer
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.WbIncandescent
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -57,6 +57,7 @@ import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
 import com.nima.app.imanage.data.db.entity.CheckEntity
 import com.nima.app.imanage.data.db.entity.LoanEntity
+import com.nima.app.imanage.data.model.DrawerItem
 import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.CheckViewModel
@@ -64,7 +65,6 @@ import com.nima.app.imanage.presentation.viewmodel.ExpenseViewModel
 import com.nima.app.imanage.presentation.viewmodel.IncomeViewModel
 import com.nima.app.imanage.presentation.viewmodel.InstallmentViewModel
 import com.nima.app.imanage.presentation.viewmodel.LoanViewModel
-import com.nima.app.imanage.presentation.viewmodel.SettingsViewModel
 import com.nima.app.imanage.ui.theme.LocalAppColors
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.scaledSp
@@ -73,7 +73,6 @@ import com.nima.app.imanage.util.BiometricHelper
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.SecurityManager
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDate
 
 @Composable
 fun HomeScreen(
@@ -81,7 +80,6 @@ fun HomeScreen(
     navController: NavHostController,
     loanViewModel: LoanViewModel = koinViewModel(),
     checkViewModel: CheckViewModel = koinViewModel(),
-    settingsViewModel: SettingsViewModel = koinViewModel(),
     expenseViewModel: ExpenseViewModel = koinViewModel(),
     incomeViewModel: IncomeViewModel = koinViewModel(),
     installmentViewModel: InstallmentViewModel = koinViewModel()
@@ -89,45 +87,59 @@ fun HomeScreen(
 
     val settingsDesc = stringResource(R.string.settings)
     val backupDesc = stringResource(R.string.backup_data)
-    val aboutDesc = stringResource(R.string.about)
+    val aboutDesc = stringResource(R.string.about_us_title)
     val helpDesc = stringResource(R.string.help_title)
+    val questionsDesc = stringResource(R.string.questions_title)
+    val rateAppDesc = stringResource(R.string.rate_app_title)
     val context = LocalContext.current
 
-    var showAboutSheet by remember { mutableStateOf(false) }
-
-    val createBackupFile = rememberLauncherForActivityResult(
-        ActivityResultContracts.CreateDocument("application/json")
-    ) { uri ->
-        uri?.let { settingsViewModel.export(context, it) }
-    }
+    var showBackupSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         setToolbar(
-            ToolbarConfig(title = "", actions = listOf(
-                ToolbarAction(
-                    icon = Icons.Default.Backup,
-                    contentDescription = backupDesc,
-                    onClick = {
-                        val filename = "imanage_backup_${LocalDate.now()}.json"
-                        createBackupFile.launch(filename)
-                    }
+            ToolbarConfig(
+                title = "",
+                showDrawer = true,
+                actions = listOf(
+                    ToolbarAction(
+                        icon = Icons.Outlined.Settings,
+                        contentDescription = settingsDesc,
+                        onClick = { navController.navigate(Screen.Settings.route) }
+                    )
                 ),
-                ToolbarAction(
-                    icon = Icons.Outlined.ContactSupport,
-                    contentDescription = aboutDesc,
-                    onClick = { showAboutSheet = true }
-                ),
-                ToolbarAction(
-                    icon = Icons.Outlined.WbIncandescent,
-                    contentDescription = helpDesc,
-                    onClick = { navController.navigate(Screen.Help.route) }
-                ),
-                ToolbarAction(
-                    icon = Icons.Outlined.Settings,
-                    contentDescription = settingsDesc,
-                    onClick = { navController.navigate(Screen.Settings.route) }
+                drawerItems = listOf(
+                    DrawerItem(
+                        icon = Icons.Default.Backup,
+                        label = backupDesc,
+                        onClick = { showBackupSheet = true }
+                    ),
+                    DrawerItem(
+                        icon = Icons.Outlined.ContactSupport,
+                        label = aboutDesc,
+                        onClick = { navController.navigate(Screen.About.route) }
+                    ),
+                    DrawerItem(
+                        icon = Icons.Outlined.WbIncandescent,
+                        label = helpDesc,
+                        onClick = { navController.navigate(Screen.Help.route) }
+                    ),
+                    DrawerItem(
+                        icon = Icons.Outlined.QuestionAnswer,
+                        label = questionsDesc,
+                        onClick = { navController.navigate(Screen.Questions.route) }
+                    ),
+                    DrawerItem(
+                        icon = Icons.Outlined.Star,
+                        label = rateAppDesc,
+                        onClick = { navController.navigate(Screen.RateApp.route) }
+                    ),
+                    DrawerItem(
+                        icon = Icons.Outlined.Settings,
+                        label = settingsDesc,
+                        onClick = { navController.navigate(Screen.Settings.route) }
+                    )
                 )
-            ))
+            )
         )
     }
 
@@ -205,8 +217,8 @@ fun HomeScreen(
         DashboardGrid(navController = navController)
     }
 
-    if (showAboutSheet) {
-        AboutSheet(onDismiss = { showAboutSheet = false })
+    if (showBackupSheet) {
+        BackupSheet(onDismiss = { showBackupSheet = false })
     }
 }
 

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">IManage</string>
+    <string name="app_version">نسخه 1.2.3</string>
+    <string name="app_slogan">دستیار شخصی زندگی شما</string>
 
     <!-- InAppNotification -->
     <string name="app_update_title">بروزرسانی برنامه</string>
@@ -117,6 +119,7 @@
 
     <!-- MainToolbar -->
     <string name="back_icon">بازگشت</string>
+    <string name="menu_icon">منو</string>
 
     <!-- Dialog -->
     <string name="delete_title">حذف</string>
@@ -571,8 +574,9 @@
 
     <!-- About -->
     <string name="about">درباره</string>
+    <string name="about_us_title">درباره ما</string>
     <string name="about_title">درباره IManage</string>
-    <string name="about_description">IManage اپلیکیشن جامع مدیریت مالی و وظایف شخصی شماست. پیگیری هزینه‌ها، درآمدها، بدهی‌ها، بستانکاری‌ها، کارت‌های بانکی، سفرها، سرویس‌های خودرو، رمزها و موارد دیگر — همه در یک جا.</string>
+    <string name="about_description">در دنیای پرشتاب امروز، مدیریت امور مالی شخصی به کاری پیچیده تبدیل شده است. بین پیگیری هزینه‌های روزانه، نظارت بر وام‌ها و بدهی‌ها، سازماندهی کارت‌های بانکی، برنامه‌ریزی سفرهای گروهی، نگهداری سوابق سرویس خودرو و امن نگه‌داشتن رمزهای عبور، احساس سردرگمی کاملاً طبیعی است.\n\nIManage از یک نیاز ساده متولد شد: داشتن یک ابزار قدرتمند که تمام این وظایف را به صورت یکپارچه انجام دهد. ما متوجه شدیم که استفاده از چندین اپلیکیشن مختلف یا تکیه بر یادداشت‌های پراکنده و حافظه، ناکارآمد و مستعد خطا است.\n\nبا IManage، می‌توانید هر تراکنش مالی را پیگیری کنید، هرگز موعد پرداخت را از دست ندهید، اطلاعات حساس خود را امن نگه دارید و بینش روشنی از وضعیت مالی خود به دست آورید — همه اینها از یک اپلیکیشن زیبا و کاربرپسند. این فقط یک اپلیکیشن نیست؛ دستیار شخصی شماست که به شما کمک می‌کند منظم بمانید، در زمان صرفه‌جویی کنید و تصمیمات بهتری درباره پولتان بگیرید.</string>
     <string name="about_developer">نیما حکیم الهی</string>
     <string name="about_telegram">nimahakim93</string>
     <string name="about_contact">ارتباط با سازنده و بازخورد</string>
@@ -582,7 +586,7 @@
     <string name="open">باز کردن</string>
 
     <!-- Help / Guide -->
-    <string name="help_title">توضیح ویژگی‌های برنامه</string>
+    <string name="help_title">راهنمای برنامه</string>
 
     <string name="help_financial_short">مدیریت هزینه‌ها، درآمدها، بدهی‌ها و اقساط</string>
     <string name="help_financial_long">تمام فعالیت‌های مالی خود را در یک جا پیگیری کنید. هزینه‌ها و درآمدهای روزانه را ثبت کنید، بدهی‌ها و بستانکاری‌ها را با وضعیت تسویه مدیریت کنید، چک‌ها را با پیگیری وضعیت مدیریت کنید و برنامه‌های اقساطی با محاسبه خودکار موعد پرداخت تنظیم کنید. شناسه فرستنده‌های بانکی را برای ثبت خودکار هزینه از پیامک تنظیم کنید. تاریخچه مالی خود را به راحتی فیلتر و جستجو کنید.</string>
@@ -610,5 +614,18 @@
 
     <string name="help_office_short">نمای تقویمی تمام رویدادهای مالی شما</string>
     <string name="help_office_long">تمام فعالیت‌های مالی خود را در یک رابط تقویم یکپارچه مشاهده کنید. هزینه‌ها، درآمدها، بدهی‌ها، سفرها، سرویس‌های خودرو و اقساط را در تاریخ‌های مربوطه ببینید. یادآور و یادداشت برای هر تاریخ تنظیم کنید تا منظم بمانید. نمای کلی ماه خود را با نشانگرهای رویداد در هر روز دریافت کنید. روی هر روز کلیک کنید تا رویدادهای آن روز را ببینید و به ماژول‌های مرتبط بروید.</string>
+
+    <!-- Questions & Suggestions -->
+    <string name="questions_title">سوالات و پیشنهادات</string>
+    <string name="questions_description">نظرات شما برای ما ارزشمند است! اگر سوال، پیشنهاد یا ایده‌ای برای بهبود IManage دارید، خوشحال می‌شویم بشنویم. نظر شما به ما کمک می‌کند برنامه را برای همه بهتر کنیم.</string>
+    <string name="questions_contact_title">ارتباط با ما</string>
+    <string name="questions_telegram_label">تلگرام</string>
+
+    <!-- Rate App -->
+    <string name="rate_app_title">امتیازدهی به برنامه</string>
+    <string name="rate_app_description">اگر از IManage لذت می‌برید، لطفاً لحظه‌ای وقت بگذارید و به برنامه امتیاز دهید. حمایت شما به ما کمک می‌کند تا برنامه را بهبود دهیم و به کاربران بیشتری دسترسی پیدا کنیم. متشکریم!</string>
+    <string name="rate_app_button">امتیاز دهی</string>
+    <string name="rate_app_button_cafebazaar">امتیازدهی در کافه بازار</string>
+    <string name="rate_app_button_myket">امتیازدهی در مایکت</string>
 
 </resources>
