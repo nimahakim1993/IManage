@@ -116,6 +116,12 @@
     <string name="loan">Loan</string>
     <string name="income">Income</string>
     <string name="installment">Installment</string>
+    <string name="financial_subtitle_debt">Track debts and receivables</string>
+    <string name="financial_subtitle_expense">Log daily expenses like shopping, lunch, etc.</string>
+    <string name="financial_subtitle_income">Log incomes like salary, freelance, etc.</string>
+    <string name="financial_subtitle_installment">Manage installments and due reminders</string>
+    <string name="financial_subtitle_check">Track received and payable checks</string>
+    <string name="financial_expense_report">Expense Report</string>
 
     <!-- MainToolbar -->
     <string name="back_icon">Back</string>
@@ -515,6 +521,18 @@
     <string name="report_income_vs_expense">Income vs Expense</string>
     <string name="report_category_breakdown">Category Breakdown</string>
     <string name="report_no_data">No data for selected period</string>
+
+    <!-- Checks Report -->
+    <string name="checks_report_title">Checks Report</string>
+    <string name="checks_report_received_vs_payable">Received vs Payable</string>
+    <string name="checks_report_received">Received</string>
+    <string name="checks_report_payable">Payable</string>
+    <string name="checks_report_yearly_comparison">5-Year Comparison</string>
+    <string name="checks_report_counterparty_breakdown">Counterparty Breakdown</string>
+    <string name="checks_report_state_breakdown">State Breakdown</string>
+    <string name="checks_report_total">Total Checks</string>
+    <string name="checks_report_net_balance">Net Check Balance</string>
+    <string name="financial_checks_report">Check Report</string>
 
     <!-- Office -->
     <string name="office">Office</string>

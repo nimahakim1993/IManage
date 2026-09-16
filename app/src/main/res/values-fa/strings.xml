@@ -116,6 +116,12 @@
     <string name="loan">وام</string>
     <string name="income">درآمد</string>
     <string name="installment">قسط</string>
+    <string name="financial_subtitle_debt">ثبت بدهی و طلب از اشخاص</string>
+    <string name="financial_subtitle_expense">ثبت هزینه‌های روزمره مثل خرید، ناهار و …</string>
+    <string name="financial_subtitle_income">ثبت درآمدها مثل حقوق، فریلنسری و …</string>
+    <string name="financial_subtitle_installment">مدیریت اقساط و یادآوری سررسیدها</string>
+    <string name="financial_subtitle_check">ثبت و پیگیری چک‌های دریافتی و پرداختی</string>
+    <string name="financial_expense_report">گزارش هزینه</string>
 
     <!-- MainToolbar -->
     <string name="back_icon">بازگشت</string>
@@ -516,6 +522,18 @@
     <string name="report_income_vs_expense">درآمد در مقابل هزینه</string>
     <string name="report_category_breakdown">جزئیات دسته‌بندی</string>
     <string name="report_no_data">داده‌ای برای بازه انتخاب شده وجود ندارد</string>
+
+    <!-- Checks Report -->
+    <string name="checks_report_title">گزارش چک‌ها</string>
+    <string name="checks_report_received_vs_payable">دریافتی در مقابل پرداختی</string>
+    <string name="checks_report_received">دریافتی</string>
+    <string name="checks_report_payable">پرداختی</string>
+    <string name="checks_report_yearly_comparison">مقایسه ۵ ساله</string>
+    <string name="checks_report_counterparty_breakdown">جزئیات طرف حساب</string>
+    <string name="checks_report_state_breakdown">جزئیات وضعیت</string>
+    <string name="checks_report_total">مجموع چک‌ها</string>
+    <string name="checks_report_net_balance">تراز خالص چک‌ها</string>
+    <string name="financial_checks_report">گزارش چک</string>
 
     <!-- Office -->
     <string name="office">دفتر</string>

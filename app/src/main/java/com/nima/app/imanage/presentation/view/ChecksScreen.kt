@@ -24,6 +24,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
@@ -115,6 +116,7 @@ fun ChecksScreen(
     val filterDescription = stringResource(R.string.filter)
     val editDescription = stringResource(R.string.edit)
     val counterParties = stringResource(R.string.check_manage_counterparties)
+    val reportDescription = stringResource(R.string.financial_checks_report)
     LaunchedEffect(checks.size, editMode) {
         setToolbar(
             ToolbarConfig(
@@ -134,7 +136,10 @@ fun ChecksScreen(
                     ToolbarAction(
                         if (editMode) Icons.Default.EditOff else Icons.Default.Edit,
                         editDescription
-                    ) { editMode = !editMode }
+                    ) { editMode = !editMode },
+                    ToolbarAction(Icons.Default.BarChart, reportDescription) {
+                        navController.navigate(Screen.ChecksReport.route)
+                    }
                 )
             )
         )

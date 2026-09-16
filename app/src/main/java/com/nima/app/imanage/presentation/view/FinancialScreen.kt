@@ -93,7 +93,9 @@ fun FinancialScreen(
             subtitle = stringResource(R.string.financial_subtitle_check),
             icon = Icons.Default.ReceiptLong,
             color = Color(0xFF5E35B1),
-            onClick = { navController.navigate(Screen.Checks.route) }
+            onClick = { navController.navigate(Screen.Checks.route) },
+            showReportButton = true,
+            onReportClick = { navController.navigate(Screen.ChecksReport.route) }
         )
     )
 
