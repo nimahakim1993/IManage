@@ -52,8 +52,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.nima.app.imanage.ui.theme.vazirFontFamily
-import kotlinx.coroutines.launch
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -64,11 +62,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.nima.app.imanage.data.model.ToolbarConfig
+import com.nima.app.imanage.presentation.view.AboutScreen
 import com.nima.app.imanage.presentation.view.AppNotificationSheet
 import com.nima.app.imanage.presentation.view.AppUpdateSheet
-import com.nima.app.imanage.presentation.view.AboutScreen
-import com.nima.app.imanage.presentation.view.QuestionsScreen
-import com.nima.app.imanage.presentation.view.RateAppScreen
 import com.nima.app.imanage.presentation.view.AssetsScreen
 import com.nima.app.imanage.presentation.view.BankCardsScreen
 import com.nima.app.imanage.presentation.view.CarServicesScreen
@@ -81,6 +77,7 @@ import com.nima.app.imanage.presentation.view.CreateLoanScreen
 import com.nima.app.imanage.presentation.view.CreateNoteBoxScreen
 import com.nima.app.imanage.presentation.view.CreateNoteScreen
 import com.nima.app.imanage.presentation.view.ExpenseCategoriesScreen
+import com.nima.app.imanage.presentation.view.ExpenseReportScreen
 import com.nima.app.imanage.presentation.view.ExpensesScreen
 import com.nima.app.imanage.presentation.view.FinancialScreen
 import com.nima.app.imanage.presentation.view.HelpScreen
@@ -94,6 +91,8 @@ import com.nima.app.imanage.presentation.view.MainToolbar
 import com.nima.app.imanage.presentation.view.NoteBoxDetailScreen
 import com.nima.app.imanage.presentation.view.NotesScreen
 import com.nima.app.imanage.presentation.view.PasswordItemsScreen
+import com.nima.app.imanage.presentation.view.QuestionsScreen
+import com.nima.app.imanage.presentation.view.RateAppScreen
 import com.nima.app.imanage.presentation.view.ReportScreen
 import com.nima.app.imanage.presentation.view.SettingsScreen
 import com.nima.app.imanage.presentation.view.office.OfficeScreen
@@ -105,9 +104,11 @@ import com.nima.app.imanage.presentation.view.tripsplit.TripSettlementScreen
 import com.nima.app.imanage.presentation.viewmodel.AppNotificationViewModel
 import com.nima.app.imanage.presentation.viewmodel.AppUpdateViewModel
 import com.nima.app.imanage.ui.theme.IManageTheme
+import com.nima.app.imanage.ui.theme.vazirFontFamily
 import com.nima.app.imanage.util.LanguageManager
 import com.nima.app.imanage.util.NotificationHelper
 import com.nima.app.imanage.util.ThemeManager
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : FragmentActivity() {
@@ -449,6 +450,7 @@ fun Navigation(
         }
 
         composable(Screen.Expenses.route) { ExpensesScreen(setToolbar, navController) }
+        composable(Screen.ExpenseReport.route) { ExpenseReportScreen(setToolbar, navController) }
         composable(Screen.ExpenseCategories.route) { ExpenseCategoriesScreen(setToolbar, navController) }
         composable(Screen.Incomes.route) { IncomesScreen(setToolbar, navController) }
         composable(Screen.IncomeSources.route) { IncomeSourcesScreen(setToolbar, navController) }

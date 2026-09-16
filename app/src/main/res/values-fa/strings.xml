@@ -628,4 +628,14 @@
     <string name="rate_app_button_cafebazaar">امتیازدهی در کافه بازار</string>
     <string name="rate_app_button_myket">امتیازدهی در مایکت</string>
 
+    <!-- Expense Report -->
+    <string name="expense_report_title">گزارش هزینه‌ها</string>
+    <string name="expense_vs_income">هزینه در برابر درآمد</string>
+    <string name="expense_category_distribution">توزیع دسته‌بندی‌ها</string>
+    <string name="expense_month_comparison">مقایسه ماهانه</string>
+    <string name="expense_category_month_comparison">مقایسه دسته‌بندی‌ها (این ماه در برابر ماه قبل)</string>
+    <string name="expense_monthly_trend">روند ماهانه</string>
+    <string name="this_year">امسال</string>
+    <string name="last_year">پارسال</string>
+
 </resources>

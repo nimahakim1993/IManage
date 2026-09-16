@@ -55,7 +55,7 @@ fun ShamsiMonthYearPicker(
     val currentYear = today.first
 
     var selectedMonth by remember {
-        mutableStateOf<Int?>(if (allowYearOnly) initialMonth else (initialMonth ?: today.second))
+        mutableStateOf<Int?>(initialMonth)
     }
     var selectedYear by remember { mutableIntStateOf(initialYear ?: currentYear) }
 

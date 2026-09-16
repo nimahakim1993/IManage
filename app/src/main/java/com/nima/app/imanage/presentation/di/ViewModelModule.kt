@@ -7,6 +7,7 @@ import com.nima.app.imanage.presentation.viewmodel.BankCardViewModel
 import com.nima.app.imanage.presentation.viewmodel.CarServiceViewModel
 import com.nima.app.imanage.presentation.viewmodel.CheckViewModel
 import com.nima.app.imanage.presentation.viewmodel.ExpenseCategoryViewModel
+import com.nima.app.imanage.presentation.viewmodel.ExpenseReportViewModel
 import com.nima.app.imanage.presentation.viewmodel.ExpenseViewModel
 import com.nima.app.imanage.presentation.viewmodel.IncomeViewModel
 import com.nima.app.imanage.presentation.viewmodel.InstallmentViewModel
@@ -33,6 +34,7 @@ val viewModelModule = module {
     viewModel { NoteViewModel(get()) }
     viewModel { ExpenseCategoryViewModel(get()) }
     viewModel { ExpenseViewModel(get(), get()) }
+    viewModel { ExpenseReportViewModel(get(), get(), get()) }
     viewModel { IncomeViewModel(get(), get()) }
     viewModel { InstallmentViewModel(get(), get()) }
     viewModel { AssetViewModel(get()) }

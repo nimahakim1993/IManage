@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Delete
@@ -96,6 +97,7 @@ fun ExpensesScreen(
     val filterDesc = stringResource(R.string.filter)
     val editDesc = stringResource(R.string.edit)
     val manageDesc = stringResource(R.string.manage_categories)
+    val reportDesc = stringResource(R.string.expense_report_title)
 
     var toggleEditMode by rememberSaveable { mutableStateOf(false) }
     var showCreateSheet by rememberSaveable { mutableStateOf(false) }
@@ -133,6 +135,11 @@ fun ExpensesScreen(
                     editingExpense = null
                     showCreateSheet = true
                 }
+            ),
+            ToolbarAction(
+                icon = Icons.Default.BarChart,
+                contentDescription = reportDesc,
+                onClick = { navController.navigate(Screen.ExpenseReport.route) }
             ),
             ToolbarAction(
                 icon = Icons.Default.FilterAlt,

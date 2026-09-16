@@ -627,4 +627,14 @@
     <string name="rate_app_button_cafebazaar">Rate in CafeBazaar</string>
     <string name="rate_app_button_myket">Rate in Myket</string>
 
+    <!-- Expense Report -->
+    <string name="expense_report_title">Expense Report</string>
+    <string name="expense_vs_income">Expense vs Income</string>
+    <string name="expense_category_distribution">Category Distribution</string>
+    <string name="expense_month_comparison">Monthly Comparison</string>
+    <string name="expense_category_month_comparison">Category Comparison (This Month vs Last Month)</string>
+    <string name="expense_monthly_trend">Monthly Trend</string>
+    <string name="this_year">This Year</string>
+    <string name="last_year">Last Year</string>
+
 </resources>

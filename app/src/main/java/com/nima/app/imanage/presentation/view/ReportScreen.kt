@@ -883,7 +883,7 @@ internal fun YearPickerDialog(
 ) {
     val today = ShamsiDate.today()
     val currentYearVal = today.first
-    val years = (currentYearVal - 10..currentYearVal + 1).toList().reversed()
+    val years = (currentYearVal - 5..currentYearVal + 1).toList().reversed()
 
     var selectedYear by remember { mutableStateOf(currentYear) }
 
