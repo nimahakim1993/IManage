@@ -110,6 +110,7 @@
 
     <!-- FinancialScreen -->
     <string name="financial_ledger">دفتر مالی</string>
+    <string name="financial_summary_title">خلاصه مالی</string>
     <string name="check">چک‌</string>
     <string name="salary">حقوق</string>
     <string name="expense">هزینه</string>
