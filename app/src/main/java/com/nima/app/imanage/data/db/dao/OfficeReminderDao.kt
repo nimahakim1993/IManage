@@ -21,4 +21,10 @@ interface OfficeReminderDao {
 
     @Query("SELECT * FROM office_reminders ORDER BY reminderAt ASC")
     fun getAll(): Flow<List<OfficeReminderEntity>>
+
+    @Query("SELECT * FROM office_reminders ORDER BY reminderAt ASC")
+    suspend fun getAllOnce(): List<OfficeReminderEntity>
+
+    @Query("SELECT * FROM office_reminders WHERE reminderAt > :now ORDER BY reminderAt ASC")
+    suspend fun getFutureReminders(now: Long): List<OfficeReminderEntity>
 }

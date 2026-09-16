@@ -11,6 +11,11 @@ import com.nima.app.imanage.presentation.di.utilModule
 import com.nima.app.imanage.presentation.di.viewModelModule
 import com.nima.app.imanage.receiver.BootReceiver
 import com.nima.app.imanage.util.NotificationHelper
+import com.nima.app.imanage.util.ReminderScheduler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.java.KoinJavaComponent.get
@@ -33,6 +38,13 @@ class MyApp : Application() {
         notifHelper.createChannel()
 
         BootReceiver.scheduleDailyNotification(this)
+
+        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+            val reminderScheduler: ReminderScheduler = get(ReminderScheduler::class.java)
+            val repository: com.nima.app.imanage.data.repository.OfficeReminderRepository =
+                get(com.nima.app.imanage.data.repository.OfficeReminderRepository::class.java)
+            reminderScheduler.rescheduleAll(repository)
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(

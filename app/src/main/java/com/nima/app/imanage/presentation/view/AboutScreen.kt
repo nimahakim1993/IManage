@@ -78,10 +78,10 @@ fun AboutScreen(
         Image(
             painter = painterResource(R.drawable.imanage_logo),
             contentDescription = null,
-            modifier = Modifier.size(160.dp)
+            modifier = Modifier.size(120.dp)
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             text = stringResource(R.string.about_title),

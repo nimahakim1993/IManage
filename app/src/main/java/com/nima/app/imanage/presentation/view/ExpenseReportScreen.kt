@@ -476,7 +476,7 @@ private fun ExpenseIncomeDonutCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         ),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -602,7 +602,7 @@ private fun CategoryDonutChartCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         ),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -721,7 +721,7 @@ private fun MonthComparisonBarCard(monthComparison: MonthComparison) {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         ),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -832,7 +832,7 @@ private fun CategoryComparisonBarCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         ),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -983,7 +983,7 @@ private fun MonthlyTrendLineCard(trend: List<MonthlyTrend>) {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         ),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {

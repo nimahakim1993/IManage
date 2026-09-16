@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Handshake
 import androidx.compose.material.icons.filled.ReceiptLong
@@ -59,30 +60,37 @@ fun FinancialScreen(
     val items = listOf(
         FinancialEntry(
             title = stringResource(R.string.debt) + " " + stringResource(R.string.receivable),
+            subtitle = stringResource(R.string.financial_subtitle_debt),
             icon = Icons.Default.Handshake,
             color = Color(0xFFFF9800),
             onClick = { navController.navigate(Screen.Loans.route) }
         ),
         FinancialEntry(
             title = stringResource(R.string.expense),
+            subtitle = stringResource(R.string.financial_subtitle_expense),
             icon = Icons.Default.ShoppingCart,
             color = Color(0xFFF44336),
-            onClick = { navController.navigate(Screen.Expenses.route) }
+            onClick = { navController.navigate(Screen.Expenses.route) },
+            showReportButton = true,
+            onReportClick = { navController.navigate(Screen.ExpenseReport.route) }
         ),
         FinancialEntry(
             title = stringResource(R.string.income),
+            subtitle = stringResource(R.string.financial_subtitle_income),
             icon = Icons.Default.TrendingUp,
             color = Color(0xFF4CAF50),
             onClick = { navController.navigate(Screen.Incomes.route) }
         ),
         FinancialEntry(
             title = stringResource(R.string.installment),
+            subtitle = stringResource(R.string.financial_subtitle_installment),
             icon = Icons.Default.CalendarMonth,
             color = Color(0xFF009688),
             onClick = { navController.navigate(Screen.Installments.route) }
         ),
         FinancialEntry(
             title = stringResource(R.string.check),
+            subtitle = stringResource(R.string.financial_subtitle_check),
             icon = Icons.Default.ReceiptLong,
             color = Color(0xFF5E35B1),
             onClick = { navController.navigate(Screen.Checks.route) }
@@ -101,9 +109,12 @@ fun FinancialScreen(
         items.forEach { entry ->
             FinancialItem(
                 title = entry.title,
+                subtitle = entry.subtitle,
                 icon = entry.icon,
                 color = entry.color,
-                onClick = entry.onClick
+                onClick = entry.onClick,
+                showReportButton = entry.showReportButton,
+                onReportClick = entry.onReportClick
             )
         }
     }
@@ -111,17 +122,23 @@ fun FinancialScreen(
 
 private data class FinancialEntry(
     val title: String,
+    val subtitle: String,
     val icon: ImageVector,
     val color: Color,
-    val onClick: () -> Unit
+    val onClick: () -> Unit,
+    val showReportButton: Boolean = false,
+    val onReportClick: () -> Unit = {}
 )
 
 @Composable
 fun FinancialItem(
     title: String,
+    subtitle: String,
     icon: ImageVector,
     color: Color,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    showReportButton: Boolean = false,
+    onReportClick: () -> Unit = {}
 ) {
     Card(
         modifier = Modifier
@@ -154,13 +171,39 @@ fun FinancialItem(
                 )
             }
             Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                fontFamily = vazirFontFamily,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = vazirFontFamily,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontFamily = vazirFontFamily,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            if (showReportButton) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(color.copy(alpha = 0.12f))
+                        .clickable(onClick = onReportClick),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.BarChart,
+                        contentDescription = stringResource(R.string.financial_expense_report),
+                        tint = color,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+            }
         }
     }
 }

@@ -10,16 +10,17 @@ import com.nima.app.imanage.receiver.ReminderReceiver
 
 class ReminderScheduler(private val context: Context) {
     fun schedule(reminder: OfficeReminderEntity) {
+        if (reminder.reminderAt <= System.currentTimeMillis()) return
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val pendingIntent = pendingIntent(reminder)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && alarmManager.canScheduleExactAlarms()) {
-            alarmManager.setExactAndAllowWhileIdle(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+            alarmManager.setAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 reminder.reminderAt,
                 pendingIntent
             )
         } else {
-            alarmManager.setAndAllowWhileIdle(
+            alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 reminder.reminderAt,
                 pendingIntent
@@ -30,6 +31,14 @@ class ReminderScheduler(private val context: Context) {
     fun cancel(reminderId: Int) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.cancel(pendingIntent(reminderId))
+    }
+
+    suspend fun rescheduleAll(repository: com.nima.app.imanage.data.repository.OfficeReminderRepository) {
+        val now = System.currentTimeMillis()
+        val futureReminders = repository.getFutureReminders(now)
+        futureReminders.forEach { reminder ->
+            schedule(reminder)
+        }
     }
 
     private fun pendingIntent(reminder: OfficeReminderEntity): PendingIntent {
