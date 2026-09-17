@@ -46,10 +46,12 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.model.ToolbarConfig
@@ -705,6 +707,8 @@ private fun MonthComparisonBarCard(monthComparison: MonthComparison) {
     val prevColor = if (isDark) Color(0xFFFB923C) else Color(0xFF7C2D12)
     val textColor = MaterialTheme.colorScheme.onSurface
     val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+    val context = LocalContext.current
+    val vazirTypeface = remember { ResourcesCompat.getFont(context, R.font.vazir_bold) }
 
     val items = listOf(
         Triple(monthComparison.currentMonthLabel, monthComparison.currentMonthAmount, currentColor),
@@ -758,7 +762,7 @@ private fun MonthComparisonBarCard(monthComparison: MonthComparison) {
                     )
 
                     drawContext.canvas.nativeCanvas.drawText(
-                        NumberFormatUtils.format(amount),
+                        NumberFormatUtils.format(amount).replace('\u066C', ','),
                         centerX,
                         chartHeight - barHeight - 6.dp.toPx(),
                         android.graphics.Paint().apply {
@@ -766,6 +770,7 @@ private fun MonthComparisonBarCard(monthComparison: MonthComparison) {
                             textSize = 10.sp.toPx()
                             textAlign = android.graphics.Paint.Align.CENTER
                             this.isFakeBoldText = true
+                            typeface = vazirTypeface
                         }
                     )
 
@@ -777,6 +782,7 @@ private fun MonthComparisonBarCard(monthComparison: MonthComparison) {
                             this.color = textColor.hashCode()
                             textSize = 9.sp.toPx()
                             textAlign = android.graphics.Paint.Align.CENTER
+                            typeface = vazirTypeface
                         }
                     )
                 }
@@ -975,6 +981,8 @@ private fun MonthlyTrendLineCard(trend: List<MonthlyTrend>) {
     val textColor = MaterialTheme.colorScheme.onSurface
     val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
     val dotColor = if (isDark) Color(0xFF60A5FA) else Color(0xFF1E3A8A)
+    val context = LocalContext.current
+    val vazirTypeface = remember { ResourcesCompat.getFont(context, R.font.vazir_bold) }
 
     val maxVal = trend.maxOfOrNull { it.amount }?.coerceAtLeast(1L) ?: 1L
     val hasData = trend.any { it.amount > 0 }
@@ -1076,6 +1084,7 @@ private fun MonthlyTrendLineCard(trend: List<MonthlyTrend>) {
                                 this.color = textColor.hashCode()
                                 textSize = 9.sp.toPx()
                                 textAlign = android.graphics.Paint.Align.CENTER
+                                typeface = vazirTypeface
                             }
                         )
                     }

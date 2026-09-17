@@ -54,11 +54,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.model.ToolbarConfig
@@ -577,6 +579,8 @@ private fun BarChartCard(
     val incomeColor = if (isDark) Color(0xFFA5D6A7) else Color(0xFF43A047)
     val textColor = MaterialTheme.colorScheme.onSurface
     val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+    val context = LocalContext.current
+    val vazirTypeface = remember { ResourcesCompat.getFont(context, R.font.vazir_bold) }
 
     val allMonths = (monthlyExpenses.map { Pair(it.month, it.year) } + monthlyIncomes.map {
         Pair(
@@ -673,13 +677,14 @@ private fun BarChartCard(
                         )
                         val labelVal = (maxVal * (4 - i) / 4)
                         drawContext.canvas.nativeCanvas.drawText(
-                            NumberFormatUtils.format(labelVal),
+                            NumberFormatUtils.format(labelVal).replace('\u066C', ','),
                             4.dp.toPx(),
                             y + 12.dp.toPx(),
                             android.graphics.Paint().apply {
                                 color = textColor.hashCode()
                                 textSize = 9.sp.toPx()
                                 textAlign = android.graphics.Paint.Align.LEFT
+                                typeface = vazirTypeface
                             }
                         )
                     }
@@ -718,6 +723,7 @@ private fun BarChartCard(
                                 color = textColor.hashCode()
                                 textSize = 10.sp.toPx()
                                 textAlign = android.graphics.Paint.Align.CENTER
+                                typeface = vazirTypeface
                             }
                         )
                     }
