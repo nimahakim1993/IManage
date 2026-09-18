@@ -1,19 +1,18 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.kotlin.ksp)
 }
 
 android {
     namespace = "com.nima.app.imanage"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.nima.app.imanage"
         minSdk = 26
-        targetSdk = 35
+        //noinspection EditedTargetSdkVersion
+        targetSdk = 37
         versionCode = 5
         versionName = "1.2.3"
 
@@ -49,9 +48,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
     buildFeatures {
         compose = true
         buildConfig = true
@@ -61,13 +57,25 @@ android {
         checkReleaseBuilds = false
         abortOnError = false
     }
+}
 
-    applicationVariants.configureEach {
-        outputs.configureEach {
-            val suffix = if (buildType.name == "debug") "_debug" else ""
-            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                "imanage_${productFlavors.joinToString("_") { it.name }}_v${versionName}${suffix}.apk"
-        }
+androidComponents {
+    onVariants { variant ->
+        // Custom APK naming can be added here if needed
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("org.jetbrains.kotlin:kotlin-stdlib:2.4.0")
+        force("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.4.0")
+        force("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.4.0")
     }
 }
 
@@ -106,7 +114,7 @@ dependencies {
     implementation(libs.androidx.biometric)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.work.runtime.ktx)
-    implementation(libs.coil.compose)
-    implementation(libs.coil.svg)
+    implementation(libs.bundles.coil)
+    implementation(libs.bundles.vico)
 
 }
