@@ -27,7 +27,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -89,13 +88,12 @@ fun TripSettlementScreen(
         )
     }
 
-    Scaffold { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
             item { Spacer(modifier = Modifier.height(4.dp)) }
 
             item {
@@ -178,8 +176,7 @@ fun TripSettlementScreen(
                 )
             }
 
-            item { Spacer(modifier = Modifier.height(16.dp)) }
-        }
+        item { Spacer(modifier = Modifier.height(16.dp)) }
     }
 
     if (showSettlementDialog) {

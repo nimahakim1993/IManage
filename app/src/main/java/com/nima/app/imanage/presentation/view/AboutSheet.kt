@@ -46,7 +46,7 @@ import com.nima.app.imanage.ui.theme.vazirFontFamily
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutSheet(onDismiss: () -> Unit) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val sheetState = rememberModalBottomSheetState()
     val context = LocalContext.current
 
     val gradient = Brush.linearGradient(

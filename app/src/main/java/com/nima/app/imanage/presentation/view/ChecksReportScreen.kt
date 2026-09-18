@@ -1,6 +1,5 @@
 package com.nima.app.imanage.presentation.view
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +25,6 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,16 +37,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.CheckEntity
@@ -57,6 +49,10 @@ import com.nima.app.imanage.domain.model.FilterMode
 import com.nima.app.imanage.presentation.viewmodel.ChecksReportViewModel
 import com.nima.app.imanage.ui.component.ShamsiDatePicker
 import com.nima.app.imanage.ui.component.ShamsiMonthYearPicker
+import com.nima.app.imanage.ui.component.chart.BarCanvasChart
+import com.nima.app.imanage.ui.component.chart.BarCanvasItem
+import com.nima.app.imanage.ui.component.chart.DonutSegment
+import com.nima.app.imanage.ui.component.chart.VicoDonutChart
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
@@ -94,13 +90,12 @@ fun ChecksReportScreen(
     var customFrom by remember { mutableLongStateOf(System.currentTimeMillis()) }
     var customTo by remember { mutableLongStateOf(System.currentTimeMillis()) }
 
-    Scaffold { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 14.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
             item { Spacer(modifier = Modifier.height(4.dp)) }
 
             item {
@@ -204,7 +199,6 @@ fun ChecksReportScreen(
             }
 
             item { Spacer(modifier = Modifier.height(16.dp)) }
-        }
     }
 
     if (showMonthYearPicker) {
@@ -509,6 +503,25 @@ private fun ReceivedPayableDonutCard(
     val receivedColor = if (isDark) Color(0xFFA5D6A7) else Color(0xFF43A047)
     val payableColor = if (isDark) Color(0xFFEF9A9A) else Color(0xFFE53935)
     val total = totalReceived + totalPayable
+    val receivedLabel = stringResource(R.string.checks_report_received)
+    val payableLabel = stringResource(R.string.checks_report_payable)
+
+    val segments = remember(totalReceived, totalPayable) {
+        listOf(
+            DonutSegment(
+                value = totalReceived.toFloat(),
+                color = receivedColor,
+                label = receivedLabel,
+                id = "received"
+            ),
+            DonutSegment(
+                value = totalPayable.toFloat(),
+                color = payableColor,
+                label = payableLabel,
+                id = "payable"
+            )
+        )
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -536,57 +549,33 @@ private fun ReceivedPayableDonutCard(
                     )
                 }
             } else {
-                Box(
+                VicoDonutChart(
+                    segments = segments,
                     modifier = Modifier.size(160.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        val strokeWidth = size.minDimension * 0.22f
-                        val topLeft = Offset(strokeWidth / 2f, strokeWidth / 2f)
-                        val arcSize = Size(size.width - strokeWidth, size.height - strokeWidth)
-
-                        val receivedAngle =
-                            if (total > 0) (totalReceived.toDouble() / total.toDouble()) * 360.0 else 0.0
-                        val payableAngle = 360.0 - receivedAngle
-
-                        var startAngle = -90f
-                        drawArc(
-                            color = receivedColor,
-                            startAngle = startAngle,
-                            sweepAngle = receivedAngle.toFloat(),
-                            useCenter = false,
-                            topLeft = topLeft,
-                            size = arcSize,
-                            style = Stroke(width = strokeWidth, cap = StrokeCap.Butt)
-                        )
-                        startAngle += receivedAngle.toFloat()
-                        drawArc(
-                            color = payableColor,
-                            startAngle = startAngle,
-                            sweepAngle = payableAngle.toFloat(),
-                            useCenter = false,
-                            topLeft = topLeft,
-                            size = arcSize,
-                            style = Stroke(width = strokeWidth, cap = StrokeCap.Butt)
-                        )
+                    innerSize = 0.6f,
+                    enableAnimation = true,
+                    enableSelection = true,
+                    animationDuration = 1000,
+                    segmentSpacing = 3f,
+                    centerContent = {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            val netBalance = totalReceived - totalPayable
+                            Text(
+                                text = NumberFormatUtils.format(netBalance),
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = scaledSp(16f),
+                                fontFamily = vazirFontFamily,
+                                color = if (netBalance >= 0) receivedColor else payableColor
+                            )
+                            Text(
+                                text = stringResource(R.string.checks_report_net_balance),
+                                style = MaterialTheme.typography.labelSmall,
+                                fontFamily = vazirFontFamily,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        val netBalance = totalReceived - totalPayable
-                        Text(
-                            text = NumberFormatUtils.format(netBalance),
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = scaledSp(16f),
-                            fontFamily = vazirFontFamily,
-                            color = if (netBalance >= 0) receivedColor else payableColor
-                        )
-                        Text(
-                            text = stringResource(R.string.checks_report_net_balance),
-                            style = MaterialTheme.typography.labelSmall,
-                            fontFamily = vazirFontFamily,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
+                )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -646,9 +635,15 @@ private fun YearlyComparisonBarCard(
     val textColor = MaterialTheme.colorScheme.onSurface
     val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
 
-    val maxVal = yearlyData.maxOfOrNull {
-        maxOf(it.receivedAmount, it.payableAmount)
-    }?.coerceAtLeast(1L) ?: 1L
+    val barItems = yearlyData.map { data ->
+        BarCanvasItem(
+            label = ShamsiDate.toPersianDigits(data.year.toString()),
+            values = listOf(
+                data.receivedAmount.toFloat() to receivedColor,
+                data.payableAmount.toFloat() to payableColor
+            )
+        )
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -694,60 +689,16 @@ private fun YearlyComparisonBarCard(
             }
             Spacer(modifier = Modifier.height(12.dp))
 
-            Canvas(
+            BarCanvasChart(
+                items = barItems,
+                textColor = textColor,
+                gridColor = gridColor,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
-            ) {
-                val chartHeight = size.height - 40.dp.toPx()
-                val barCount = yearlyData.size
-                val groupWidth = size.width / barCount.coerceAtLeast(1)
-                val barWidth = (groupWidth * 0.3f).coerceAtMost(24.dp.toPx())
-
-                for (i in 0..4) {
-                    val y = chartHeight * i / 4
-                    drawLine(
-                        color = gridColor,
-                        start = Offset(0f, y),
-                        end = Offset(size.width, y),
-                        strokeWidth = 1f
-                    )
-                }
-
-                yearlyData.forEachIndexed { index, data ->
-                    val centerX = groupWidth * index + groupWidth / 2
-
-                    val receivedHeight =
-                        (data.receivedAmount.toFloat() / maxVal * chartHeight).coerceAtLeast(0f)
-                    val payableHeight =
-                        (data.payableAmount.toFloat() / maxVal * chartHeight).coerceAtLeast(0f)
-
-                    drawRect(
-                        color = receivedColor,
-                        topLeft = Offset(
-                            centerX - barWidth - 2.dp.toPx(),
-                            chartHeight - receivedHeight
-                        ),
-                        size = Size(barWidth, receivedHeight)
-                    )
-                    drawRect(
-                        color = payableColor,
-                        topLeft = Offset(centerX + 2.dp.toPx(), chartHeight - payableHeight),
-                        size = Size(barWidth, payableHeight)
-                    )
-
-                    drawContext.canvas.nativeCanvas.drawText(
-                        ShamsiDate.toPersianDigits(data.year.toString()),
-                        centerX,
-                        size.height - 4.dp.toPx(),
-                        android.graphics.Paint().apply {
-                            this.color = textColor.hashCode()
-                            textSize = 10.sp.toPx()
-                            textAlign = android.graphics.Paint.Align.CENTER
-                        }
-                    )
-                }
-            }
+                    .height(200.dp),
+                barWidthRatio = 0.3f,
+                maxBarWidthDp = 24f
+            )
         }
     }
 }

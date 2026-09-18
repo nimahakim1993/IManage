@@ -1,6 +1,5 @@
 package com.nima.app.imanage.presentation.view
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,15 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -55,6 +46,10 @@ import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.FinancialSummaryViewModel
+import com.nima.app.imanage.ui.component.chart.BarCanvasChart
+import com.nima.app.imanage.ui.component.chart.BarCanvasItem
+import com.nima.app.imanage.ui.component.chart.LineCanvasChart
+import com.nima.app.imanage.ui.component.chart.LineCanvasSeries
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
@@ -124,8 +119,8 @@ fun FinancialScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(12.dp)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -212,137 +207,35 @@ private fun FinancialSummaryCard(
                     )
                 }
             } else {
-                val maxVal = data.monthlyData.maxOfOrNull {
-                    maxOf(it.expense, it.income)
-                }?.coerceAtLeast(1L) ?: 1L
+                val series = listOf(
+                    LineCanvasSeries(
+                        values = data.monthlyData.map { it.expense.toFloat() },
+                        lineColor = expenseColor,
+                        fillColor = expenseColor.copy(alpha = 0.1f),
+                        dotRadiusDp = 3f,
+                        innerDotRadiusDp = 1.5f
+                    ),
+                    LineCanvasSeries(
+                        values = data.monthlyData.map { it.income.toFloat() },
+                        lineColor = incomeColor,
+                        fillColor = incomeColor.copy(alpha = 0.1f),
+                        dotRadiusDp = 3f,
+                        innerDotRadiusDp = 1.5f
+                    )
+                )
+                val xLabels = data.monthlyData.map { ShamsiDate.getMonthName(it.month).take(1) }
 
-                Canvas(
+                LineCanvasChart(
+                    series = series,
+                    xLabels = xLabels,
+                    textColor = labelColor,
+                    gridColor = gridColor,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(140.dp)
-                ) {
-                    val chartHeight = size.height - 24.dp.toPx()
-                    val chartWidth = size.width
-                    val stepX = chartWidth / (data.monthlyData.size - 1).coerceAtLeast(1)
-
-                    for (i in 0..4) {
-                        val y = chartHeight * i / 4
-                        drawLine(
-                            color = gridColor,
-                            start = Offset(0f, y),
-                            end = Offset(chartWidth, y),
-                            strokeWidth = 1f
-                        )
-                    }
-
-                    val expensePoints = data.monthlyData.mapIndexed { index, m ->
-                        val x = stepX * index
-                        val y =
-                            chartHeight - (m.expense.toFloat() / maxVal * chartHeight).coerceAtLeast(
-                                0f
-                            )
-                        Offset(x, y)
-                    }
-
-                    val incomePoints = data.monthlyData.mapIndexed { index, m ->
-                        val x = stepX * index
-                        val y =
-                            chartHeight - (m.income.toFloat() / maxVal * chartHeight).coerceAtLeast(
-                                0f
-                            )
-                        Offset(x, y)
-                    }
-
-                    val expenseFillPath = Path().apply {
-                        moveTo(expensePoints.first().x, chartHeight)
-                        expensePoints.forEach { lineTo(it.x, it.y) }
-                        lineTo(expensePoints.last().x, chartHeight)
-                        close()
-                    }
-                    drawPath(
-                        path = expenseFillPath,
-                        color = expenseColor.copy(alpha = 0.1f)
-                    )
-
-                    val incomeFillPath = Path().apply {
-                        moveTo(incomePoints.first().x, chartHeight)
-                        incomePoints.forEach { lineTo(it.x, it.y) }
-                        lineTo(incomePoints.last().x, chartHeight)
-                        close()
-                    }
-                    drawPath(
-                        path = incomeFillPath,
-                        color = incomeColor.copy(alpha = 0.1f)
-                    )
-
-                    if (expensePoints.size >= 2) {
-                        val expensePath = Path().apply {
-                            moveTo(expensePoints.first().x, expensePoints.first().y)
-                            for (i in 1 until expensePoints.size) {
-                                lineTo(expensePoints[i].x, expensePoints[i].y)
-                            }
-                        }
-                        drawPath(
-                            path = expensePath,
-                            color = expenseColor,
-                            style = Stroke(width = 2.5.dp.toPx(), cap = StrokeCap.Round)
-                        )
-                    }
-
-                    if (incomePoints.size >= 2) {
-                        val incomePath = Path().apply {
-                            moveTo(incomePoints.first().x, incomePoints.first().y)
-                            for (i in 1 until incomePoints.size) {
-                                lineTo(incomePoints[i].x, incomePoints[i].y)
-                            }
-                        }
-                        drawPath(
-                            path = incomePath,
-                            color = incomeColor,
-                            style = Stroke(width = 2.5.dp.toPx(), cap = StrokeCap.Round)
-                        )
-                    }
-
-                    expensePoints.forEach { point ->
-                        drawCircle(
-                            color = expenseColor,
-                            radius = 3.dp.toPx(),
-                            center = point
-                        )
-                        drawCircle(
-                            color = Color.White,
-                            radius = 1.5.dp.toPx(),
-                            center = point
-                        )
-                    }
-
-                    incomePoints.forEach { point ->
-                        drawCircle(
-                            color = incomeColor,
-                            radius = 3.dp.toPx(),
-                            center = point
-                        )
-                        drawCircle(
-                            color = Color.White,
-                            radius = 1.5.dp.toPx(),
-                            center = point
-                        )
-                    }
-
-                    data.monthlyData.forEachIndexed { index, m ->
-                        val x = stepX * index
-                        drawContext.canvas.nativeCanvas.drawText(
-                            ShamsiDate.getMonthName(m.month).take(1),
-                            x,
-                            size.height - 2.dp.toPx(),
-                            android.graphics.Paint().apply {
-                                this.color = labelColor.toArgb()
-                                textSize = 8f * density
-                                textAlign = android.graphics.Paint.Align.CENTER
-                            }
-                        )
-                    }
-                }
+                        .height(140.dp),
+                    lineWidthDp = 2.5f,
+                    bottomPaddingDp = 24f
+                )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -422,42 +315,25 @@ private fun FinancialSummaryCard(
                 )
             )
 
-            val maxModuleVal = moduleItems.maxOfOrNull { it.value }?.coerceAtLeast(1L) ?: 1L
+            val barItems = moduleItems.map { item ->
+                BarCanvasItem(
+                    label = item.label,
+                    values = listOf(item.value.toFloat() to item.color)
+                )
+            }
 
-            Canvas(
+            BarCanvasChart(
+                items = barItems,
+                textColor = labelColor,
+                gridColor = Color.Transparent,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
-            ) {
-                val chartHeight = size.height - 20.dp.toPx()
-                val barCount = moduleItems.size
-                val groupWidth = size.width / barCount.coerceAtLeast(1)
-                val barWidth = (groupWidth * 0.5f).coerceAtMost(36.dp.toPx())
-
-                moduleItems.forEachIndexed { index, item ->
-                    val centerX = groupWidth * index + groupWidth / 2
-                    val barHeight =
-                        (item.value.toFloat() / maxModuleVal * chartHeight).coerceAtLeast(4.dp.toPx())
-
-                    drawRoundRect(
-                        color = item.color,
-                        topLeft = Offset(centerX - barWidth / 2, chartHeight - barHeight),
-                        size = Size(barWidth, barHeight),
-                        cornerRadius = CornerRadius(6.dp.toPx(), 6.dp.toPx())
-                    )
-
-                    drawContext.canvas.nativeCanvas.drawText(
-                        item.label,
-                        centerX,
-                        size.height - 2.dp.toPx(),
-                        android.graphics.Paint().apply {
-                            this.color = labelColor.toArgb()
-                            textSize = 9f * density
-                            textAlign = android.graphics.Paint.Align.CENTER
-                        }
-                    )
-                }
-            }
+                    .height(100.dp),
+                showGridLines = false,
+                roundedCorners = true,
+                bottomPaddingDp = 20f,
+                topPaddingDp = 0f
+            )
         }
     }
 }

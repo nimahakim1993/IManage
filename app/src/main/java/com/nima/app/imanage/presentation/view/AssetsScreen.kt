@@ -1,6 +1,5 @@
 package com.nima.app.imanage.presentation.view
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -56,11 +55,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -79,6 +74,8 @@ import com.nima.app.imanage.presentation.viewmodel.AssetViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
 import com.nima.app.imanage.ui.component.RequiredFieldError
+import com.nima.app.imanage.ui.component.chart.DonutSegment
+import com.nima.app.imanage.ui.component.chart.VicoDonutChart
 import com.nima.app.imanage.ui.component.showRequiredFieldsToast
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.scaledSp
@@ -245,10 +242,16 @@ private fun DonutChart(
 ) {
     val isDark = LocalIsDarkTheme.current
 
-    val slices = assets.map { asset ->
-        val value = (asset.unitCount * asset.pricePerUnit).toLong()
-        val angle = if (totalValue > 0) (value.toDouble() / totalValue.toDouble()) * 360.0 else 0.0
-        Triple(asset.name, value, angle)
+    val segments = remember(assets) {
+        assets.mapIndexed { index, asset ->
+            val value = (asset.unitCount * asset.pricePerUnit).toLong()
+            DonutSegment(
+                value = value.toFloat(),
+                color = assetChartColors[index % assetChartColors.size],
+                label = asset.name,
+                id = asset.id
+            )
+        }
     }
 
     val textColor = MaterialTheme.colorScheme.onSurface.copy(alpha = if (isDark) 0.85f else 1f)
@@ -285,55 +288,42 @@ private fun DonutChart(
 
                 Spacer(modifier = Modifier.size(12.dp))
 
-                Box(
+                VicoDonutChart(
+                    segments = segments,
                     modifier = Modifier.size(180.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        val strokeWidth = size.minDimension * 0.22f
-                        val topLeft = Offset(strokeWidth / 2f, strokeWidth / 2f)
-                        val arcSize = Size(
-                            size.width - strokeWidth,
-                            size.height - strokeWidth
-                        )
-
-                        var startAngle = -90f
-                        slices.forEachIndexed { index, slice ->
-                            val sweepAngle = slice.third.toFloat()
-                            drawArc(
-                                color = assetChartColors[index % assetChartColors.size],
-                                startAngle = startAngle,
-                                sweepAngle = sweepAngle,
-                                useCenter = false,
-                                topLeft = topLeft,
-                                size = arcSize,
-                                style = Stroke(width = strokeWidth, cap = StrokeCap.Butt)
+                    innerSize = 0.6f,
+                    enableAnimation = true,
+                    enableSelection = true,
+                    animationDuration = 1200,
+                    segmentSpacing = 2f,
+                    centerContent = {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(horizontal = 24.dp)
+                        ) {
+                            Text(
+                                text = NumberFormatUtils.format(totalValue),
+                                color = textColor,
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = scaledSp(18f),
+                                fontFamily = vazirFontFamily
                             )
-                            startAngle += sweepAngle
+                            Text(
+                                text = stringResource(R.string.toman),
+                                color = subTextColor,
+                                fontSize = scaledSp(10f),
+                                fontFamily = vazirFontFamily
+                            )
                         }
                     }
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    ) {
-                        Text(
-                            text = NumberFormatUtils.format(totalValue),
-                            color = textColor,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = scaledSp(18f),
-                            fontFamily = vazirFontFamily
-                        )
-                        Text(
-                            text = stringResource(R.string.toman),
-                            color = subTextColor,
-                            fontSize = scaledSp(10f),
-                            fontFamily = vazirFontFamily
-                        )
-                    }
-                }
+                )
 
                 Spacer(modifier = Modifier.size(12.dp))
+
+                val slices = assets.map { asset ->
+                    val value = (asset.unitCount * asset.pricePerUnit).toLong()
+                    Triple(asset.name, value, 0.0)
+                }
 
                 val gridItems = slices.mapIndexed { index, slice ->
                     val percent = if (totalValue > 0)
@@ -542,7 +532,7 @@ private fun CreateAssetSheet(
     onDismiss: () -> Unit,
     onSave: (AssetEntity) -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val sheetState = rememberModalBottomSheetState()
     val isEdit = editing != null
 
     val sheetTitle = stringResource(if (isEdit) R.string.edit_asset_title else R.string.create_asset_title)

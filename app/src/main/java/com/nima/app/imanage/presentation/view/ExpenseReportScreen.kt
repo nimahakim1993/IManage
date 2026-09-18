@@ -1,6 +1,5 @@
 package com.nima.app.imanage.presentation.view
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +25,6 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,19 +37,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.model.ToolbarConfig
@@ -63,6 +52,12 @@ import com.nima.app.imanage.presentation.viewmodel.MonthComparison
 import com.nima.app.imanage.presentation.viewmodel.MonthlyTrend
 import com.nima.app.imanage.ui.component.ShamsiDatePicker
 import com.nima.app.imanage.ui.component.ShamsiMonthYearPicker
+import com.nima.app.imanage.ui.component.chart.BarCanvasChart
+import com.nima.app.imanage.ui.component.chart.BarCanvasItem
+import com.nima.app.imanage.ui.component.chart.DonutSegment
+import com.nima.app.imanage.ui.component.chart.LineCanvasChart
+import com.nima.app.imanage.ui.component.chart.LineCanvasSeries
+import com.nima.app.imanage.ui.component.chart.VicoDonutChart
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
@@ -111,13 +106,12 @@ fun ExpenseReportScreen(
     var showComparisonPicker1 by remember { mutableStateOf(false) }
     var showComparisonPicker2 by remember { mutableStateOf(false) }
 
-    Scaffold { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 14.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
             item { Spacer(modifier = Modifier.height(4.dp)) }
 
             item {
@@ -229,8 +223,7 @@ fun ExpenseReportScreen(
                 MonthlyTrendLineCard(trend = data.monthlyTrend)
             }
 
-            item { Spacer(modifier = Modifier.height(16.dp)) }
-        }
+        item { Spacer(modifier = Modifier.height(16.dp)) }
     }
 
     if (showMonthYearPicker) {
@@ -472,7 +465,25 @@ private fun ExpenseIncomeDonutCard(
     val isDark = LocalIsDarkTheme.current
     val expenseColor = if (isDark) Color(0xFFEF9A9A) else Color(0xFFE53935)
     val incomeColor = if (isDark) Color(0xFFA5D6A7) else Color(0xFF43A047)
-    val total = totalExpenses + totalIncomes
+    val expenseLabel = stringResource(R.string.report_expense)
+    val incomeLabel = stringResource(R.string.report_income)
+
+    val segments = remember(totalExpenses, totalIncomes) {
+        listOf(
+            DonutSegment(
+                value = totalExpenses.toFloat(),
+                color = expenseColor,
+                label = expenseLabel,
+                id = "expense"
+            ),
+            DonutSegment(
+                value = totalIncomes.toFloat(),
+                color = incomeColor,
+                label = incomeLabel,
+                id = "income"
+            )
+        )
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -494,59 +505,33 @@ private fun ExpenseIncomeDonutCard(
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            Box(
+            VicoDonutChart(
+                segments = segments,
                 modifier = Modifier.size(160.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Canvas(modifier = Modifier.fillMaxSize()) {
-                    if (total > 0) {
-                        val strokeWidth = size.minDimension * 0.22f
-                        val topLeft = Offset(strokeWidth / 2f, strokeWidth / 2f)
-                        val arcSize = Size(size.width - strokeWidth, size.height - strokeWidth)
-
-                        val expenseAngle =
-                            if (total > 0) (totalExpenses.toDouble() / total.toDouble()) * 360.0 else 0.0
-                        val incomeAngle = 360.0 - expenseAngle
-
-                        var startAngle = -90f
-                        drawArc(
-                            color = expenseColor,
-                            startAngle = startAngle,
-                            sweepAngle = expenseAngle.toFloat(),
-                            useCenter = false,
-                            topLeft = topLeft,
-                            size = arcSize,
-                            style = Stroke(width = strokeWidth, cap = StrokeCap.Butt)
+                innerSize = 0.6f,
+                enableAnimation = true,
+                enableSelection = true,
+                animationDuration = 1000,
+                segmentSpacing = 3f,
+                centerContent = {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        val netBalance = totalIncomes - totalExpenses
+                        Text(
+                            text = NumberFormatUtils.format(netBalance),
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = scaledSp(16f),
+                            fontFamily = vazirFontFamily,
+                            color = if (netBalance >= 0) incomeColor else expenseColor
                         )
-                        startAngle += expenseAngle.toFloat()
-                        drawArc(
-                            color = incomeColor,
-                            startAngle = startAngle,
-                            sweepAngle = incomeAngle.toFloat(),
-                            useCenter = false,
-                            topLeft = topLeft,
-                            size = arcSize,
-                            style = Stroke(width = strokeWidth, cap = StrokeCap.Butt)
+                        Text(
+                            text = stringResource(R.string.home_net_balance),
+                            style = MaterialTheme.typography.labelSmall,
+                            fontFamily = vazirFontFamily,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    val netBalance = totalIncomes - totalExpenses
-                    Text(
-                        text = NumberFormatUtils.format(netBalance),
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = scaledSp(16f),
-                        fontFamily = vazirFontFamily,
-                        color = if (netBalance >= 0) incomeColor else expenseColor
-                    )
-                    Text(
-                        text = stringResource(R.string.home_net_balance),
-                        style = MaterialTheme.typography.labelSmall,
-                        fontFamily = vazirFontFamily,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
+            )
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -600,6 +585,20 @@ private fun CategoryDonutChartCard(
     categories: List<CategoryAmount>,
     total: Long
 ) {
+    val segments = remember(categories) {
+        categories.map { cat ->
+            val palette = ColorUtils.palettes.getOrElse(cat.colorIndex) {
+                ColorUtils.palettes.first()
+            }
+            DonutSegment(
+                value = cat.amount.toFloat(),
+                color = palette.primary,
+                label = cat.categoryName,
+                id = cat.categoryName
+            )
+        }
+    }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
@@ -612,48 +611,31 @@ private fun CategoryDonutChartCard(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
+            VicoDonutChart(
+                segments = segments,
                 modifier = Modifier.size(180.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Canvas(modifier = Modifier.fillMaxSize()) {
-                    val strokeWidth = size.minDimension * 0.22f
-                    val topLeft = Offset(strokeWidth / 2f, strokeWidth / 2f)
-                    val arcSize = Size(size.width - strokeWidth, size.height - strokeWidth)
-
-                    var startAngle = -90f
-                    categories.forEachIndexed { index, cat ->
-                        val sweepAngle = (cat.percent / 100f) * 360f
-                        val palette = ColorUtils.palettes.getOrElse(cat.colorIndex) {
-                            ColorUtils.palettes.first()
-                        }
-                        drawArc(
-                            color = palette.primary,
-                            startAngle = startAngle,
-                            sweepAngle = sweepAngle,
-                            useCenter = false,
-                            topLeft = topLeft,
-                            size = arcSize,
-                            style = Stroke(width = strokeWidth, cap = StrokeCap.Butt)
+                innerSize = 0.6f,
+                enableAnimation = true,
+                enableSelection = true,
+                animationDuration = 1200,
+                segmentSpacing = 2f,
+                centerContent = {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = NumberFormatUtils.format(total),
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = scaledSp(16f),
+                            fontFamily = vazirFontFamily
                         )
-                        startAngle += sweepAngle
+                        Text(
+                            text = stringResource(R.string.toman),
+                            style = MaterialTheme.typography.labelSmall,
+                            fontFamily = vazirFontFamily,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = NumberFormatUtils.format(total),
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = scaledSp(16f),
-                        fontFamily = vazirFontFamily
-                    )
-                    Text(
-                        text = stringResource(R.string.toman),
-                        style = MaterialTheme.typography.labelSmall,
-                        fontFamily = vazirFontFamily,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
+            )
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -707,8 +689,6 @@ private fun MonthComparisonBarCard(monthComparison: MonthComparison) {
     val prevColor = if (isDark) Color(0xFFFB923C) else Color(0xFF7C2D12)
     val textColor = MaterialTheme.colorScheme.onSurface
     val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-    val context = LocalContext.current
-    val vazirTypeface = remember { ResourcesCompat.getFont(context, R.font.vazir_bold) }
 
     val items = listOf(
         Triple(monthComparison.currentMonthLabel, monthComparison.currentMonthAmount, currentColor),
@@ -719,7 +699,14 @@ private fun MonthComparisonBarCard(monthComparison: MonthComparison) {
         ),
         Triple(monthComparison.previousMonthLabel, monthComparison.previousMonthAmount, prevColor)
     )
-    val maxVal = items.maxOfOrNull { it.second }?.coerceAtLeast(1L) ?: 1L
+
+    val barItems = items.map { (label, amount, color) ->
+        BarCanvasItem(
+            label = label,
+            values = listOf(amount.toFloat() to color),
+            valueLabel = NumberFormatUtils.format(amount).replace('\u066C', ',')
+        )
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -730,63 +717,15 @@ private fun MonthComparisonBarCard(monthComparison: MonthComparison) {
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-
-            Canvas(
+            BarCanvasChart(
+                items = barItems,
+                textColor = textColor,
+                gridColor = gridColor,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
-            ) {
-                val chartHeight = size.height - 40.dp.toPx()
-                val barCount = items.size
-                val groupWidth = size.width / barCount.coerceAtLeast(1)
-                val barWidth = (groupWidth * 0.5f).coerceAtMost(48.dp.toPx())
-
-                for (i in 0..4) {
-                    val y = chartHeight * i / 4
-                    drawLine(
-                        color = gridColor,
-                        start = Offset(0f, y),
-                        end = Offset(size.width, y),
-                        strokeWidth = 1f
-                    )
-                }
-
-                items.forEachIndexed { index, (label, amount, color) ->
-                    val centerX = groupWidth * index + groupWidth / 2
-                    val barHeight = (amount.toFloat() / maxVal * chartHeight).coerceAtLeast(0f)
-
-                    drawRect(
-                        color = color,
-                        topLeft = Offset(centerX - barWidth / 2, chartHeight - barHeight),
-                        size = Size(barWidth, barHeight)
-                    )
-
-                    drawContext.canvas.nativeCanvas.drawText(
-                        NumberFormatUtils.format(amount).replace('\u066C', ','),
-                        centerX,
-                        chartHeight - barHeight - 6.dp.toPx(),
-                        android.graphics.Paint().apply {
-                            this.color = textColor.hashCode()
-                            textSize = 10.sp.toPx()
-                            textAlign = android.graphics.Paint.Align.CENTER
-                            this.isFakeBoldText = true
-                            typeface = vazirTypeface
-                        }
-                    )
-
-                    drawContext.canvas.nativeCanvas.drawText(
-                        label,
-                        centerX,
-                        size.height - 4.dp.toPx(),
-                        android.graphics.Paint().apply {
-                            this.color = textColor.hashCode()
-                            textSize = 9.sp.toPx()
-                            textAlign = android.graphics.Paint.Align.CENTER
-                            typeface = vazirTypeface
-                        }
-                    )
-                }
-            }
+                    .height(200.dp),
+                showValueLabels = true
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -980,11 +919,7 @@ private fun MonthlyTrendLineCard(trend: List<MonthlyTrend>) {
         if (isDark) Color(0xFF60A5FA).copy(alpha = 0.15f) else Color(0xFF1E3A8A).copy(alpha = 0.1f)
     val textColor = MaterialTheme.colorScheme.onSurface
     val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-    val dotColor = if (isDark) Color(0xFF60A5FA) else Color(0xFF1E3A8A)
-    val context = LocalContext.current
-    val vazirTypeface = remember { ResourcesCompat.getFont(context, R.font.vazir_bold) }
 
-    val maxVal = trend.maxOfOrNull { it.amount }?.coerceAtLeast(1L) ?: 1L
     val hasData = trend.any { it.amount > 0 }
 
     Card(
@@ -1010,85 +945,24 @@ private fun MonthlyTrendLineCard(trend: List<MonthlyTrend>) {
                     )
                 }
             } else {
-                Canvas(
+                val series = listOf(
+                    LineCanvasSeries(
+                        values = trend.map { it.amount.toFloat() },
+                        lineColor = lineColor,
+                        fillColor = fillColor
+                    )
+                )
+                val xLabels = trend.map { ShamsiDate.getMonthName(it.month).take(3) }
+
+                LineCanvasChart(
+                    series = series,
+                    xLabels = xLabels,
+                    textColor = textColor,
+                    gridColor = gridColor,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
-                ) {
-                    val chartHeight = size.height - 30.dp.toPx()
-                    val chartWidth = size.width
-                    val stepX = chartWidth / (trend.size - 1).coerceAtLeast(1)
-
-                    for (i in 0..4) {
-                        val y = chartHeight * i / 4
-                        drawLine(
-                            color = gridColor,
-                            start = Offset(0f, y),
-                            end = Offset(chartWidth, y),
-                            strokeWidth = 1f
-                        )
-                    }
-
-                    val points = trend.mapIndexed { index, t ->
-                        val x = stepX * index
-                        val y =
-                            chartHeight - (t.amount.toFloat() / maxVal * chartHeight).coerceAtLeast(
-                                0f
-                            )
-                        Offset(x, y)
-                    }
-
-                    if (points.size >= 2) {
-                        val fillPath = Path().apply {
-                            moveTo(points.first().x, chartHeight)
-                            points.forEach { lineTo(it.x, it.y) }
-                            lineTo(points.last().x, chartHeight)
-                            close()
-                        }
-                        drawPath(
-                            path = fillPath,
-                            color = fillColor
-                        )
-
-                        for (i in 0 until points.size - 1) {
-                            drawLine(
-                                color = lineColor,
-                                start = points[i],
-                                end = points[i + 1],
-                                strokeWidth = 3.dp.toPx(),
-                                cap = StrokeCap.Round
-                            )
-                        }
-
-                        points.forEach { point ->
-                            drawCircle(
-                                color = dotColor,
-                                radius = 4.dp.toPx(),
-                                center = point
-                            )
-                            drawCircle(
-                                color = Color.White,
-                                radius = 2.dp.toPx(),
-                                center = point
-                            )
-                        }
-                    }
-
-                    trend.forEachIndexed { index, t ->
-                        val x = stepX * index
-                        drawContext.canvas.nativeCanvas.drawText(
-                            ShamsiDate.getMonthName(t.month).take(3),
-                            x,
-                            size.height - 4.dp.toPx(),
-                            android.graphics.Paint().apply {
-                                this.color = textColor.hashCode()
-                                textSize = 9.sp.toPx()
-                                textAlign = android.graphics.Paint.Align.CENTER
-                                typeface = vazirTypeface
-                            }
-                        )
-                    }
-                }
+                )
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.nima.app.imanage.presentation.view
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,7 +34,6 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -49,18 +47,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.model.ToolbarConfig
@@ -70,6 +62,8 @@ import com.nima.app.imanage.domain.model.ReportData
 import com.nima.app.imanage.presentation.viewmodel.ReportViewModel
 import com.nima.app.imanage.ui.component.ShamsiDatePicker
 import com.nima.app.imanage.ui.component.ShamsiMonthYearPicker
+import com.nima.app.imanage.ui.component.chart.BarCanvasChart
+import com.nima.app.imanage.ui.component.chart.BarCanvasItem
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
@@ -107,13 +101,12 @@ fun ReportScreen(
     var customFrom by remember { mutableLongStateOf(System.currentTimeMillis()) }
     var customTo by remember { mutableLongStateOf(System.currentTimeMillis()) }
 
-    Scaffold { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 14.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
             item { Spacer(modifier = Modifier.height(4.dp)) }
 
             item {
@@ -185,7 +178,6 @@ fun ReportScreen(
             item { CategoryBreakdownCard(data = data) }
 
             item { Spacer(modifier = Modifier.height(16.dp)) }
-        }
     }
 
     if (showMonthYearPicker) {
@@ -579,8 +571,6 @@ private fun BarChartCard(
     val incomeColor = if (isDark) Color(0xFFA5D6A7) else Color(0xFF43A047)
     val textColor = MaterialTheme.colorScheme.onSurface
     val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-    val context = LocalContext.current
-    val vazirTypeface = remember { ResourcesCompat.getFont(context, R.font.vazir_bold) }
 
     val allMonths = (monthlyExpenses.map { Pair(it.month, it.year) } + monthlyIncomes.map {
         Pair(
@@ -649,85 +639,32 @@ private fun BarChartCard(
                     )
                 }
             } else {
-                val maxVal =
-                    (monthlyExpenses.maxOfOrNull { it.amount } ?: 0L)
-                        .coerceAtLeast(monthlyIncomes.maxOfOrNull { it.amount } ?: 0L)
-                        .coerceAtLeast(1L)
+                val barItems = allMonths.mapIndexed { index, (month, year) ->
+                    val expAmount =
+                        monthlyExpenses.find { it.month == month && it.year == year }?.amount ?: 0L
+                    val incAmount =
+                        monthlyIncomes.find { it.month == month && it.year == year }?.amount ?: 0L
 
-                val density = LocalDensity.current
+                    BarCanvasItem(
+                        label = ShamsiDate.getMonthName(month).take(3),
+                        values = listOf(
+                            expAmount.toFloat() to expenseColor,
+                            incAmount.toFloat() to incomeColor
+                        )
+                    )
+                }
 
-                Canvas(
+                BarCanvasChart(
+                    items = barItems,
+                    textColor = textColor,
+                    gridColor = gridColor,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp)
-                ) {
-                    val chartWidth = size.width
-                    val chartHeight = size.height - 30.dp.toPx()
-                    val barCount = allMonths.size
-                    val groupWidth = chartWidth / barCount.coerceAtLeast(1)
-                    val barWidth = (groupWidth * 0.35f).coerceAtMost(24.dp.toPx())
-
-                    for (i in 0..4) {
-                        val y = chartHeight * i / 4
-                        drawLine(
-                            color = gridColor,
-                            start = Offset(0f, y),
-                            end = Offset(chartWidth, y),
-                            strokeWidth = 1f
-                        )
-                        val labelVal = (maxVal * (4 - i) / 4)
-                        drawContext.canvas.nativeCanvas.drawText(
-                            NumberFormatUtils.format(labelVal).replace('\u066C', ','),
-                            4.dp.toPx(),
-                            y + 12.dp.toPx(),
-                            android.graphics.Paint().apply {
-                                color = textColor.hashCode()
-                                textSize = 9.sp.toPx()
-                                textAlign = android.graphics.Paint.Align.LEFT
-                                typeface = vazirTypeface
-                            }
-                        )
-                    }
-
-                    allMonths.forEachIndexed { index, (month, _) ->
-                        val centerX = groupWidth * index + groupWidth / 2
-                        val expAmount =
-                            monthlyExpenses.find { it.month == month && it.year == allMonths[index].second }?.amount
-                                ?: 0L
-                        val incAmount =
-                            monthlyIncomes.find { it.month == month && it.year == allMonths[index].second }?.amount
-                                ?: 0L
-
-                        val expHeight =
-                            (expAmount.toFloat() / maxVal * chartHeight).coerceAtLeast(0f)
-                        val incHeight =
-                            (incAmount.toFloat() / maxVal * chartHeight).coerceAtLeast(0f)
-
-                        drawRect(
-                            color = expenseColor,
-                            topLeft = Offset(centerX - barWidth, chartHeight - expHeight),
-                            size = Size(barWidth, expHeight)
-                        )
-                        drawRect(
-                            color = incomeColor,
-                            topLeft = Offset(centerX + 2.dp.toPx(), chartHeight - incHeight),
-                            size = Size(barWidth, incHeight)
-                        )
-
-                        val monthName = ShamsiDate.getMonthName(month)
-                        drawContext.canvas.nativeCanvas.drawText(
-                            monthName.take(3),
-                            centerX,
-                            size.height - 4.dp.toPx(),
-                            android.graphics.Paint().apply {
-                                color = textColor.hashCode()
-                                textSize = 10.sp.toPx()
-                                textAlign = android.graphics.Paint.Align.CENTER
-                                typeface = vazirTypeface
-                            }
-                        )
-                    }
-                }
+                        .height(200.dp),
+                    showYAxisLabels = true,
+                    barWidthRatio = 0.35f,
+                    maxBarWidthDp = 24f
+                )
             }
         }
     }

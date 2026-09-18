@@ -55,7 +55,7 @@ fun CreateCheckSheet(
 ) {
     val isEdit = editing != null
     val context = LocalContext.current
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val sheetState = rememberModalBottomSheetState()
     var type by remember { mutableStateOf(CheckEntity.TYPE_RECEIVED) }
     var amount by remember { mutableStateOf(TextFieldValue("")) }
     var state by remember { mutableStateOf(CheckEntity.STATE_IN_PROGRESS) }

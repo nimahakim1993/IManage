@@ -45,7 +45,7 @@ import java.time.LocalDate
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BackupSheet(onDismiss: () -> Unit) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val sheetState = rememberModalBottomSheetState()
     val context = LocalContext.current
     val activity = context.findFragmentActivity()
     val viewModel: SettingsViewModel = koinViewModel()

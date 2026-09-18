@@ -1,7 +1,6 @@
 package com.nima.app.imanage.presentation.view
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -52,11 +51,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -73,6 +68,8 @@ import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.CarServiceViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
+import com.nima.app.imanage.ui.component.chart.DonutSegment
+import com.nima.app.imanage.ui.component.chart.VicoDonutChart
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
@@ -257,10 +254,20 @@ private fun DonutCard(
     val textColor = MaterialTheme.colorScheme.onSurface.copy(alpha = if (isDark) 0.85f else 1f)
     val subTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
 
-    val slices = typeSlices.map { (type, amount, _) ->
-        val angle =
-            if (totalAmount > 0) (amount.toDouble() / totalAmount.toDouble()) * 360.0 else 0.0
-        Triple(type, amount, angle)
+    val labels = typeSlices.map { (type, _, _) ->
+        val iconType = CarServiceIconType.fromValue(type)
+        stringResource(iconType.labelRes())
+    }
+
+    val segments = remember(typeSlices, labels) {
+        typeSlices.mapIndexed { index, (type, amount, _) ->
+            DonutSegment(
+                value = amount.toFloat(),
+                color = serviceTypeColors[type % serviceTypeColors.size],
+                label = labels[index],
+                id = type
+            )
+        }
     }
 
     Card(
@@ -294,65 +301,44 @@ private fun DonutCard(
 
                 Spacer(modifier = Modifier.size(12.dp))
 
-                Box(
+                VicoDonutChart(
+                    segments = segments,
                     modifier = Modifier.size(180.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        val strokeWidth = size.minDimension * 0.22f
-                        val topLeft = Offset(strokeWidth / 2f, strokeWidth / 2f)
-                        val arcSize = Size(
-                            size.width - strokeWidth,
-                            size.height - strokeWidth
-                        )
-
-                        var startAngle = -90f
-                        slices.forEach { slice ->
-                            val color = serviceTypeColors[slice.first % serviceTypeColors.size]
-                            val sweepAngle = slice.third.toFloat()
-                            if (sweepAngle > 0f) {
-                                drawArc(
-                                    color = color,
-                                    startAngle = startAngle,
-                                    sweepAngle = sweepAngle,
-                                    useCenter = false,
-                                    topLeft = topLeft,
-                                    size = arcSize,
-                                    style = Stroke(width = strokeWidth, cap = StrokeCap.Butt)
-                                )
-                                startAngle += sweepAngle
-                            }
+                    innerSize = 0.6f,
+                    enableAnimation = true,
+                    enableSelection = true,
+                    animationDuration = 1200,
+                    segmentSpacing = 2f,
+                    centerContent = {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(horizontal = 24.dp)
+                        ) {
+                            Text(
+                                text = NumberFormatUtils.format(totalAmount),
+                                color = textColor,
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = scaledSp(18f),
+                                fontFamily = vazirFontFamily
+                            )
+                            Text(
+                                text = stringResource(R.string.toman),
+                                color = subTextColor,
+                                fontSize = scaledSp(10f),
+                                fontFamily = vazirFontFamily
+                            )
                         }
                     }
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    ) {
-                        Text(
-                            text = NumberFormatUtils.format(totalAmount),
-                            color = textColor,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = scaledSp(18f),
-                            fontFamily = vazirFontFamily
-                        )
-                        Text(
-                            text = stringResource(R.string.toman),
-                            color = subTextColor,
-                            fontSize = scaledSp(10f),
-                            fontFamily = vazirFontFamily
-                        )
-                    }
-                }
+                )
 
                 Spacer(modifier = Modifier.size(12.dp))
 
-                val legendItems = slices.map { slice ->
-                    val iconType = CarServiceIconType.fromValue(slice.first)
+                val legendItems = typeSlices.mapIndexed { index, (type, amount, _) ->
+                    val iconType = CarServiceIconType.fromValue(type)
                     val percent = if (totalAmount > 0)
-                        ((slice.second.toDouble() / totalAmount.toDouble()) * 100).toInt()
+                        ((amount.toDouble() / totalAmount.toDouble()) * 100).toInt()
                     else 0
-                    val color = serviceTypeColors[slice.first % serviceTypeColors.size]
+                    val color = serviceTypeColors[type % serviceTypeColors.size]
                     Triple(
                         stringResource(iconType.labelRes()),
                         percent,

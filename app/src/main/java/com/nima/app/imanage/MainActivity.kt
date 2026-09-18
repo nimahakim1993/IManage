@@ -185,117 +185,9 @@ fun AppScaffold() {
         (context as? Activity)?.intent?.getStringExtra(NotificationHelper.EXTRA_NAVIGATE_TO)
     }
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        gesturesEnabled = toolbarState.value?.showDrawer == true,
-        drawerContent = {
-            toolbarState.value?.let { config ->
-                if (config.showDrawer && config.drawerItems.isNotEmpty()) {
-                    Column(
-                        modifier = Modifier
-                            .width(280.dp)
-                            .fillMaxHeight()
-                            .background(MaterialTheme.colorScheme.surface)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(MaterialTheme.colorScheme.primary)
-                                .padding(horizontal = 20.dp, vertical = 40.dp)
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(12.dp)
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.imanage_logo),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(48.dp),
-                                    colorFilter = ColorFilter.tint(Color.White)
-                                )
-                                Column {
-                                    Text(
-                                        text = stringResource(R.string.app_name),
-                                        style = MaterialTheme.typography.titleLarge,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color.White,
-                                        fontFamily = vazirFontFamily
-                                    )
-                                    Text(
-                                        text = stringResource(R.string.app_version),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = Color.White.copy(alpha = 0.85f),
-                                        fontFamily = vazirFontFamily
-                                    )
-                                }
-                            }
-                        }
+    val showDrawer = toolbarState.value?.showDrawer == true
 
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(horizontal = 12.dp, vertical = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(2.dp)
-                        ) {
-                            config.drawerItems.forEach { item ->
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clip(RoundedCornerShape(12.dp))
-                                        .clickable {
-                                            scope.launch { drawerState.close() }
-                                            item.onClick()
-                                        }
-                                        .padding(horizontal = 16.dp, vertical = 14.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = item.icon,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                    Text(
-                                        text = item.label,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontFamily = vazirFontFamily,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                }
-                            }
-                        }
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.imanage_logo),
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp),
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = stringResource(R.string.app_slogan),
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary,
-                                fontFamily = vazirFontFamily
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    ) {
+    val mainContent: @Composable () -> Unit = {
         Scaffold(
             topBar = {
                 toolbarState.value?.let { config ->
@@ -307,7 +199,6 @@ fun AppScaffold() {
                 }
             }
         ) { padding ->
-
             Navigation(
                 padding = padding,
                 navController = navController,
@@ -317,6 +208,124 @@ fun AppScaffold() {
                 navigateTo = navigateTo
             )
         }
+    }
+
+    if (showDrawer) {
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            gesturesEnabled = true,
+            drawerContent = {
+                toolbarState.value?.let { config ->
+                    if (config.showDrawer && config.drawerItems.isNotEmpty()) {
+                        Column(
+                            modifier = Modifier
+                                .width(280.dp)
+                                .fillMaxHeight()
+                                .background(MaterialTheme.colorScheme.surface)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(MaterialTheme.colorScheme.primary)
+                                    .padding(horizontal = 20.dp, vertical = 40.dp)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    Image(
+                                        painter = painterResource(R.drawable.imanage_logo),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(48.dp),
+                                        colorFilter = ColorFilter.tint(Color.White)
+                                    )
+                                    Column {
+                                        Text(
+                                            text = stringResource(R.string.app_name),
+                                            style = MaterialTheme.typography.titleLarge,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color.White,
+                                            fontFamily = vazirFontFamily
+                                        )
+                                        Text(
+                                            text = stringResource(R.string.app_version),
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = Color.White.copy(alpha = 0.85f),
+                                            fontFamily = vazirFontFamily
+                                        )
+                                    }
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                                verticalArrangement = Arrangement.spacedBy(2.dp)
+                            ) {
+                                config.drawerItems.forEach { item ->
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(12.dp))
+                                            .clickable {
+                                                scope.launch { drawerState.close() }
+                                                item.onClick()
+                                            }
+                                            .padding(horizontal = 16.dp, vertical = 14.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = item.icon,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                        Text(
+                                            text = item.label,
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            fontFamily = vazirFontFamily,
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                    }
+                                }
+                            }
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.imanage_logo),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp),
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = stringResource(R.string.app_slogan),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontFamily = vazirFontFamily
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        ) {
+            mainContent()
+        }
+    } else {
+        mainContent()
     }
 
     if (showUpdate) {
