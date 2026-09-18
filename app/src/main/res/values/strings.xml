@@ -516,11 +516,18 @@
     <string name="report_cards">Bank Cards</string>
     <string name="report_car">Car Services</string>
     <string name="report_assets">Assets</string>
+    <string name="report_passwords">Passwords</string>
+    <string name="report_noteboxes">Notes</string>
+    <string name="report_payable_checks">Payable Checks</string>
+    <string name="report_received_checks">Received Checks</string>
+    <string name="report_office_notes">Office Notes</string>
+    <string name="report_office_reminders">Office Reminders</string>
     <string name="report_trip_expenses">Trip Expenses</string>
     <string name="report_installments">Installments</string>
     <string name="report_assets_value">Asset Value</string>
     <string name="report_income_vs_expense">Income vs Expense</string>
     <string name="report_category_breakdown">Category Breakdown</string>
+    <string name="report_finance_overview">Finance Overview</string>
     <string name="report_no_data">No data for selected period</string>
 
     <!-- Checks Report -->

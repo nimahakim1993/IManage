@@ -19,12 +19,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MoneyOff
+import androidx.compose.material.icons.filled.Note
+import androidx.compose.material.icons.filled.Receipt
+import androidx.compose.material.icons.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Savings
+import androidx.compose.material.icons.filled.StickyNote2
 import androidx.compose.material.icons.filled.TrendingDown
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.Card
@@ -57,7 +63,6 @@ import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.domain.model.FilterMode
-import com.nima.app.imanage.domain.model.MonthAmount
 import com.nima.app.imanage.domain.model.ReportData
 import com.nima.app.imanage.presentation.viewmodel.ReportViewModel
 import com.nima.app.imanage.ui.component.ShamsiDatePicker
@@ -152,7 +157,7 @@ fun ReportScreen(
 
             item {
                 Text(
-                    text = stringResource(R.string.report_income_vs_expense),
+                    text = stringResource(R.string.report_finance_overview),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     fontFamily = vazirFontFamily
@@ -160,22 +165,8 @@ fun ReportScreen(
             }
 
             item {
-                BarChartCard(
-                    monthlyExpenses = data.monthlyExpenses,
-                    monthlyIncomes = data.monthlyIncomes
-                )
+                FinanceBarChartCard(data = data)
             }
-
-            item {
-                Text(
-                    text = stringResource(R.string.report_category_breakdown),
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = vazirFontFamily
-                )
-            }
-
-            item { CategoryBreakdownCard(data = data) }
 
             item { Spacer(modifier = Modifier.height(16.dp)) }
     }
@@ -445,33 +436,73 @@ private fun StatsGrid(data: ReportData) {
     val stats = listOf(
         StatItem(
             stringResource(R.string.report_income),
-            NumberFormatUtils.format(data.totalIncomes),
+            NumberFormatUtils.format(data.incomeCount),
             Icons.Default.TrendingUp,
-            Color(0xFF4CAF50)
+            Color(0xFF4CAF50),
+            NumberFormatUtils.format(data.totalIncomes)
         ),
         StatItem(
             stringResource(R.string.report_expense),
-            NumberFormatUtils.format(data.totalExpenses),
+            NumberFormatUtils.format(data.expenseCount),
             Icons.Default.TrendingDown,
-            Color(0xFFF44336)
+            Color(0xFFF44336),
+            NumberFormatUtils.format(data.totalExpenses)
         ),
         StatItem(
             stringResource(R.string.report_debt),
-            NumberFormatUtils.format(data.totalDebt),
+            NumberFormatUtils.format(data.debtCount),
             Icons.Default.MoneyOff,
-            Color(0xFFFF9800)
+            Color(0xFFFF9800),
+            NumberFormatUtils.format(data.totalDebt)
         ),
         StatItem(
             stringResource(R.string.report_receivable),
-            NumberFormatUtils.format(data.totalReceivable),
+            NumberFormatUtils.format(data.receivableCount),
             Icons.Default.Savings,
-            Color(0xFF2196F3)
+            Color(0xFF2196F3),
+            NumberFormatUtils.format(data.totalReceivable)
+        ),
+        StatItem(
+            stringResource(R.string.report_payable_checks),
+            NumberFormatUtils.format(data.payableCheckCount),
+            Icons.Default.ReceiptLong,
+            Color(0xFFE91E63),
+            NumberFormatUtils.format(data.totalPayableChecks)
+        ),
+        StatItem(
+            stringResource(R.string.report_received_checks),
+            NumberFormatUtils.format(data.receivedCheckCount),
+            Icons.Default.Receipt,
+            Color(0xFF00BCD4),
+            NumberFormatUtils.format(data.totalReceivedChecks)
+        ),
+        StatItem(
+            stringResource(R.string.report_installments),
+            NumberFormatUtils.format(data.installmentCount),
+            Icons.Default.CalendarMonth,
+            Color(0xFF795548),
+            NumberFormatUtils.format(data.totalInstallments)
+        ),
+        StatItem(
+            stringResource(R.string.report_car),
+            NumberFormatUtils.format(data.carServiceCount),
+            Icons.Default.DirectionsCar,
+            Color(0xFF9C27B0),
+            NumberFormatUtils.format(data.totalCarExpenses)
         ),
         StatItem(
             stringResource(R.string.report_trips),
             NumberFormatUtils.format(data.tripCount),
             Icons.Default.Groups,
-            MaterialTheme.colorScheme.primary
+            MaterialTheme.colorScheme.primary,
+            NumberFormatUtils.format(data.totalTripExpenses)
+        ),
+        StatItem(
+            stringResource(R.string.report_assets),
+            NumberFormatUtils.format(data.assetCount),
+            Icons.Default.AccountBalanceWallet,
+            Color(0xFF009688),
+            NumberFormatUtils.format(data.totalAssetValue)
         ),
         StatItem(
             stringResource(R.string.report_cards),
@@ -480,16 +511,28 @@ private fun StatsGrid(data: ReportData) {
             MaterialTheme.colorScheme.tertiary
         ),
         StatItem(
-            stringResource(R.string.report_car),
-            NumberFormatUtils.format(data.totalCarExpenses),
-            Icons.Default.DirectionsCar,
-            Color(0xFF9C27B0)
+            stringResource(R.string.report_passwords),
+            NumberFormatUtils.format(data.passwordCount),
+            Icons.Default.Lock,
+            Color(0xFF607D8B)
         ),
         StatItem(
-            stringResource(R.string.report_assets),
-            NumberFormatUtils.format(data.assetCount),
-            Icons.Default.AccountBalanceWallet,
-            Color(0xFF009688)
+            stringResource(R.string.report_noteboxes),
+            NumberFormatUtils.format(data.noteBoxCount),
+            Icons.Default.Note,
+            Color(0xFFFF5722)
+        ),
+        StatItem(
+            stringResource(R.string.report_office_notes),
+            NumberFormatUtils.format(data.officeNoteCount),
+            Icons.Default.StickyNote2,
+            Color(0xFF3F51B5)
+        ),
+        StatItem(
+            stringResource(R.string.report_office_reminders),
+            NumberFormatUtils.format(data.officeReminderCount),
+            Icons.Default.Alarm,
+            Color(0xFFCDDC39)
         ),
     )
 
@@ -510,9 +553,10 @@ private fun StatsGrid(data: ReportData) {
 
 private data class StatItem(
     val label: String,
-    val value: String,
+    val count: String,
     val icon: ImageVector,
-    val color: Color
+    val color: Color,
+    val amount: String? = null
 )
 
 @Composable
@@ -526,7 +570,10 @@ private fun StatCard(stat: StatItem, modifier: Modifier = Modifier) {
         Column(
             modifier = Modifier.padding(14.dp)
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Box(
                     modifier = Modifier
                         .size(32.dp)
@@ -546,40 +593,74 @@ private fun StatCard(stat: StatItem, modifier: Modifier = Modifier) {
                     text = stat.label,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontFamily = vazirFontFamily
+                    fontFamily = vazirFontFamily,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+                    text = stat.count,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = vazirFontFamily,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = stat.value,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                fontFamily = vazirFontFamily,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            if (stat.amount != null) {
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = stat.amount,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontFamily = vazirFontFamily,
+                    color = stat.color,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun BarChartCard(
-    monthlyExpenses: List<MonthAmount>,
-    monthlyIncomes: List<MonthAmount>
-) {
+private fun FinanceBarChartCard(data: ReportData) {
     val isDark = LocalIsDarkTheme.current
     val expenseColor = if (isDark) Color(0xFFEF9A9A) else Color(0xFFE53935)
     val incomeColor = if (isDark) Color(0xFFA5D6A7) else Color(0xFF43A047)
+    val debtColor = Color(0xFFFF9800)
+    val receivableColor = Color(0xFF2196F3)
+    val installmentColor = Color(0xFF009688)
+    val payableCheckColor = if (isDark) Color(0xFFCE93D8) else Color(0xFF9C27B0)
+    val receivedCheckColor = if (isDark) Color(0xFF80DEEA) else Color(0xFF00BCD4)
     val textColor = MaterialTheme.colorScheme.onSurface
     val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
 
-    val allMonths = (monthlyExpenses.map { Pair(it.month, it.year) } + monthlyIncomes.map {
-        Pair(
-            it.month,
-            it.year
+    val barItems = listOf(
+        BarCanvasItem(
+            label = stringResource(R.string.expense),
+            values = listOf(data.totalExpenses.toFloat() to expenseColor)
+        ),
+        BarCanvasItem(
+            label = stringResource(R.string.income),
+            values = listOf(data.totalIncomes.toFloat() to incomeColor)
+        ),
+        BarCanvasItem(
+            label = stringResource(R.string.debt),
+            values = listOf(data.totalDebt.toFloat() to debtColor)
+        ),
+        BarCanvasItem(
+            label = stringResource(R.string.receivable),
+            values = listOf(data.totalReceivable.toFloat() to receivableColor)
+        ),
+        BarCanvasItem(
+            label = stringResource(R.string.installment),
+            values = listOf(data.totalInstallments.toFloat() to installmentColor)
+        ),
+        BarCanvasItem(
+            label = stringResource(R.string.financial_report_payable_checks_short),
+            values = listOf(data.totalPayableChecks.toFloat() to payableCheckColor)
+        ),
+        BarCanvasItem(
+            label = stringResource(R.string.financial_report_received_checks_short),
+            values = listOf(data.totalReceivedChecks.toFloat() to receivedCheckColor)
         )
-    })
-        .distinct()
-        .sortedWith(compareBy({ it.second }, { it.first }))
+    )
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -590,223 +671,56 @@ private fun BarChartCard(
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(10.dp)
-                        .clip(CircleShape)
-                        .background(incomeColor)
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    stringResource(R.string.report_income),
-                    fontSize = scaledSp(11f),
-                    fontFamily = vazirFontFamily,
-                    color = textColor
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Box(
-                    modifier = Modifier
-                        .size(10.dp)
-                        .clip(CircleShape)
-                        .background(expenseColor)
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    stringResource(R.string.report_expense),
-                    fontSize = scaledSp(11f),
-                    fontFamily = vazirFontFamily,
-                    color = textColor
-                )
-            }
+            BarCanvasChart(
+                items = barItems,
+                textColor = textColor,
+                gridColor = gridColor,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp),
+                showYAxisLabels = true,
+                barWidthRatio = 0.6f,
+                maxBarWidthDp = 32f
+            )
+
             Spacer(modifier = Modifier.height(12.dp))
 
-            if (allMonths.isEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        stringResource(R.string.report_no_data),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontFamily = vazirFontFamily
-                    )
-                }
-            } else {
-                val barItems = allMonths.mapIndexed { index, (month, year) ->
-                    val expAmount =
-                        monthlyExpenses.find { it.month == month && it.year == year }?.amount ?: 0L
-                    val incAmount =
-                        monthlyIncomes.find { it.month == month && it.year == year }?.amount ?: 0L
+            val legendItems = listOf(
+                stringResource(R.string.expense) to expenseColor,
+                stringResource(R.string.income) to incomeColor,
+                stringResource(R.string.debt) to debtColor,
+                stringResource(R.string.receivable) to receivableColor,
+                stringResource(R.string.installment) to installmentColor,
+                stringResource(R.string.financial_report_payable_checks_short) to payableCheckColor,
+                stringResource(R.string.financial_report_received_checks_short) to receivedCheckColor
+            )
 
-                    BarCanvasItem(
-                        label = ShamsiDate.getMonthName(month).take(3),
-                        values = listOf(
-                            expAmount.toFloat() to expenseColor,
-                            incAmount.toFloat() to incomeColor
-                        )
-                    )
-                }
-
-                BarCanvasChart(
-                    items = barItems,
-                    textColor = textColor,
-                    gridColor = gridColor,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp),
-                    showYAxisLabels = true,
-                    barWidthRatio = 0.35f,
-                    maxBarWidthDp = 24f
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun CategoryBreakdownCard(data: ReportData) {
-    val items = buildList {
-        if (data.totalIncomes > 0) add(
-            Triple(
-                stringResource(R.string.report_income),
-                data.totalIncomes,
-                Color(0xFF4CAF50)
-            )
-        )
-        if (data.totalExpenses > 0) add(
-            Triple(
-                stringResource(R.string.report_expense),
-                data.totalExpenses,
-                Color(0xFFF44336)
-            )
-        )
-        if (data.totalDebt > 0) add(
-            Triple(
-                stringResource(R.string.report_debt),
-                data.totalDebt,
-                Color(0xFFFF9800)
-            )
-        )
-        if (data.totalReceivable > 0) add(
-            Triple(
-                stringResource(R.string.report_receivable),
-                data.totalReceivable,
-                Color(0xFF2196F3)
-            )
-        )
-        if (data.totalTripExpenses > 0) add(
-            Triple(
-                stringResource(R.string.report_trip_expenses),
-                data.totalTripExpenses,
-                Color(0xFF9C27B0)
-            )
-        )
-        if (data.totalCarExpenses > 0) add(
-            Triple(
-                stringResource(R.string.report_car),
-                data.totalCarExpenses,
-                Color(0xFFE91E63)
-            )
-        )
-        if (data.totalInstallments > 0) add(
-            Triple(
-                stringResource(R.string.report_installments),
-                data.totalInstallments,
-                Color(0xFF795548)
-            )
-        )
-        if (data.totalAssetValue > 0) add(
-            Triple(
-                stringResource(R.string.report_assets_value),
-                data.totalAssetValue,
-                Color(0xFF009688)
-            )
-        )
-    }
-
-    val total = items.sumOf { it.second }.coerceAtLeast(1L)
-
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        ),
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            if (items.isEmpty()) {
-                Text(
-                    stringResource(R.string.report_no_data),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontFamily = vazirFontFamily
-                )
-            } else {
-                items.forEach { (label, amount, color) ->
-                    val fraction = amount.toFloat() / total
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                legendItems.chunked(2).forEach { row ->
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .size(10.dp)
-                                .clip(CircleShape)
-                                .background(color)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = label,
-                            modifier = Modifier.weight(0.35f),
-                            fontSize = scaledSp(12f),
-                            fontFamily = vazirFontFamily,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Box(
-                            modifier = Modifier
-                                .weight(0.4f)
-                                .height(12.dp)
-                                .clip(RoundedCornerShape(6.dp))
-                                .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth(fraction.coerceAtMost(1f))
-                                    .height(12.dp)
-                                    .clip(RoundedCornerShape(6.dp))
-                                    .background(
-                                        Brush.horizontalGradient(
-                                            listOf(color, color.copy(alpha = 0.6f))
-                                        )
-                                    )
-                            )
+                        row.forEach { (label, color) ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(8.dp)
+                                        .clip(CircleShape)
+                                        .background(color)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    text = label,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontFamily = vazirFontFamily,
+                                    maxLines = 1
+                                )
+                            }
                         }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = NumberFormatUtils.toLocalizedDigits("%${(fraction * 100).toInt()}"),
-                            modifier = Modifier.weight(0.15f),
-                            fontSize = scaledSp(11f),
-                            fontFamily = vazirFontFamily,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = NumberFormatUtils.format(amount),
-                            modifier = Modifier.weight(0.25f),
-                            fontSize = scaledSp(11f),
-                            fontFamily = vazirFontFamily,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
                     }
                 }
             }

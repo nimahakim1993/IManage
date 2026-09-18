@@ -517,11 +517,18 @@
     <string name="report_cards">کارت‌های بانکی</string>
     <string name="report_car">سرویس خودرو</string>
     <string name="report_assets">دارایی‌ها</string>
+    <string name="report_passwords">رمزهای عبور</string>
+    <string name="report_noteboxes">یادداشت‌ها</string>
+    <string name="report_payable_checks">چک‌های پرداختی</string>
+    <string name="report_received_checks">چک‌های دریافتی</string>
+    <string name="report_office_notes">یادداشت‌های دفتر</string>
+    <string name="report_office_reminders">یادآوری‌های دفتر</string>
     <string name="report_trip_expenses">هزینه سفرها</string>
     <string name="report_installments">اقساط</string>
     <string name="report_assets_value">ارزش دارایی</string>
     <string name="report_income_vs_expense">درآمد در مقابل هزینه</string>
     <string name="report_category_breakdown">جزئیات دسته‌بندی</string>
+    <string name="report_finance_overview">نمای کلی مالی</string>
     <string name="report_no_data">داده‌ای برای بازه انتخاب شده وجود ندارد</string>
 
     <!-- Checks Report -->

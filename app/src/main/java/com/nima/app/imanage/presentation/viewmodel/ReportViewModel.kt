@@ -2,14 +2,20 @@ package com.nima.app.imanage.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nima.app.imanage.data.db.entity.CheckEntity
 import com.nima.app.imanage.data.db.entity.LoanEntity
 import com.nima.app.imanage.data.repository.AssetRepository
 import com.nima.app.imanage.data.repository.BankCardRepository
 import com.nima.app.imanage.data.repository.CarServiceRepository
+import com.nima.app.imanage.data.repository.CheckRepository
 import com.nima.app.imanage.data.repository.ExpenseRepository
 import com.nima.app.imanage.data.repository.IncomeRepository
 import com.nima.app.imanage.data.repository.InstallmentRepository
 import com.nima.app.imanage.data.repository.LoanRepository
+import com.nima.app.imanage.data.repository.NoteBoxRepository
+import com.nima.app.imanage.data.repository.OfficeNoteRepository
+import com.nima.app.imanage.data.repository.OfficeReminderRepository
+import com.nima.app.imanage.data.repository.PasswordItemRepository
 import com.nima.app.imanage.data.repository.TripExpenseRepository
 import com.nima.app.imanage.data.repository.TripRepository
 import com.nima.app.imanage.domain.model.FilterMode
@@ -33,7 +39,12 @@ class ReportViewModel(
     private val bankCardRepository: BankCardRepository,
     private val carServiceRepository: CarServiceRepository,
     private val installmentRepository: InstallmentRepository,
-    private val assetRepository: AssetRepository
+    private val assetRepository: AssetRepository,
+    private val checkRepository: CheckRepository,
+    private val passwordItemRepository: PasswordItemRepository,
+    private val noteBoxRepository: NoteBoxRepository,
+    private val officeNoteRepository: OfficeNoteRepository,
+    private val officeReminderRepository: OfficeReminderRepository
 ) : ViewModel() {
 
     private val expenses = expenseRepository.getAll()
@@ -63,6 +74,21 @@ class ReportViewModel(
     private val assets = assetRepository.getAll()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    private val checks = checkRepository.getAll()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    private val passwords = passwordItemRepository.getAll()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    private val noteBoxes = noteBoxRepository.getAll()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    private val officeNotes = officeNoteRepository.getAll()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    private val officeReminders = officeReminderRepository.getAll()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
     private val _filterMode = MutableStateFlow(FilterMode.CURRENT_YEAR)
     val filterMode: StateFlow<FilterMode> = _filterMode.asStateFlow()
 
@@ -82,6 +108,7 @@ class ReportViewModel(
     val reportData: StateFlow<ReportData> = combine(
         expenses, incomes, loans, trips, tripExpenses,
         bankCards, carServices, installments, assets,
+        checks, passwords, noteBoxes, officeNotes, officeReminders,
         _filterMode, _selectedMonthYear, _selectedYear,
         _customFromDate, _customToDate
     ) { values ->
@@ -95,11 +122,16 @@ class ReportViewModel(
             carServices = values[6] as List<com.nima.app.imanage.data.db.entity.CarServiceEntity>,
             installments = values[7] as List<com.nima.app.imanage.data.db.entity.InstallmentEntity>,
             assets = values[8] as List<com.nima.app.imanage.data.db.entity.AssetEntity>,
-            filterMode = values[9] as FilterMode,
-            selectedMonthYear = values[10] as Pair<Int, Int>?,
-            selectedYear = values[11] as Int?,
-            customFrom = values[12] as Long?,
-            customTo = values[13] as Long?
+            checks = values[9] as List<CheckEntity>,
+            passwords = values[10] as List<com.nima.app.imanage.data.db.entity.PasswordItemEntity>,
+            noteBoxes = values[11] as List<com.nima.app.imanage.data.db.entity.NoteBoxEntity>,
+            officeNotes = values[12] as List<com.nima.app.imanage.data.db.entity.OfficeNoteEntity>,
+            officeReminders = values[13] as List<com.nima.app.imanage.data.db.entity.OfficeReminderEntity>,
+            filterMode = values[14] as FilterMode,
+            selectedMonthYear = values[15] as Pair<Int, Int>?,
+            selectedYear = values[16] as Int?,
+            customFrom = values[17] as Long?,
+            customTo = values[18] as Long?
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ReportData())
 
@@ -160,6 +192,11 @@ class ReportViewModel(
         carServices: List<com.nima.app.imanage.data.db.entity.CarServiceEntity>,
         installments: List<com.nima.app.imanage.data.db.entity.InstallmentEntity>,
         assets: List<com.nima.app.imanage.data.db.entity.AssetEntity>,
+        checks: List<CheckEntity>,
+        passwords: List<com.nima.app.imanage.data.db.entity.PasswordItemEntity>,
+        noteBoxes: List<com.nima.app.imanage.data.db.entity.NoteBoxEntity>,
+        officeNotes: List<com.nima.app.imanage.data.db.entity.OfficeNoteEntity>,
+        officeReminders: List<com.nima.app.imanage.data.db.entity.OfficeReminderEntity>,
         filterMode: FilterMode,
         selectedMonthYear: Pair<Int, Int>?,
         selectedYear: Int?,
@@ -205,6 +242,11 @@ class ReportViewModel(
         val filteredCarServices = carServices.filter { isInRange(it.serviceDate) }
         val filteredInstallments = installments.filter { isInRange(it.startDate) }
         val filteredAssets = assets.filter { isInRange(it.createdAt) }
+        val filteredChecks = checks.filter { isInRange(it.createdAt) }
+        val filteredPasswords = passwords.filter { isInRange(it.createdAt) }
+        val filteredNoteBoxes = noteBoxes.filter { isInRange(it.createdAt) }
+        val filteredOfficeNotes = officeNotes.filter { isInRange(it.date) }
+        val filteredOfficeReminders = officeReminders.filter { isInRange(it.date) }
 
         val totalExpenses = filteredExpenses.sumOf { it.amount }
         val totalIncomes = filteredIncomes.sumOf { it.amount }
@@ -217,6 +259,10 @@ class ReportViewModel(
         val totalCarExpenses = filteredCarServices.sumOf { it.amountPaid }
         val totalInstallments = filteredInstallments.sumOf { it.amount }
         val totalAssetValue = filteredAssets.sumOf { (it.unitCount * it.pricePerUnit).toLong() }
+        val totalPayableChecks = filteredChecks.filter { it.type == CheckEntity.TYPE_PAYABLE }
+            .sumOf { it.amount }
+        val totalReceivedChecks = filteredChecks.filter { it.type == CheckEntity.TYPE_RECEIVED }
+            .sumOf { it.amount }
         val netBalance = totalIncomes - totalExpenses - totalDebt + totalReceivable
 
         val monthlyExps = mutableMapOf<Pair<Int, Int>, Long>()
@@ -248,6 +294,8 @@ class ReportViewModel(
             totalCarExpenses = totalCarExpenses,
             totalInstallments = totalInstallments,
             totalAssetValue = totalAssetValue,
+            totalPayableChecks = totalPayableChecks,
+            totalReceivedChecks = totalReceivedChecks,
             expenseCount = filteredExpenses.size,
             incomeCount = filteredIncomes.size,
             debtCount = filteredLoans.count { it.type == LoanEntity.TYPE_DEBT && !it.settled },
@@ -257,6 +305,12 @@ class ReportViewModel(
             carServiceCount = filteredCarServices.size,
             installmentCount = filteredInstallments.size,
             assetCount = filteredAssets.size,
+            passwordCount = filteredPasswords.size,
+            noteBoxCount = filteredNoteBoxes.size,
+            payableCheckCount = filteredChecks.count { it.type == CheckEntity.TYPE_PAYABLE },
+            receivedCheckCount = filteredChecks.count { it.type == CheckEntity.TYPE_RECEIVED },
+            officeNoteCount = filteredOfficeNotes.size,
+            officeReminderCount = filteredOfficeReminders.size,
             netBalance = netBalance,
             monthlyExpenses = monthlyExpensesList,
             monthlyIncomes = monthlyIncomesList

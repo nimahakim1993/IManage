@@ -49,7 +49,24 @@ val viewModelModule = module {
     viewModel { CarServiceViewModel(get()) }
     viewModel { CheckViewModel(get(), get()) }
     viewModel { ChecksReportViewModel(get()) }
-    viewModel { ReportViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel {
+        ReportViewModel(
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
+        )
+    }
     viewModel { OfficeViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { SettingsViewModel(get(), get()) }
 }
