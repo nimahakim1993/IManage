@@ -58,7 +58,7 @@ fun CreateExpenseSheet(
     onSave: (ExpenseEntity) -> Unit,
     onAddCategory: (title: String, colorIndex: Int) -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isEdit = editing != null
 
     val sheetTitle = stringResource(if (isEdit) R.string.edit_expense_title else R.string.create_expense_title)

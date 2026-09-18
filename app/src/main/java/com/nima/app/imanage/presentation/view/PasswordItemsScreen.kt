@@ -596,7 +596,7 @@ private fun CreatePasswordItemSheet(
     onDismiss: () -> Unit,
     onSave: (PasswordItemInput) -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isEdit = editing != null
 
     val sheetTitle = stringResource(if (isEdit) R.string.edit_password_title else R.string.create_password_title)

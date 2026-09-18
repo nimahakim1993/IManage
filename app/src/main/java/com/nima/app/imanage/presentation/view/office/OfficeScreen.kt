@@ -533,7 +533,7 @@ internal fun NoteSheet(
         )
     }
     var showDatePicker by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -632,7 +632,7 @@ internal fun ReminderSheet(
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
     }
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -734,7 +734,7 @@ internal fun ReminderManagementSheet(
     var editingReminder by remember { mutableStateOf<OfficeReminderEntity?>(null) }
     var reminderToDelete by remember { mutableStateOf<OfficeReminderEntity?>(null) }
     var showEditor by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val filteredReminders = remember(
         reminders, filterMode, selectedMonthYear, selectedYear, customFrom, customTo
     ) {
@@ -913,7 +913,7 @@ internal fun NoteManagementSheet(
     var editingNote by remember { mutableStateOf<OfficeNoteEntity?>(null) }
     var noteToDelete by remember { mutableStateOf<OfficeNoteEntity?>(null) }
     var showEditor by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val filteredNotes = remember(
         notes, filterMode, selectedMonthYear, selectedYear, customFrom, customTo
     ) {

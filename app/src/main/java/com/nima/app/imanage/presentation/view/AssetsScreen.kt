@@ -532,7 +532,7 @@ private fun CreateAssetSheet(
     onDismiss: () -> Unit,
     onSave: (AssetEntity) -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isEdit = editing != null
 
     val sheetTitle = stringResource(if (isEdit) R.string.edit_asset_title else R.string.create_asset_title)

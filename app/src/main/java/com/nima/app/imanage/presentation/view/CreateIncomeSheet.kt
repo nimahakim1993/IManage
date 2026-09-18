@@ -56,7 +56,7 @@ fun CreateIncomeSheet(
     onSave: (IncomeEntity) -> Unit,
     onAddSource: (title: String, colorIndex: Int) -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isEdit = editing != null
 
     val sheetTitle = stringResource(if (isEdit) R.string.edit_income_title else R.string.create_income_title)

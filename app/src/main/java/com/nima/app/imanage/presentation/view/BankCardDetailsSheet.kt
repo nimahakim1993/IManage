@@ -45,7 +45,7 @@ fun BankCardDetailsSheet(
     card: BankCardEntity,
     onDismiss: () -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val context = LocalContext.current
     val copiedMsg = stringResource(R.string.copied_to_clipboard)
     val notSetLabel = stringResource(R.string.not_set)
