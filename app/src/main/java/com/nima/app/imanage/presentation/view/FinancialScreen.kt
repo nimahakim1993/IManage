@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
+import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
 import com.nima.app.imanage.presentation.viewmodel.FinancialSummaryViewModel
 import com.nima.app.imanage.ui.component.chart.BarCanvasChart
@@ -65,10 +66,21 @@ fun FinancialScreen(
 ) {
 
     val ledgerTitle = stringResource(R.string.financial_ledger)
+    val reportDesc = stringResource(R.string.financial_report_title)
 
     LaunchedEffect(Unit) {
         setToolbar(
-            ToolbarConfig(title = ledgerTitle, showBack = true)
+            ToolbarConfig(
+                title = ledgerTitle,
+                showBack = true,
+                actions = listOf(
+                    ToolbarAction(
+                        icon = Icons.Default.BarChart,
+                        contentDescription = reportDesc,
+                        onClick = { navController.navigate(Screen.FinancialReport.route) }
+                    )
+                )
+            )
         )
     }
 

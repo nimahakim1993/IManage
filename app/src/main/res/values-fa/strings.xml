@@ -657,4 +657,18 @@
     <string name="this_year">امسال</string>
     <string name="last_year">پارسال</string>
 
+    <!-- Financial Report -->
+    <string name="financial_report_title">گزارش مالی</string>
+    <string name="financial_report_module_overview">نمای کلی مالی</string>
+    <string name="financial_report_payable_breakdown">تفکیک پرداختنی‌ها</string>
+    <string name="financial_report_receivable_breakdown">تفکیک دریافتنی‌ها</string>
+    <string name="financial_report_settled_vs_unsettled">تسویه شده در برابر نشده</string>
+    <string name="financial_report_monthly_trend">روند ماهانه</string>
+    <string name="financial_report_payable_checks">چک‌های پرداختی</string>
+    <string name="financial_report_received_checks">چک‌های دریافتی</string>
+    <string name="financial_report_payable_checks_short">چک پر</string>
+    <string name="financial_report_received_checks_short">چک در</string>
+    <string name="financial_report_settled">تسویه شده</string>
+    <string name="financial_report_unsettled">تسویه نشده</string>
+
 </resources>

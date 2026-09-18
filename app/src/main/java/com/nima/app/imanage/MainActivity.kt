@@ -80,6 +80,7 @@ import com.nima.app.imanage.presentation.view.CreateNoteScreen
 import com.nima.app.imanage.presentation.view.ExpenseCategoriesScreen
 import com.nima.app.imanage.presentation.view.ExpenseReportScreen
 import com.nima.app.imanage.presentation.view.ExpensesScreen
+import com.nima.app.imanage.presentation.view.FinancialReportScreen
 import com.nima.app.imanage.presentation.view.FinancialScreen
 import com.nima.app.imanage.presentation.view.HelpScreen
 import com.nima.app.imanage.presentation.view.HomeScreen
@@ -403,6 +404,12 @@ fun Navigation(
         }
 
         composable(Screen.Financial.route) { FinancialScreen(setToolbar, navController) }
+        composable(Screen.FinancialReport.route) {
+            FinancialReportScreen(
+                setToolbar,
+                navController
+            )
+        }
         composable(Screen.Loans.route) { LoansScreen(setToolbar, navController) }
         composable(
             route = Screen.CreateLoan.route,

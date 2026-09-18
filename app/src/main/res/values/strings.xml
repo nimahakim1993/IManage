@@ -656,4 +656,18 @@
     <string name="this_year">This Year</string>
     <string name="last_year">Last Year</string>
 
+    <!-- Financial Report -->
+    <string name="financial_report_title">Financial Report</string>
+    <string name="financial_report_module_overview">Module Overview</string>
+    <string name="financial_report_payable_breakdown">Payable Breakdown</string>
+    <string name="financial_report_receivable_breakdown">Receivable Breakdown</string>
+    <string name="financial_report_settled_vs_unsettled">Settled vs Unsettled</string>
+    <string name="financial_report_monthly_trend">Monthly Trend</string>
+    <string name="financial_report_payable_checks">Payable Checks</string>
+    <string name="financial_report_received_checks">Received Checks</string>
+    <string name="financial_report_payable_checks_short">Pay. Check</string>
+    <string name="financial_report_received_checks_short">Rec. Check</string>
+    <string name="financial_report_settled">Settled</string>
+    <string name="financial_report_unsettled">Unsettled</string>
+
 </resources>

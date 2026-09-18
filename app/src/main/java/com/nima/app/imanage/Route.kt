@@ -3,6 +3,7 @@ package com.nima.app.imanage
 sealed class Screen(val route: String) {
     data object Home : Screen("home")
     data object Financial : Screen("financial")
+    data object FinancialReport : Screen("financialReport")
     data object Report : Screen("report")
     data object BankCards : Screen("bankCards")
     data object Loans : Screen("loans")
