@@ -18,6 +18,7 @@ val utilModule = module {
             loanDao = get(),
             itemDao = get(),
             carDao = get(),
+            carServiceTypeDao = get(),
             installmentDao = get(),
             notificationHelper = get()
         )

@@ -43,6 +43,7 @@ class BackupManager(private val db: AppDatabase) {
             val tripExpenseSplits = db.tripExpenseSplitDao().getAllOnce()
             val settlements = db.settlementDao().getAllOnce()
             val carServices = db.carServiceDao().getAll().first()
+            val carServiceTypes = db.carServiceTypeDao().getAll().first()
             val officeNotes = db.officeNoteDao().getAll().first()
             val officeReminders = db.officeReminderDao().getAll().first()
             val pendingPayments = db.pendingPaymentDao().getAll().first()
@@ -84,6 +85,7 @@ class BackupManager(private val db: AppDatabase) {
                 tripExpenseSplits = tripExpenseSplits,
                 settlements = settlements,
                 carServices = carServices,
+                carServiceTypes = carServiceTypes,
                 officeNotes = officeNotes,
                 officeReminders = officeReminders,
                 pendingPayments = pendingPayments,
@@ -141,6 +143,13 @@ class BackupManager(private val db: AppDatabase) {
                 backupData.assets.forEach { writableDb.insert("assets", SQLiteDatabase.CONFLICT_REPLACE, it.toCv()) }
                 backupData.loans.forEach { writableDb.insert("loans", SQLiteDatabase.CONFLICT_REPLACE, it.toCv()) }
                 backupData.carServices.forEach { writableDb.insert("car_services", SQLiteDatabase.CONFLICT_REPLACE, it.toCv()) }
+                backupData.carServiceTypes.forEach {
+                    writableDb.insert(
+                        "car_service_types",
+                        SQLiteDatabase.CONFLICT_REPLACE,
+                        it.toCv()
+                    )
+                }
                 backupData.officeNotes.forEach { writableDb.insert("office_notes", SQLiteDatabase.CONFLICT_REPLACE, it.toCv()) }
                 backupData.officeReminders.forEach { writableDb.insert("office_reminders", SQLiteDatabase.CONFLICT_REPLACE, it.toCv()) }
                 backupData.checkCounterparties.forEach { writableDb.insert("check_counterparties", SQLiteDatabase.CONFLICT_REPLACE, it.toCv()) }

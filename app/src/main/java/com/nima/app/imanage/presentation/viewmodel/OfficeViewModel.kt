@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nima.app.imanage.data.db.entity.LoanEntity
 import com.nima.app.imanage.data.repository.CarServiceRepository
+import com.nima.app.imanage.data.repository.CarServiceTypeRepository
 import com.nima.app.imanage.data.repository.CheckRepository
 import com.nima.app.imanage.data.repository.ExpenseRepository
 import com.nima.app.imanage.data.repository.IncomeRepository
@@ -35,6 +36,7 @@ class OfficeViewModel(
     private val loanRepository: LoanRepository,
     private val tripRepository: TripRepository,
     private val carServiceRepository: CarServiceRepository,
+    private val carServiceTypeRepository: CarServiceTypeRepository,
     private val installmentItemRepository: InstallmentItemRepository,
     private val installmentRepository: InstallmentRepository,
     private val checkRepository: CheckRepository
@@ -55,6 +57,9 @@ class OfficeViewModel(
     private val carServices = carServiceRepository.getAll()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    private val carServiceTypes = carServiceTypeRepository.getAll()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
     private val installmentItems = installmentItemRepository.getAllItems()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
@@ -65,17 +70,28 @@ class OfficeViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     val allEvents: StateFlow<List<OfficeEvent>> = combine(
-        expenses, incomes, loans, trips, carServices, installmentItems, installments, checks
+        expenses,
+        incomes,
+        loans,
+        trips,
+        carServices,
+        carServiceTypes,
+        installmentItems,
+        installments,
+        checks
     ) { values ->
         val expList = values[0] as List<com.nima.app.imanage.data.db.entity.ExpenseEntity>
         val incList = values[1] as List<com.nima.app.imanage.data.db.entity.IncomeEntity>
         val loanList = values[2] as List<LoanEntity>
         val tripList = values[3] as List<com.nima.app.imanage.data.db.entity.TripEntity>
         val carList = values[4] as List<com.nima.app.imanage.data.db.entity.CarServiceEntity>
-        val instList = values[5] as List<com.nima.app.imanage.data.db.entity.InstallmentItemEntity>
-        val instMap = (values[6] as List<com.nima.app.imanage.data.db.entity.InstallmentEntity>)
+        val carTypeMap =
+            (values[5] as List<com.nima.app.imanage.data.db.entity.CarServiceTypeEntity>)
             .associateBy { it.id }
-        val checkList = values[7] as List<com.nima.app.imanage.data.db.entity.CheckEntity>
+        val instList = values[6] as List<com.nima.app.imanage.data.db.entity.InstallmentItemEntity>
+        val instMap = (values[7] as List<com.nima.app.imanage.data.db.entity.InstallmentEntity>)
+            .associateBy { it.id }
+        val checkList = values[8] as List<com.nima.app.imanage.data.db.entity.CheckEntity>
 
         buildList {
             expList.forEach { exp ->
@@ -152,6 +168,7 @@ class OfficeViewModel(
             }
 
             carList.forEach { car ->
+                val typeName = carTypeMap[car.serviceType]?.title
                 add(
                     OfficeEvent(
                         id = "car_${car.id}",
@@ -161,7 +178,7 @@ class OfficeViewModel(
                         icon = Icons.Default.DirectionsCar,
                         color = Color(0xFF795548),
                         date = car.serviceDate,
-                        serviceType = car.serviceType
+                        serviceTypeName = typeName
                     )
                 )
                 if (car.nextServiceDate > 0) {
@@ -174,7 +191,7 @@ class OfficeViewModel(
                             icon = Icons.Default.DirectionsCar,
                             color = Color(0xFF795548),
                             date = car.nextServiceDate,
-                            serviceType = car.serviceType
+                            serviceTypeName = typeName
                         )
                     )
                 }

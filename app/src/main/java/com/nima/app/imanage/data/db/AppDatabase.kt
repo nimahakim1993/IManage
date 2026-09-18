@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import com.nima.app.imanage.data.db.dao.AssetDao
 import com.nima.app.imanage.data.db.dao.BankCardDao
 import com.nima.app.imanage.data.db.dao.CarServiceDao
+import com.nima.app.imanage.data.db.dao.CarServiceTypeDao
 import com.nima.app.imanage.data.db.dao.CheckCounterpartyDao
 import com.nima.app.imanage.data.db.dao.CheckDao
 import com.nima.app.imanage.data.db.dao.ExpenseCategoryDao
@@ -28,6 +29,7 @@ import com.nima.app.imanage.data.db.dao.TripExpenseSplitDao
 import com.nima.app.imanage.data.db.entity.AssetEntity
 import com.nima.app.imanage.data.db.entity.BankCardEntity
 import com.nima.app.imanage.data.db.entity.CarServiceEntity
+import com.nima.app.imanage.data.db.entity.CarServiceTypeEntity
 import com.nima.app.imanage.data.db.entity.CheckCounterpartyEntity
 import com.nima.app.imanage.data.db.entity.CheckEntity
 import com.nima.app.imanage.data.db.entity.ExpenseCategoryEntity
@@ -72,11 +74,12 @@ import com.nima.app.imanage.data.db.entity.TripExpenseSplitEntity
         TripExpenseSplitEntity::class,
         SettlementEntity::class,
         CarServiceEntity::class,
+        CarServiceTypeEntity::class,
         PendingPaymentEntity::class,
         CheckEntity::class,
         CheckCounterpartyEntity::class
     ],
-    version = 7,
+    version = 9,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -100,6 +103,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun tripExpenseSplitDao(): TripExpenseSplitDao
     abstract fun settlementDao(): SettlementDao
     abstract fun carServiceDao(): CarServiceDao
+    abstract fun carServiceTypeDao(): CarServiceTypeDao
     abstract fun pendingPaymentDao(): PendingPaymentDao
     abstract fun checkDao(): CheckDao
     abstract fun checkCounterpartyDao(): CheckCounterpartyDao

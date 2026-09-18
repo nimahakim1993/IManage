@@ -494,6 +494,14 @@
     <string name="car_type_general">سرویس عمومی</string>
     <string name="car_type_insurance">بیمه</string>
     <string name="car_type_other">سایر</string>
+    <string name="car_service_types_title">انواع سرویس</string>
+    <string name="car_service_type_name_label">نوع سرویس</string>
+    <string name="car_service_type_icon_label">آیکون</string>
+    <string name="empty_car_service_types">هنوز نوع سرویسی وجود ندارد</string>
+    <string name="empty_car_service_types_hint">برای افزودن اولین نوع سرویس + را بزنید</string>
+    <string name="duplicate_car_service_type">نوع سرویس با این عنوان قبلاً وجود دارد</string>
+    <string name="manage_service_types">مدیریت انواع سرویس</string>
+    <string name="add_new_service_type">افزودن نوع سرویس جدید…</string>
 
     <!-- Report -->
     <string name="report_title">گزارش‌ها</string>
@@ -653,6 +661,7 @@
     <string name="rate_app_button">امتیاز دهی</string>
     <string name="rate_app_button_cafebazaar">امتیازدهی در کافه بازار</string>
     <string name="rate_app_button_myket">امتیازدهی در مایکت</string>
+    <string name="share_app_title">اشتراک‌گذاری برنامه</string>
 
     <!-- Expense Report -->
     <string name="expense_report_title">گزارش هزینه‌ها</string>

@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.outlined.ContactSupport
 import androidx.compose.material.icons.outlined.QuestionAnswer
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.WbIncandescent
 import androidx.compose.material3.Card
@@ -53,6 +54,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavHostController
+import com.nima.app.imanage.BuildConfig
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
 import com.nima.app.imanage.data.db.entity.CheckEntity
@@ -91,6 +93,7 @@ fun HomeScreen(
     val helpDesc = stringResource(R.string.help_title)
     val questionsDesc = stringResource(R.string.questions_title)
     val rateAppDesc = stringResource(R.string.rate_app_title)
+    val shareAppDesc = stringResource(R.string.share_app_title)
     val context = LocalContext.current
 
     var showBackupSheet by remember { mutableStateOf(false) }
@@ -111,7 +114,8 @@ fun HomeScreen(
                     DrawerItem(
                         icon = Icons.Default.Backup,
                         label = backupDesc,
-                        onClick = { showBackupSheet = true }
+                        onClick = { showBackupSheet = true },
+                        showDividerBelow = true
                     ),
                     DrawerItem(
                         icon = Icons.Outlined.ContactSupport,
@@ -132,6 +136,25 @@ fun HomeScreen(
                         icon = Icons.Outlined.Star,
                         label = rateAppDesc,
                         onClick = { navController.navigate(Screen.RateApp.route) }
+                    ),
+                    DrawerItem(
+                        icon = Icons.Outlined.Share,
+                        label = shareAppDesc,
+                        onClick = {
+                            val marketUrl = when (BuildConfig.FLAVOR) {
+                                "cafebazaar" -> "https://cafebazaar.ir/app/com.nima.app.imanage"
+                                "myket" -> "https://myket.ir/app/com.nima.app.imanage"
+                                else -> "https://cafebazaar.ir/app/com.nima.app.imanage"
+                            }
+                            val sendIntent = android.content.Intent().apply {
+                                action = android.content.Intent.ACTION_SEND
+                                putExtra(android.content.Intent.EXTRA_TEXT, marketUrl)
+                                type = "text/plain"
+                            }
+                            val shareIntent = android.content.Intent.createChooser(sendIntent, null)
+                            context.startActivity(shareIntent)
+                        },
+                        showDividerBelow = true
                     ),
                     DrawerItem(
                         icon = Icons.Outlined.Settings,

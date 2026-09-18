@@ -37,10 +37,11 @@ import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.CarServiceEntity
 import com.nima.app.imanage.data.model.ToolbarConfig
+import com.nima.app.imanage.presentation.viewmodel.CarServiceTypeViewModel
 import com.nima.app.imanage.presentation.viewmodel.CarServiceViewModel
 import com.nima.app.imanage.ui.component.RequiredFieldError
+import com.nima.app.imanage.ui.component.ServiceTypePicker
 import com.nima.app.imanage.ui.component.ShamsiDatePicker
-import com.nima.app.imanage.ui.component.TextInputDropDown
 import com.nima.app.imanage.ui.component.showRequiredFieldsToast
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
@@ -51,25 +52,14 @@ fun CreateCarServiceScreen(
     setToolbar: (ToolbarConfig) -> Unit,
     navController: NavHostController,
     serviceId: Int = -1,
-    viewModel: CarServiceViewModel = koinViewModel()
+    viewModel: CarServiceViewModel = koinViewModel(),
+    typeViewModel: CarServiceTypeViewModel = koinViewModel()
 ) {
 
     val createTitle = stringResource(R.string.create_car_service_title)
     val editTitle = stringResource(R.string.edit_car_service_title)
 
-    val serviceTypes = listOf(
-        stringResource(R.string.car_type_oil_change),
-        stringResource(R.string.car_type_tire_change),
-        stringResource(R.string.car_type_brake_pad),
-        stringResource(R.string.car_type_filter),
-        stringResource(R.string.car_type_belt),
-        stringResource(R.string.car_type_lamp),
-        stringResource(R.string.car_type_battery),
-        stringResource(R.string.car_type_engine),
-        stringResource(R.string.car_type_general),
-        stringResource(R.string.car_type_insurance),
-        stringResource(R.string.car_type_other)
-    )
+    val serviceTypes by typeViewModel.types.collectAsState()
 
     LaunchedEffect(serviceId) {
         if (serviceId != -1) {
@@ -86,8 +76,7 @@ fun CreateCarServiceScreen(
         )
     }
 
-    var serviceTypeText by remember { mutableStateOf("") }
-    var serviceTypeKey by remember { mutableIntStateOf(-1) }
+    var serviceTypeId by remember { mutableIntStateOf(-1) }
     var serviceDate by remember { mutableStateOf(ShamsiDate.todayMillis()) }
     var serviceKilometer by remember { mutableStateOf(TextFieldValue("")) }
     var nextServiceDate by remember { mutableStateOf(ShamsiDate.todayMillis()) }
@@ -100,14 +89,13 @@ fun CreateCarServiceScreen(
     var showNextServiceDatePicker by remember { mutableStateOf(false) }
     var showValidationErrors by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val serviceTypeError = showValidationErrors && serviceTypeKey < 0
+    val serviceTypeError = showValidationErrors && serviceTypeId < 0
     val amountError = showValidationErrors && NumberFormatUtils.parseToLong(amountPaid.text) <= 0
 
     val selectedService by viewModel.selectedService.collectAsState()
     LaunchedEffect(selectedService) {
         selectedService?.let { service ->
-            serviceTypeKey = service.serviceType
-            serviceTypeText = serviceTypes.getOrElse(service.serviceType) { serviceTypes[0] }
+            serviceTypeId = service.serviceType
             serviceDate = service.serviceDate
             serviceKilometer =
                 TextFieldValue(NumberFormatUtils.format(service.serviceKilometer.toLong()))
@@ -154,14 +142,14 @@ fun CreateCarServiceScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            TextInputDropDown(
-                label = stringResource(R.string.car_service_type_label),
-                items = serviceTypes,
-                selectedItem = serviceTypeText,
-                onItemSelected = { key, name ->
-                    serviceTypeText = name
-                    serviceTypeKey = key
-                }
+            ServiceTypePicker(
+                serviceTypes = serviceTypes,
+                selectedTypeId = serviceTypeId,
+                onTypeSelected = { serviceTypeId = it ?: -1 },
+                onAddType = { title, colorIndex, iconIndex ->
+                    typeViewModel.addType(title, colorIndex, iconIndex)
+                },
+                modifier = Modifier.fillMaxWidth()
             )
             RequiredFieldError(
                 visible = serviceTypeError,
@@ -282,14 +270,14 @@ fun CreateCarServiceScreen(
             shape = RoundedCornerShape(16.dp),
             onClick = {
                 val finalAmount = NumberFormatUtils.parseToLong(amountPaid.text)
-                if (serviceTypeKey < 0 || finalAmount <= 0) {
+                if (serviceTypeId < 0 || finalAmount <= 0) {
                     showValidationErrors = true
                     showRequiredFieldsToast(context)
                     return@Button
                 }
                 val service = CarServiceEntity(
                     id = if (serviceId != -1) serviceId else 0,
-                    serviceType = serviceTypeKey,
+                    serviceType = serviceTypeId,
                     serviceDate = serviceDate,
                     serviceKilometer = NumberFormatUtils.parseToLong(serviceKilometer.text).toInt(),
                     nextServiceDate = nextServiceDate,

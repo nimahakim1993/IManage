@@ -35,6 +35,7 @@ val databaseModule = module {
     single { get<AppDatabase>().tripExpenseSplitDao() }
     single { get<AppDatabase>().settlementDao() }
     single { get<AppDatabase>().carServiceDao() }
+    single { get<AppDatabase>().carServiceTypeDao() }
     single { get<AppDatabase>().pendingPaymentDao() }
     single { get<AppDatabase>().checkDao() }
     single { get<AppDatabase>().checkCounterpartyDao() }

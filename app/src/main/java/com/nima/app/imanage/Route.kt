@@ -78,6 +78,7 @@ sealed class Screen(val route: String) {
     }
 
     data object CarServices : Screen("carServices")
+    data object CarServiceTypes : Screen("carServiceTypes")
     data object CreateCarService : Screen("createCarService?serviceId={serviceId}") {
         fun createRoute(serviceId: Int? = null): String =
             if (serviceId == null) "createCarService" else "createCarService?serviceId=$serviceId"

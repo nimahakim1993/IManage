@@ -24,6 +24,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Edit
@@ -62,9 +63,11 @@ import androidx.navigation.NavController
 import com.nima.app.imanage.R
 import com.nima.app.imanage.Screen
 import com.nima.app.imanage.data.db.entity.CarServiceEntity
-import com.nima.app.imanage.data.db.entity.CarServiceIconType
+import com.nima.app.imanage.data.db.entity.CarServiceIcons
+import com.nima.app.imanage.data.db.entity.CarServiceTypeEntity
 import com.nima.app.imanage.data.model.ToolbarAction
 import com.nima.app.imanage.data.model.ToolbarConfig
+import com.nima.app.imanage.presentation.viewmodel.CarServiceTypeViewModel
 import com.nima.app.imanage.presentation.viewmodel.CarServiceViewModel
 import com.nima.app.imanage.ui.component.ActionDialog
 import com.nima.app.imanage.ui.component.EmptyState
@@ -73,42 +76,36 @@ import com.nima.app.imanage.ui.component.chart.VicoDonutChart
 import com.nima.app.imanage.ui.theme.LocalIsDarkTheme
 import com.nima.app.imanage.ui.theme.scaledSp
 import com.nima.app.imanage.ui.theme.vazirFontFamily
+import com.nima.app.imanage.util.ColorUtils
 import com.nima.app.imanage.util.NumberFormatUtils
 import com.nima.app.imanage.util.ShamsiDate
 import org.koin.androidx.compose.koinViewModel
-
-private val serviceTypeColors = listOf(
-    Color(0xFFF44336),
-    Color(0xFF9C27B0),
-    Color(0xFF3F51B5),
-    Color(0xFF03A9F4),
-    Color(0xFF009688),
-    Color(0xFFFF9800),
-    Color(0xFF795548),
-    Color(0xFF607D8B),
-    Color(0xFF4CAF50),
-    Color(0xFFE91E63),
-    Color(0xFF2196F3)
-)
 
 @Composable
 fun CarServicesScreen(
     setToolbar: (ToolbarConfig) -> Unit,
     navController: NavController,
-    viewModel: CarServiceViewModel = koinViewModel()
+    viewModel: CarServiceViewModel = koinViewModel(),
+    typeViewModel: CarServiceTypeViewModel = koinViewModel()
 ) {
 
     val services by viewModel.services.collectAsState()
+    val serviceTypes by typeViewModel.types.collectAsState()
     val carTitle = stringResource(R.string.car_services)
     val addDesc = stringResource(R.string.add)
     val filterDesc = stringResource(R.string.filter)
     val editDesc = stringResource(R.string.edit)
+    val manageTypesDesc = stringResource(R.string.manage_service_types)
 
     var toggleEditMode by rememberSaveable { mutableStateOf(false) }
     var removingService by remember { mutableStateOf<CarServiceEntity?>(null) }
     var showFilterDialog by rememberSaveable { mutableStateOf(false) }
     var filterYear by rememberSaveable { mutableStateOf("") }
     var filterServiceTypes by rememberSaveable { mutableStateOf(setOf<Int>()) }
+
+    val typeMap = remember(serviceTypes) {
+        serviceTypes.associateBy { it.id }
+    }
 
     LaunchedEffect(services.isEmpty()) {
         if (services.isEmpty()) toggleEditMode = false
@@ -125,6 +122,11 @@ fun CarServicesScreen(
                 icon = Icons.Default.FilterAlt,
                 contentDescription = filterDesc,
                 onClick = { showFilterDialog = true }
+            ),
+            ToolbarAction(
+                icon = Icons.Default.Category,
+                contentDescription = manageTypesDesc,
+                onClick = { navController.navigate(Screen.CarServiceTypes.route) }
             )
         )
         if (services.isNotEmpty()) {
@@ -194,6 +196,7 @@ fun CarServicesScreen(
                         DonutCard(
                             typeSlices = typeSlices,
                             totalAmount = totalAmount,
+                            typeMap = typeMap,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)
@@ -203,6 +206,7 @@ fun CarServicesScreen(
                 items(filteredServices, key = { it.id }) { service ->
                     CarServiceItem(
                         service = service,
+                        typeEntity = typeMap[service.serviceType],
                         editMode = toggleEditMode,
                         onEdit = {
                             navController.navigate(Screen.CreateCarService.createRoute(service.id))
@@ -231,6 +235,7 @@ fun CarServicesScreen(
             filterYear = filterYear,
             onFilterYearChange = { filterYear = it },
             filterServiceTypes = filterServiceTypes,
+            serviceTypes = serviceTypes,
             onFilterServiceTypeChange = { type, checked ->
                 filterServiceTypes =
                     if (checked) filterServiceTypes + type else filterServiceTypes - type
@@ -248,6 +253,7 @@ fun CarServicesScreen(
 private fun DonutCard(
     typeSlices: List<Triple<Int, Long, Int>>,
     totalAmount: Long,
+    typeMap: Map<Int, CarServiceTypeEntity>,
     modifier: Modifier = Modifier
 ) {
     val isDark = LocalIsDarkTheme.current
@@ -255,15 +261,17 @@ private fun DonutCard(
     val subTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
 
     val labels = typeSlices.map { (type, _, _) ->
-        val iconType = CarServiceIconType.fromValue(type)
-        stringResource(iconType.labelRes())
+        typeMap[type]?.title ?: ""
     }
 
-    val segments = remember(typeSlices, labels) {
+    val segments = remember(typeSlices, labels, typeMap) {
         typeSlices.mapIndexed { index, (type, amount, _) ->
+            val palette =
+                typeMap[type]?.colorIndex?.let { ColorUtils.palettes.getOrElse(it) { ColorUtils.palettes.first() } }
+                    ?: ColorUtils.palettes.first()
             DonutSegment(
                 value = amount.toFloat(),
-                color = serviceTypeColors[type % serviceTypeColors.size],
+                color = palette.primary,
                 label = labels[index],
                 id = type
             )
@@ -334,15 +342,16 @@ private fun DonutCard(
                 Spacer(modifier = Modifier.size(12.dp))
 
                 val legendItems = typeSlices.mapIndexed { index, (type, amount, _) ->
-                    val iconType = CarServiceIconType.fromValue(type)
+                    val palette =
+                        typeMap[type]?.colorIndex?.let { ColorUtils.palettes.getOrElse(it) { ColorUtils.palettes.first() } }
+                            ?: ColorUtils.palettes.first()
                     val percent = if (totalAmount > 0)
                         ((amount.toDouble() / totalAmount.toDouble()) * 100).toInt()
                     else 0
-                    val color = serviceTypeColors[type % serviceTypeColors.size]
                     Triple(
-                        stringResource(iconType.labelRes()),
+                        labels[index],
                         percent,
-                        color
+                        palette.primary
                     )
                 }.chunked(2)
 
@@ -395,13 +404,17 @@ private fun DonutCard(
 @Composable
 fun CarServiceItem(
     service: CarServiceEntity,
+    typeEntity: CarServiceTypeEntity?,
     editMode: Boolean = false,
     onEdit: () -> Unit = {},
     onDelete: () -> Unit = {}
 ) {
     val isDark = LocalIsDarkTheme.current
-    val iconType = CarServiceIconType.fromValue(service.serviceType)
-    val accentColor = serviceTypeColors[service.serviceType % serviceTypeColors.size]
+    val palette =
+        typeEntity?.colorIndex?.let { ColorUtils.palettes.getOrElse(it) { ColorUtils.palettes.first() } }
+            ?: ColorUtils.palettes.first()
+    val accentColor = palette.primary
+    val icon = CarServiceIcons.fromIndex(typeEntity?.iconIndex ?: 0)
 
     val surfaceColor = MaterialTheme.colorScheme.surface
     val onSurface = MaterialTheme.colorScheme.onSurface
@@ -442,7 +455,7 @@ fun CarServiceItem(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = iconType.icon,
+                            imageVector = icon,
                             contentDescription = null,
                             tint = accentColor,
                             modifier = Modifier.size(24.dp)
@@ -451,7 +464,7 @@ fun CarServiceItem(
                     Spacer(modifier = Modifier.size(12.dp))
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = stringResource(iconType.labelRes()),
+                            text = typeEntity?.title ?: "",
                             color = onSurface,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = scaledSp(15f),
@@ -591,6 +604,7 @@ private fun FilterDialog(
     filterYear: String,
     onFilterYearChange: (String) -> Unit,
     filterServiceTypes: Set<Int>,
+    serviceTypes: List<CarServiceTypeEntity>,
     onFilterServiceTypeChange: (Int, Boolean) -> Unit,
     onDismiss: () -> Unit,
     onClear: () -> Unit
@@ -619,19 +633,19 @@ private fun FilterDialog(
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(modifier = Modifier.size(4.dp))
-                    CarServiceIconType.entries.forEach { iconType ->
+                    serviceTypes.forEach { type ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Checkbox(
-                                checked = iconType.value in filterServiceTypes,
+                                checked = type.id in filterServiceTypes,
                                 onCheckedChange = {
-                                    onFilterServiceTypeChange(iconType.value, it)
+                                    onFilterServiceTypeChange(type.id, it)
                                 }
                             )
                             Text(
-                                text = stringResource(iconType.labelRes()),
+                                text = type.title,
                                 modifier = Modifier.padding(start = 4.dp)
                             )
                         }
@@ -649,21 +663,5 @@ private fun FilterDialog(
                 }
             }
         )
-    }
-}
-
-private fun CarServiceIconType.labelRes(): Int {
-    return when (this) {
-        CarServiceIconType.OIL_CHANGE -> R.string.car_type_oil_change
-        CarServiceIconType.TIRE_CHANGE -> R.string.car_type_tire_change
-        CarServiceIconType.BRAKE_PAD -> R.string.car_type_brake_pad
-        CarServiceIconType.FILTER -> R.string.car_type_filter
-        CarServiceIconType.BELT -> R.string.car_type_belt
-        CarServiceIconType.LAMP -> R.string.car_type_lamp
-        CarServiceIconType.BATTERY -> R.string.car_type_battery
-        CarServiceIconType.ENGINE -> R.string.car_type_engine
-        CarServiceIconType.GENERAL -> R.string.car_type_general
-        CarServiceIconType.INSURANCE -> R.string.car_type_insurance
-        CarServiceIconType.DEFAULT -> R.string.car_type_other
     }
 }

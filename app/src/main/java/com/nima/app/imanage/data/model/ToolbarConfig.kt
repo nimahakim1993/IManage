@@ -19,5 +19,6 @@ data class ToolbarAction(
 data class DrawerItem(
     val icon: ImageVector,
     val label: String,
-    val onClick: () -> Unit
+    val onClick: () -> Unit,
+    val showDividerBelow: Boolean = false
 )

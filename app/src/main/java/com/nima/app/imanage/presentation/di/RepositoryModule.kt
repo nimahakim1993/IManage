@@ -5,6 +5,7 @@ import com.nima.app.imanage.data.repository.AppUpdateRepository
 import com.nima.app.imanage.data.repository.AssetRepository
 import com.nima.app.imanage.data.repository.BankCardRepository
 import com.nima.app.imanage.data.repository.CarServiceRepository
+import com.nima.app.imanage.data.repository.CarServiceTypeRepository
 import com.nima.app.imanage.data.repository.CheckCounterpartyRepository
 import com.nima.app.imanage.data.repository.CheckRepository
 import com.nima.app.imanage.data.repository.ExpenseCategoryRepository
@@ -52,5 +53,6 @@ val repositoryModule = module {
     single { TripExpenseSplitRepository(get()) }
     single { SettlementRepository(get()) }
     single { CarServiceRepository(get()) }
+    single { CarServiceTypeRepository(get()) }
     single { PendingPaymentRepository(get(), get(), get()) }
 }

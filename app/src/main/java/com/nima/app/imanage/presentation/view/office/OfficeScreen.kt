@@ -74,7 +74,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.nima.app.imanage.R
-import com.nima.app.imanage.data.db.entity.CarServiceIconType
 import com.nima.app.imanage.data.db.entity.LoanEntity
 import com.nima.app.imanage.data.db.entity.OfficeNoteEntity
 import com.nima.app.imanage.data.db.entity.OfficeReminderEntity
@@ -1505,9 +1504,8 @@ private fun CalendarMarker(color: Color) {
 @Composable
 private fun EventCard(event: OfficeEvent) {
     val displayTitle = when {
-        event.type == EventType.CAR_SERVICE && event.serviceType != null -> {
-            val iconType = CarServiceIconType.fromValue(event.serviceType)
-            stringResource(iconType.labelRes())
+        event.type == EventType.CAR_SERVICE && event.serviceTypeName != null -> {
+            event.serviceTypeName
         }
 
         else -> event.title
@@ -1588,22 +1586,6 @@ private fun EventCard(event: OfficeEvent) {
                 )
             }
         }
-    }
-}
-
-private fun CarServiceIconType.labelRes(): Int {
-    return when (this) {
-        CarServiceIconType.OIL_CHANGE -> R.string.car_type_oil_change
-        CarServiceIconType.TIRE_CHANGE -> R.string.car_type_tire_change
-        CarServiceIconType.BRAKE_PAD -> R.string.car_type_brake_pad
-        CarServiceIconType.FILTER -> R.string.car_type_filter
-        CarServiceIconType.BELT -> R.string.car_type_belt
-        CarServiceIconType.LAMP -> R.string.car_type_lamp
-        CarServiceIconType.BATTERY -> R.string.car_type_battery
-        CarServiceIconType.ENGINE -> R.string.car_type_engine
-        CarServiceIconType.GENERAL -> R.string.car_type_general
-        CarServiceIconType.INSURANCE -> R.string.car_type_insurance
-        CarServiceIconType.DEFAULT -> R.string.car_type_other
     }
 }
 

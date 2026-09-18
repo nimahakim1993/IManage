@@ -21,14 +21,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
@@ -67,6 +72,7 @@ import com.nima.app.imanage.presentation.view.AppNotificationSheet
 import com.nima.app.imanage.presentation.view.AppUpdateSheet
 import com.nima.app.imanage.presentation.view.AssetsScreen
 import com.nima.app.imanage.presentation.view.BankCardsScreen
+import com.nima.app.imanage.presentation.view.CarServiceTypesScreen
 import com.nima.app.imanage.presentation.view.CarServicesScreen
 import com.nima.app.imanage.presentation.view.CheckCounterpartiesScreen
 import com.nima.app.imanage.presentation.view.ChecksReportScreen
@@ -228,7 +234,8 @@ fun AppScaffold() {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .background(MaterialTheme.colorScheme.primary)
-                                    .padding(horizontal = 20.dp, vertical = 40.dp)
+                                    .windowInsetsPadding(WindowInsets.statusBars)
+                                    .padding(horizontal = 20.dp, vertical = 20.dp)
                             ) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
@@ -293,12 +300,22 @@ fun AppScaffold() {
                                             fontWeight = FontWeight.Medium
                                         )
                                     }
+                                    if (item.showDividerBelow) {
+                                        HorizontalDivider(
+                                            modifier = Modifier.padding(
+                                                horizontal = 16.dp,
+                                                vertical = 8.dp
+                                            ),
+                                            color = MaterialTheme.colorScheme.outlineVariant
+                                        )
+                                    }
                                 }
                             }
 
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .windowInsetsPadding(WindowInsets.navigationBars)
                                     .padding(16.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
@@ -556,6 +573,12 @@ fun Navigation(
             TripSettlementScreen(setToolbar, navController, tripId)
         }
         composable(Screen.CarServices.route) { CarServicesScreen(setToolbar, navController) }
+        composable(Screen.CarServiceTypes.route) {
+            CarServiceTypesScreen(
+                setToolbar,
+                navController
+            )
+        }
         composable(
             route = Screen.CreateCarService.route,
             arguments = listOf(

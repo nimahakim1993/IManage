@@ -493,6 +493,14 @@
     <string name="car_type_general">General Service</string>
     <string name="car_type_insurance">Insurance</string>
     <string name="car_type_other">Other</string>
+    <string name="car_service_types_title">Service Types</string>
+    <string name="car_service_type_name_label">Type Name</string>
+    <string name="car_service_type_icon_label">Icon</string>
+    <string name="empty_car_service_types">No service types yet</string>
+    <string name="empty_car_service_types_hint">Tap + to add your first service type</string>
+    <string name="duplicate_car_service_type">Service type with this title already exists</string>
+    <string name="manage_service_types">Manage Service Types</string>
+    <string name="add_new_service_type">Add new service type…</string>
 
     <!-- Report -->
     <string name="report_title">Reports</string>
@@ -652,6 +660,7 @@
     <string name="rate_app_button">Rate Now</string>
     <string name="rate_app_button_cafebazaar">Rate in CafeBazaar</string>
     <string name="rate_app_button_myket">Rate in Myket</string>
+    <string name="share_app_title">Share Application</string>
 
     <!-- Expense Report -->
     <string name="expense_report_title">Expense Report</string>

@@ -13,21 +13,20 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.TireRepair
 import androidx.compose.ui.graphics.vector.ImageVector
 
-enum class CarServiceIconType(val value: Int, val icon: ImageVector) {
-    OIL_CHANGE(0, Icons.Default.OilBarrel),
-    TIRE_CHANGE(1, Icons.Default.TireRepair),
-    BRAKE_PAD(2, Icons.Default.CarRepair),
-    FILTER(3, Icons.Default.MiscellaneousServices),
-    BELT(4, Icons.Default.Settings),
-    LAMP(5, Icons.Default.Lightbulb),
-    BATTERY(6, Icons.Default.Build),
-    ENGINE(7, Icons.Default.Handyman),
-    GENERAL(8, Icons.Default.DirectionsCar),
-    INSURANCE(9, Icons.Default.Security),
-    DEFAULT(10, Icons.Default.CarRepair);
+object CarServiceIcons {
+    val icons: List<ImageVector> = listOf(
+        Icons.Default.OilBarrel,
+        Icons.Default.TireRepair,
+        Icons.Default.CarRepair,
+        Icons.Default.MiscellaneousServices,
+        Icons.Default.Settings,
+        Icons.Default.Lightbulb,
+        Icons.Default.Build,
+        Icons.Default.Handyman,
+        Icons.Default.DirectionsCar,
+        Icons.Default.Security
+    )
 
-    companion object {
-        fun fromValue(value: Int): CarServiceIconType =
-            entries.firstOrNull { it.value == value } ?: DEFAULT
-    }
+    fun fromIndex(index: Int): ImageVector =
+        icons.getOrElse(index) { icons.last() }
 }

@@ -4,6 +4,7 @@ import com.nima.app.imanage.presentation.viewmodel.AppNotificationViewModel
 import com.nima.app.imanage.presentation.viewmodel.AppUpdateViewModel
 import com.nima.app.imanage.presentation.viewmodel.AssetViewModel
 import com.nima.app.imanage.presentation.viewmodel.BankCardViewModel
+import com.nima.app.imanage.presentation.viewmodel.CarServiceTypeViewModel
 import com.nima.app.imanage.presentation.viewmodel.CarServiceViewModel
 import com.nima.app.imanage.presentation.viewmodel.CheckViewModel
 import com.nima.app.imanage.presentation.viewmodel.ChecksReportViewModel
@@ -47,6 +48,7 @@ val viewModelModule = module {
     viewModel { TripListViewModel(get(), get()) }
     viewModel { TripDetailViewModel(get(), get(), get(), get(), get()) }
     viewModel { CarServiceViewModel(get()) }
+    viewModel { CarServiceTypeViewModel(get()) }
     viewModel { CheckViewModel(get(), get()) }
     viewModel { ChecksReportViewModel(get()) }
     viewModel {
@@ -67,6 +69,6 @@ val viewModelModule = module {
             get()
         )
     }
-    viewModel { OfficeViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { OfficeViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { SettingsViewModel(get(), get()) }
 }

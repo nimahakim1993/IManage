@@ -11,7 +11,7 @@ data class OfficeEvent(
     val icon: ImageVector,
     val color: Color,
     val date: Long,
-    val serviceType: Int? = null,
+    val serviceTypeName: String? = null,
     val loanType: Int? = null,
     val isSettlementDue: Boolean = false
 )

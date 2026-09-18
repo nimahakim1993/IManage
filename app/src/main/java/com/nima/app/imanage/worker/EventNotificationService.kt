@@ -1,6 +1,7 @@
 package com.nima.app.imanage.worker
 
 import com.nima.app.imanage.data.db.dao.CarServiceDao
+import com.nima.app.imanage.data.db.dao.CarServiceTypeDao
 import com.nima.app.imanage.data.db.dao.CheckDao
 import com.nima.app.imanage.data.db.dao.InstallmentDao
 import com.nima.app.imanage.data.db.dao.InstallmentItemDao
@@ -13,6 +14,7 @@ class EventNotificationService(
     private val loanDao: LoanDao,
     private val itemDao: InstallmentItemDao,
     private val carDao: CarServiceDao,
+    private val carServiceTypeDao: CarServiceTypeDao,
     private val installmentDao: InstallmentDao,
     private val notificationHelper: NotificationHelper
 ) {
@@ -33,6 +35,8 @@ class EventNotificationService(
         val items = itemDao.getUnsettledDueBetween(todayStart, todayEnd)
         val serviceDateCarServices = carDao.getServiceDateBetween(todayStart, todayEnd)
         val nextServiceCarServices = carDao.getNextServiceDueBetween(todayStart, todayEnd)
+        val carServiceTypes = carServiceTypeDao.getAllOnce()
+        val carTypeMap = carServiceTypes.associateBy { it.id }
         val dueChecks = checkDao.getDueBetween(todayStart, todayEnd)
 
         val installmentTitles = buildList {
@@ -48,7 +52,8 @@ class EventNotificationService(
             installmentItems = installmentTitles,
             serviceDateCarServices = serviceDateCarServices,
             nextServiceCarServices = nextServiceCarServices,
-            dueChecks = dueChecks
+            dueChecks = dueChecks,
+            carTypeMap = carTypeMap
         )
     }
 

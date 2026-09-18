@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import com.nima.app.imanage.MainActivity
 import com.nima.app.imanage.R
 import com.nima.app.imanage.data.db.entity.CarServiceEntity
+import com.nima.app.imanage.data.db.entity.CarServiceTypeEntity
 import com.nima.app.imanage.data.db.entity.CheckEntity
 import com.nima.app.imanage.data.db.entity.InstallmentItemEntity
 import com.nima.app.imanage.data.db.entity.LoanEntity
@@ -49,7 +50,8 @@ class NotificationHelper(private val context: Context) {
         installmentItems: List<Pair<InstallmentItemEntity, String>>,
         serviceDateCarServices: List<CarServiceEntity>,
         nextServiceCarServices: List<CarServiceEntity>,
-        dueChecks: List<CheckEntity>
+        dueChecks: List<CheckEntity>,
+        carTypeMap: Map<Int, CarServiceTypeEntity> = emptyMap()
     ) {
         val localizedContext = LanguageManager.wrap(context)
         val count = dueLoans.size + settlementLoans.size + installmentItems.size +
@@ -110,7 +112,10 @@ class NotificationHelper(private val context: Context) {
 
         serviceDateCarServices.forEach { service ->
             if (targetScreen == null) targetScreen = "car_services"
-            val typeName = getCarServiceTypeName(service.serviceType, localizedContext)
+            val typeName = carTypeMap[service.serviceType]?.title ?: getCarServiceTypeName(
+                service.serviceType,
+                localizedContext
+            )
             inboxStyle.addLine(
                 localizedContext.getString(
                     R.string.notif_line_amount,
@@ -123,7 +128,10 @@ class NotificationHelper(private val context: Context) {
 
         nextServiceCarServices.forEach { service ->
             if (targetScreen == null) targetScreen = "car_services"
-            val typeName = getCarServiceTypeName(service.serviceType, localizedContext)
+            val typeName = carTypeMap[service.serviceType]?.title ?: getCarServiceTypeName(
+                service.serviceType,
+                localizedContext
+            )
             inboxStyle.addLine(
                 localizedContext.getString(
                     R.string.notif_line_no_amount,
